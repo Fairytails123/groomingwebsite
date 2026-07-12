@@ -94,6 +94,8 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - [ ] Identify the external .co.uk registrar + confirm auto-renew (not blocking; DNS is at Hostinger).
 - [ ] The blog post exists on BOTH this domain and the Main Website — canonical decision at polish.
 - [ ] Favicon .ico variant (PNG set shipped; .ico optional).
+- [ ] /who-we-are/ photo: the old page's `Fairy-Tails.jpg` looks like the K9 Centre BARN, not
+      the town salon — owner to confirm or supply a salon photo (alt text kept neutral meanwhile).
 
 ## Deliberate copy/SEO changes log
 
