@@ -1,0 +1,94 @@
+---
+// Legacy URL preserved: /contact/ . Facts from business.ts (single source of
+// truth). DELIBERATE SEO FIX (logged in WEBSITE-PLAN.md): the old Yoast
+// description referenced the K9 Centre's Barley Lane address — corrected to
+// the salon's actual address at 15 Mount Pleasant Road.
+import Base from '../layouts/Base.astro';
+import HillDivider from '../components/HillDivider.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { business } from '../data/business';
+---
+
+<Base
+  title="Contact - The Fairy Tails Dog Grooming"
+  description="Contact the friendly Hastings dog groomers — book online, call 01424 300668 or send us a message. Find the salon at 15 Mount Pleasant Road, Hastings, on the edge of Alexandra Park."
+  path="/contact/"
+>
+  <article data-page="contact">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">Find us here</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Contact us
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          You can <a href={business.booking.jotform} class="font-bold text-honey-300 underline underline-offset-4">book your groom online</a>,
+          but please don't hesitate to get in touch if you'd like more information — or if you'd
+          like to visit the salon with your dog before booking.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <section class="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:pt-14">
+      <div class="grid gap-8 md:grid-cols-3">
+        <div class="rounded-2xl bg-cream-100 p-7">
+          <p class="eyebrow text-honey-700">Address</p>
+          <address class="mt-3 not-italic leading-relaxed text-bark-800">
+            <strong>The Fairy Tails</strong><br />
+            {business.address.line1}<br />
+            {business.address.town}<br />
+            {business.address.postcode}
+          </address>
+          <p class="mt-3 text-sm text-bark-600">
+            On the edge of Alexandra Park, at the bottom of Mount Pleasant Road — with outside
+            shop parking for drop-offs and collections.
+          </p>
+          <a
+            href={business.mapsUrl}
+            class="mt-4 inline-block text-sm font-bold text-moss-800 underline decoration-honey-500 underline-offset-4"
+          >
+            Open in Google Maps
+          </a>
+        </div>
+
+        <div class="rounded-2xl bg-cream-100 p-7">
+          <p class="eyebrow text-honey-700">Hours</p>
+          <p class="mt-3 leading-relaxed text-bark-800">
+            <strong>Mon to Fri</strong> 8.00 am – 5.30 pm<br />
+            <strong>Sat &amp; Sun</strong> Closed
+          </p>
+          <p class="mt-3 text-sm text-bark-600">Please note that we close on Bank Holidays.</p>
+        </div>
+
+        <div class="rounded-2xl bg-cream-100 p-7">
+          <p class="eyebrow text-honey-700">Talk to us</p>
+          <ul class="mt-3 space-y-2 text-bark-800">
+            <li>
+              Call <a href={business.phones.main.tel} class="font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">{business.phones.main.display}</a>
+            </li>
+            <li>
+              WhatsApp <a href={business.phones.mobile.whatsapp} class="font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">{business.phones.mobile.display}</a>
+            </li>
+            <li>
+              Email <a href={`mailto:${business.emails.info}`} class="font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">{business.emails.info}</a>
+            </li>
+          </ul>
+          <a href={business.booking.jotform} class="btn btn-honey !mt-5 w-full text-center">
+            Book Appointment
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-20 pt-12">
+      <h2 class="font-display text-3xl font-bold text-moss-900">Send us a message</h2>
+      <p class="mt-3 text-bark-700">
+        Tell us a little about your dog and what you need — we'll get back to you as soon as we can.
+      </p>
+      <div class="mt-8">
+        <EnquiryForm page="/contact/" />
+      </div>
+    </section>
+  </article>
+</Base>

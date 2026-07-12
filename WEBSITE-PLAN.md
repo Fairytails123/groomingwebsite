@@ -23,9 +23,9 @@ and mirror the date here).
 | URL | Status | Notes |
 |---|---|---|
 | `/` | stub (Stage-1 placeholder) | Homepage ships LAST |
-| `/who-we-are/` | planned | Stage 2 |
-| `/contact/` | planned | Stage 2 — EnquiryForm live test on preview |
-| `/terms-and-conditions/` | planned | Stage 2 — legal copy verbatim |
+| `/who-we-are/` | **built** 2026-07-12 | Stage 2 |
+| `/contact/` | **built** 2026-07-12 | Stage 2 — form E2E verified via curl; on-page test pending |
+| `/terms-and-conditions/` | **built** 2026-07-12 | Stage 2 — legal copy verbatim |
 | `/services/` | planned | Stage 3 hub — add-ons from pricing.json |
 | `/services/full-groom-price-list/` | planned | Stage 3 — PriceTable + JS filter |
 | `/services/haircut-lengths/` | planned | Stage 3 — 6 clip lengths w/ photos |
@@ -99,7 +99,14 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 
 (Record every intentional deviation from the harvested Yoast titles/descriptions/copy here.)
 
-- 2026-07-12: none yet.
+- 2026-07-12 T&Cs: two unambiguous typo fixes only — "Dogs will be not be groomed" → "will not
+  be"; "pet's need physical maintenance" → "pets need". Everything else verbatim.
+- 2026-07-12 /contact/ meta description: old Yoast description referenced "near the Milking
+  Parlour in Barley Lane" — that's the K9 CENTRE address, not the salon. Rewritten around
+  15 Mount Pleasant Road + phone. (Old value preserved in grooming-image-archive/contact/meta.json.)
+- 2026-07-12 /who-we-are/: copy tightened per locked spec (all facts kept); old title
+  "The Fairy Tails Dog Grooming - The Fairy Tails Dog Grooming" kept as-is for now — candidate
+  for improvement at polish (it's a doubled site-name, weak SEO).
 
 ## Polish backlog (post-switchover, indefinite)
 

@@ -1,0 +1,103 @@
+---
+// Legacy URL preserved: /who-we-are/ . Copy improved per locked spec; every
+// fact from the harvest kept (10+ years, family business, Alexandra Park
+// location, visit-before-booking offer, pain-free/industry-standards
+// memberships). Source: grooming-image-archive/who-we-are/copy.md.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HillDivider from '../components/HillDivider.astro';
+import { business } from '../data/business';
+import salon from '../assets/pages/who-we-are/salon.jpg';
+---
+
+<Base
+  title="The Fairy Tails Dog Grooming - The Fairy Tails Dog Grooming"
+  description="As part of The Fairy Tails K9 Centre, we are the caring Hastings dog groomers and are proud to contribute to the health and wellbeing of thousands of dogs in the local area."
+  path="/who-we-are/"
+>
+  <article data-page="who-we-are">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">Who we are</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          The caring Hastings dog groomers
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          Part of The Fairy Tails K9 Centre, with over 10 years' experience of caring for dogs —
+          and helping their humans.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <section class="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:pt-14">
+      <div class="grid items-center gap-10 md:grid-cols-2">
+        <div>
+          <p class="eyebrow text-honey-700">Where you'll find us</p>
+          <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+            On the edge of Alexandra Park
+          </h2>
+          <p class="mt-4 leading-relaxed text-bark-700">
+            The salon sits at the bottom of Mount Pleasant Road, within walking distance of
+            Alexandra Park, with outside shop parking should you wish to drop off or collect your
+            dog. (Fee-paid local collection and drop-offs are available.)
+          </p>
+          <p class="mt-3 leading-relaxed text-bark-700">
+            Grooming is one part of the full Fairy Tails family: alongside the salon, the
+            <a href={business.sisterSite} class="font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">K9 Centre</a>
+            offers training and day school — a complete range of care for your dog.
+          </p>
+        </div>
+        <figure class="polaroid">
+          <Image
+            src={salon}
+            alt="The Fairy Tails dog grooming salon in Hastings"
+            widths={[480, 800, 1024]}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading="eager"
+          />
+        </figure>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pt-14">
+      <p class="eyebrow text-honey-700">A family business</p>
+      <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">Small is beautiful</h2>
+      <p class="mt-4 leading-relaxed text-bark-700">
+        We are a small, family-run business specialising in all things dog. Our grooming team is
+        at the heart of it — contributing to the health and wellbeing of thousands of dogs in the
+        Hastings area. We care for dogs of all shapes and sizes and tailor our care to meet your
+        dog's needs.
+      </p>
+
+      <p class="eyebrow mt-12 text-honey-700">Our team</p>
+      <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+        Happy staff means happy dogs
+      </h2>
+      <p class="mt-4 leading-relaxed text-bark-700">
+        We are very proud of our qualified and experienced team — all part of The Fairy Tails
+        family. Most of the dogs we care for absolutely love our staff, and when you book a groom
+        they'll do their very best to make it a happy experience for your dog.
+      </p>
+
+      <ul class="mt-8 space-y-2 text-sm text-bark-600">
+        <li class="paw-bullet">As members, we are committed to pain-free dog care.</li>
+        <li class="paw-bullet">As members, we are committed to improving industry standards.</li>
+      </ul>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-14 text-center">
+      <div class="rounded-3xl bg-cream-100 px-6 py-12">
+        <h2 class="font-display text-3xl font-bold text-moss-900">Come and visit us</h2>
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+          Don't just take our word for it — we're more than happy for you to visit with your dog
+          and discuss their needs in detail before booking a groom.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href="/contact/" class="btn btn-moss">Arrange a visit</a>
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>

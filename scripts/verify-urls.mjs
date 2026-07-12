@@ -22,7 +22,7 @@ const DIST = join(import.meta.dirname, '..', 'dist');
 const MANIFEST = [
   // ---- rebuilt pages (final 200s), 1:1 with the old WordPress URLs ----
   { path: '/', type: 'page', status: 'planned' }, // homepage — LAST in the inside-out order
-  { path: '/who-we-are/', type: 'page', status: 'planned' },
+  { path: '/who-we-are/', type: 'page', status: 'built' }, // built 2026-07-12
   { path: '/services/', type: 'page', status: 'planned' },
   { path: '/services/full-groom-price-list/', type: 'page', status: 'planned' },
   { path: '/services/haircut-lengths/', type: 'page', status: 'planned' },
@@ -31,14 +31,14 @@ const MANIFEST = [
   { path: '/services/homeless-dogs/', type: 'page', status: 'planned' },
   { path: '/services/frequently-asked-questions/', type: 'page', status: 'planned' },
   { path: '/gallery/', type: 'page', status: 'planned' },
-  { path: '/contact/', type: 'page', status: 'planned' },
-  { path: '/terms-and-conditions/', type: 'page', status: 'planned' },
+  { path: '/contact/', type: 'page', status: 'built' }, // built 2026-07-12
+  { path: '/terms-and-conditions/', type: 'page', status: 'built' }, // built 2026-07-12
   { path: '/blog/', type: 'page', status: 'planned' },
   { path: '/why-dog-grooming-is-important/', type: 'page', status: 'planned' }, // blog post at ROOT level
   // ---- meta-refresh stubs (hand-authored in public/ — canonical + noindex) ----
-  { path: '/services-2/', type: 'stub', status: 'planned' }, // stale duplicate services page → /services/
-  { path: '/category/blog/', type: 'stub', status: 'planned' }, // WP category archive → /blog/
-  { path: '/author/grace/', type: 'stub', status: 'planned' }, // WP author archive → /who-we-are/
+  { path: '/services-2/', type: 'stub', status: 'built' }, // stale duplicate services page → /services/
+  { path: '/category/blog/', type: 'stub', status: 'built' }, // WP category archive → /blog/
+  { path: '/author/grace/', type: 'stub', status: 'built' }, // WP author archive → /who-we-are/
   // ---- intentional 404s ----
   { path: '/feed/', type: 'gone', status: 'planned' }, // WP RSS — revisit if the Ahrefs backlink audit says otherwise
 ];
