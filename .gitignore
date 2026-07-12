@@ -8,6 +8,9 @@ dist/
 # verbatim harvest of the old WordPress site — NEVER commit (large; public repo)
 grooming-image-archive/
 
+# viewport-gate screenshots (scripts/shots.mjs output)
+shots/
+
 # misc
 *.log
 .DS_Store

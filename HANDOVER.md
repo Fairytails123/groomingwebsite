@@ -2,6 +2,28 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## 2026-07-12 (later) — Stage 2 shipped: T&Cs, Contact, Who-we-are
+
+- **Three pages built and deployed** (verify-urls: 3 pages + 3 stubs now `built`, 0 failures).
+  T&Cs verbatim (2 typo fixes logged); contact meta description corrected (old one carried the
+  K9 Centre's Barley Lane address — logged in WEBSITE-PLAN).
+- **Preview HTTPS live + enforced**: https://preview.fairytailsdoggrooming.co.uk (cert stalled
+  ~50 min; fixed with the documented remove/re-add-domain re-trigger). http→301→https verified.
+- **Gates run**: Lighthouse (mobile, prod-flagged local build) — home 98/100/100,
+  T&Cs 100/100/100, contact 100/100/100, who-we-are 99/100/100 (perf/a11y/seo).
+  Dual-viewport sweeps (1440 + 390, Playwright `scripts/shots.mjs` → `shots/`) — caught and
+  fixed dark-on-dark header nav (backdrop now always-on; documented divergence in Header.astro).
+  Mobile drawer open/close PASS. **On-page form E2E PASS** (`scripts/stage2-checks.mjs`:
+  real POST from /contact/ → webhook 200 → row 2 in `grooming_enquiries` → email accepted).
+  Reduced-motion: no scripted animation on these pages; Header carries the main site's
+  prefers-reduced-motion rules.
+- **Tooling added**: Playwright (devDep) + Chromium; `scripts/shots.mjs` (viewport gate),
+  `scripts/stage2-checks.mjs`. Lighthouse runs via `npx lighthouse` with
+  `CHROME_PATH=<playwright chromium>`.
+- **PENDING owner eyeball** of the three pages on the preview URL + the pickup-price wording
+  ruling + the who-we-are photo question (see WEBSITE-PLAN open items).
+- Two TEST enquiries in `grooming_enquiries` + two TEST emails at info@ — safe to delete.
+
 ## 2026-07-12 — Stage 0 + Stage 1 shell shipped
 
 **Done this session:**
