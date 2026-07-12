@@ -45,7 +45,8 @@ and mirror the date here).
 
 - **Stage 1 — Shell + pipeline** ✅ 2026-07-12: Base/Header/Footer/Consent/global.css,
   business.ts, 404, robots endpoint, stub homepage, Pages deploy, preview domain, noindex verified.
-- **Stage 2 — Utility**: terms-and-conditions → contact (form E2E on preview) → who-we-are.
+- **Stage 2 — Utility** ✅ 2026-07-12: terms-and-conditions, contact (form E2E PASS), who-we-are.
+  Owner eyeball pending.
 - **Stage 3 — Services cluster** (revenue/SEO core): services hub → price list → haircut-lengths
   → teeth-cleaning → doggy-massage → homeless-dogs → FAQs.
 - **Stage 4 — Gallery + blog**: gallery grid → blog index + post.

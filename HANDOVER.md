@@ -2,6 +2,35 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## ⏸️ CURRENT STATE (paused 2026-07-12 evening)
+
+**Stages 0–2 are DONE and deployed.** Preview live at
+**https://preview.fairytailsdoggrooming.co.uk** (HTTPS enforced, noindexed; old WordPress
+untouched). Built + gated: shell, `/terms-and-conditions/`, `/contact/`, `/who-we-are/`,
+3 redirect stubs, 404. verify-urls: 0 failures. Lighthouse 98–100/100/100 across the board.
+
+**Waiting on the OWNER (blocks parts of Stage 3):**
+1. Eyeball the 3 pages on the preview URL — phone AND desktop.
+2. **Pickup pricing ruling** — old site contradicts itself: "free door-to-door for full
+   grooms" (homepage/T&Cs/price-list) vs "£1 per journey" (/services/) vs "£5
+   Bexhill/Battle/Rye" (/services-2/). Blocks the `/services/` hub page.
+3. Who-we-are photo: the old page's image looks like the K9 Centre BARN, not the town
+   salon — keep or replace?
+
+**Next build work (Stage 3 — services cluster, inside-out):** the sub-pages NOT blocked by
+the pickup ruling can go first: `/services/full-groom-price-list/` (PriceTable + JS filter
+from pricing.json), `/services/haircut-lengths/`, `/services/teeth-cleaning/`,
+`/services/doggy-massage/`, `/services/homeless-dogs/`, `/services/frequently-asked-questions/`;
+the `/services/` hub LAST, after the ruling. Then Stage 4 (gallery + blog), Stage 5 (homepage).
+
+**Also pending (needs a browser session with the owner):** GSC Domain property + DNS-TXT
+verification and baseline export; GitHub account-level verified domain
+(github.com/settings/pages → Add a domain → TXT via Hostinger MCP); Ahrefs baseline exports
+→ `docs/seo-baseline/` (API is plan-blocked — web UI only).
+
+**Housekeeping:** 2 TEST rows in the `grooming_enquiries` data table + 2 TEST emails at
+info@ — safe to delete.
+
 ## 2026-07-12 (later) — Stage 2 shipped: T&Cs, Contact, Who-we-are
 
 - **Three pages built and deployed** (verify-urls: 3 pages + 3 stubs now `built`, 0 failures).
