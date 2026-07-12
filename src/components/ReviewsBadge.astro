@@ -1,0 +1,32 @@
+---
+import { business } from '../data/business';
+
+// Google-reviews badge (replaces the main site's council-licence footer block —
+// grooming isn't a licensable activity). rating/count are a snapshot in
+// business.ts; refresh during polish passes.
+interface Props {
+  align?: 'left' | 'center';
+}
+const { align = 'left' } = Astro.props;
+const { rating, count, readUrl } = business.reviews;
+const fullStars = Math.round(rating);
+---
+
+<div class:list={['flex flex-col gap-1.5', align === 'center' && 'items-center text-center']}>
+  <div class="flex items-center gap-2">
+    <span class="flex text-honey-400" aria-hidden="true">
+      {Array.from({ length: 5 }, (_, i) => (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill={i < fullStars ? 'currentColor' : 'none'} stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ))}
+    </span>
+    <span class="text-sm font-bold">{rating} out of 5</span>
+  </div>
+  <a
+    href={readUrl}
+    class="text-sm font-bold text-honey-300 underline decoration-honey-600 underline-offset-4 hover:text-honey-200"
+  >
+    From {count}+ Google reviews — read them here
+  </a>
+</div>

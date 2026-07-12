@@ -1,0 +1,97 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/karla';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { business } from '../data/business';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ConsentBanner from '../components/ConsentBanner.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path beginning AND ending with /, e.g. /who-we-are/ (legacy WP URLs are trailing-slash dirs) */
+  path: string;
+  ogImage?: string | undefined;
+}
+
+const { title, description, path, ogImage } = Astro.props;
+const canonical = `${business.domain}${path}`;
+const gtmId = business.tracking.gtm;
+
+// Indexability is env-driven (see CLAUDE.md "INDEXABLE handle"): unset locally and
+// on the preview deploy → noindex; the switchover sets the repo Actions variable
+// INDEXABLE=true. Never hardcode this.
+const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {!indexable && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={business.name} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Brand favicon set generated from the salon emblem (Google needs a ≥48px
+         multiple to show it beside the URL in search results). -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <ClientRouter />
+
+    <!-- Consent Mode v2: defaults DENIED before GTM loads (UK PECR) -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500,
+      });
+      try {
+        var saved = localStorage.getItem('ft-consent');
+        if (saved) gtag('consent', 'update', JSON.parse(saved));
+      } catch (e) {}
+    </script>
+    <script is:inline define:vars={{ gtmId }}>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', gtmId);
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <ConsentBanner />
+  </body>
+</html>

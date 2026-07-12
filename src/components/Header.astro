@@ -1,0 +1,279 @@
+---
+import { Image } from 'astro:assets';
+import { business } from '../data/business';
+import emblem from '../assets/brand/logo-square.png';
+
+// Inside-out build: nav links go live as pages ship on the preview.
+// The old site's wide logos are only 180–220px wide (too soft at 2x), so the
+// header lockup = the 600px emblem + a text wordmark in the site fonts.
+// Blog lives in the footer only (matches Main Website convention).
+const nav = [
+  { label: 'About', href: '/who-we-are/' },
+  { label: 'Services', href: '/services/' },
+  { label: 'Prices', href: '/services/full-groom-price-list/' },
+  { label: 'Gallery', href: '/gallery/' },
+  { label: 'Contact', href: '/contact/' },
+];
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow,padding] duration-300"
+  data-header
+>
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+    <a href="/" class="flex items-center gap-2.5">
+      <Image
+        src={emblem}
+        alt=""
+        class="h-11 w-11 transition-transform duration-300"
+        densities={[1, 2]}
+        height={44}
+        data-header-logo
+      />
+      <span class="leading-none" aria-hidden="true">
+        <span class="block text-[0.65rem] font-bold uppercase tracking-[0.14em] text-bark-500">The Fairy Tails</span>
+        <span class="block font-display text-lg font-bold text-moss-800">Dog Grooming</span>
+      </span>
+      <span class="sr-only">The Fairy Tails Dog Grooming — home</span>
+    </a>
+
+    {/* Desktop nav from lg only (main-site lesson: the md band overflows and
+        clips the Book CTA — tablets get the drawer instead). */}
+    <nav aria-label="Main" class="hidden items-center gap-5 lg:flex">
+      {
+        nav.map((item) => (
+          <a href={item.href} class="nav-link text-sm font-bold text-bark-700">
+            {item.label}
+          </a>
+        ))
+      }
+      <a href={business.phones.main.tel} class="nav-link hidden text-sm font-bold text-bark-700 xl:block">
+        {business.phones.main.display}
+      </a>
+      <a href={business.booking.jotform} class="btn btn-honey !px-4 !py-2.5 text-sm">
+        Book Appointment
+      </a>
+    </nav>
+
+    <button
+      type="button"
+      class="relative z-50 flex h-11 w-11 items-center justify-center rounded-full bg-cream-50/80 lg:hidden"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <span class="menu-bars relative block h-3.5 w-5">
+        <span class="menu-bar absolute left-0 top-0 h-0.5 w-full rounded bg-bark-900"></span>
+        <span class="menu-bar absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 rounded bg-bark-900"></span>
+        <span class="menu-bar absolute bottom-0 left-0 h-0.5 w-full rounded bg-bark-900"></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Mobile slide-in panel -->
+  <div
+    id="mobile-menu"
+    class="fixed inset-0 z-40 hidden lg:hidden"
+    data-menu-panel
+    aria-hidden="true"
+  >
+    <div class="absolute inset-0 bg-pine-950/60 opacity-0" data-menu-backdrop></div>
+    <div
+      class="absolute right-0 top-0 flex h-full w-[82%] max-w-sm translate-x-full flex-col overflow-y-auto bg-cream-50 p-8 pb-10 pt-24 shadow-2xl"
+      data-menu-drawer
+    >
+      <nav aria-label="Mobile" class="space-y-1">
+        {
+          nav.map((item) => (
+            <a
+              href={item.href}
+              class="block py-2.5 font-display text-2xl font-bold text-moss-800"
+              data-menu-link
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a
+          href={business.booking.jotform}
+          class="btn btn-honey !mt-7 w-full"
+          data-menu-link
+        >
+          Book Appointment
+        </a>
+      </nav>
+      <div class="mt-auto pt-9">
+        <div class="border-t border-moss-800/15 pt-6">
+          <p class="eyebrow text-honey-700">Talk to us</p>
+          <div class="mt-3 space-y-1.5">
+            <a
+              href={business.phones.main.tel}
+              class="flex items-center gap-3.5 py-2 font-bold text-moss-800"
+              data-menu-link
+            >
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-moss-700 text-cream-50"
+                aria-hidden="true"
+              >
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+              </span>
+              <span class="leading-tight">
+                <span class="block text-base">{business.phones.main.display}</span>
+                <span class="block text-xs font-normal text-bark-500">Tap to call the salon</span>
+              </span>
+            </a>
+            <a
+              href={business.phones.mobile.whatsapp}
+              class="flex items-center gap-3.5 py-2 font-bold text-moss-800"
+              data-menu-link
+            >
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-honey-500 text-pine-950"
+                aria-hidden="true"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"></path>
+                </svg>
+              </span>
+              <span class="leading-tight">
+                <span class="block text-base">WhatsApp us</span>
+                <span class="block text-xs font-normal text-bark-500">{business.phones.mobile.display} · quickest reply</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav-link {
+    position: relative;
+    padding-bottom: 2px;
+    white-space: nowrap; /* one-line desktop nav — labels never wrap internally */
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    background: var(--color-honey-500);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  /* The scrolled backdrop lives on a ::before, NOT on the header itself:
+     backdrop-filter on [data-header] would make it the containing block for
+     the position:fixed mobile panel, clipping the drawer to the header bar. */
+  [data-header]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: color-mix(in srgb, var(--color-cream-50) 92%, transparent);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 0 rgb(43 37 30 / 0.06), 0 8px 24px -16px rgb(43 37 30 / 0.25);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  [data-header].is-scrolled::before {
+    opacity: 1;
+  }
+  [data-header].is-scrolled [data-header-logo] {
+    transform: scale(0.88);
+  }
+  /* Hamburger -> X */
+  [data-menu-toggle][aria-expanded='true'] .menu-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  [data-menu-toggle][aria-expanded='true'] .menu-bar:nth-child(2) {
+    opacity: 0;
+  }
+  [data-menu-toggle][aria-expanded='true'] .menu-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+  .menu-bar {
+    transition: transform 0.3s ease, opacity 0.2s ease;
+  }
+  [data-menu-backdrop] {
+    transition: opacity 0.35s ease;
+  }
+  [data-menu-drawer] {
+    /* Tailwind v4's translate-x-full sets the `translate` property, not `transform` */
+    transition: translate 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  [data-menu-panel].is-open [data-menu-backdrop] {
+    opacity: 1;
+  }
+  [data-menu-panel].is-open [data-menu-drawer] {
+    translate: 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link::after,
+    .menu-bar,
+    [data-menu-backdrop],
+    [data-menu-drawer],
+    [data-header]::before,
+    [data-header-logo] {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function initHeader() {
+    const header = document.querySelector('[data-header]');
+    if (!header || (header as HTMLElement).dataset.init) return;
+    (header as HTMLElement).dataset.init = '1';
+
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const toggle = header.querySelector('[data-menu-toggle]') as HTMLButtonElement;
+    const panel = header.querySelector('[data-menu-panel]') as HTMLElement;
+    const backdrop = header.querySelector('[data-menu-backdrop]') as HTMLElement;
+    if (!toggle || !panel) return;
+
+    let open = false;
+    const setOpen = (next: boolean) => {
+      open = next;
+      toggle.setAttribute('aria-expanded', String(next));
+      toggle.setAttribute('aria-label', next ? 'Close menu' : 'Open menu');
+      panel.setAttribute('aria-hidden', String(!next));
+      document.documentElement.style.overflow = next ? 'hidden' : '';
+      if (next) {
+        panel.classList.remove('hidden');
+        requestAnimationFrame(() => panel.classList.add('is-open'));
+      } else {
+        panel.classList.remove('is-open');
+        setTimeout(() => !open && panel.classList.add('hidden'), 450);
+      }
+    };
+
+    toggle.addEventListener('click', () => setOpen(!open));
+    backdrop?.addEventListener('click', () => setOpen(false));
+    panel.querySelectorAll('[data-menu-link]').forEach((a) => {
+      a.addEventListener('click', () => setOpen(false));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && open) setOpen(false);
+    });
+    document.addEventListener('astro:before-swap', () => setOpen(false));
+  }
+
+  initHeader();
+  document.addEventListener('astro:page-load', initHeader);
+</script>

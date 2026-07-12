@@ -1,0 +1,214 @@
+---
+import { business } from '../data/business';
+
+// Contact-page form (replaces the old WPForms). POSTs JSON to the n8n
+// "Grooming Website Enquiry" webhook. Spam defence: honeypot field `website` +
+// elapsedMs < 4000 → fake success client-side (and n8n silently 200s spam).
+// Same payload contract as the Main Website's EnquiryForm.
+interface Props {
+  /** Pre-fills the service dropdown for the page this form sits on */
+  service?: string;
+  /** Page path sent with the payload, e.g. /contact/ */
+  page: string;
+}
+
+const { service = '', page } = Astro.props;
+
+const services = [
+  'Full Groom',
+  'Hand Stripping',
+  'Bath, Brush & Tidy',
+  'Puppy Introduction',
+  'Teeth Cleaning',
+  'Doggy Massage',
+  'Monthly Subscription (£25/month)',
+  'General enquiry',
+  'Something else',
+];
+
+const concerns = [
+  'Matting or coat condition',
+  'Nervous or anxious dog',
+  "First groom / puppy's first visit",
+  'Skin or coat issues',
+  'Shedding / de-shedding',
+  'Nail clipping',
+  'Fleas or ticks',
+  'Pick-up & drop-off',
+  'Something else',
+];
+
+const inputClass = 'field';
+const labelClass = 'field-label';
+---
+
+<form
+  id="enquiry-form"
+  class="mx-auto max-w-2xl space-y-5"
+  data-webhook={business.enquiryWebhook}
+  data-page={page}
+  novalidate
+>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <label for="ef-name" class={labelClass}>Your name *</label>
+      <input id="ef-name" name="name" type="text" required autocomplete="name" class={inputClass} />
+    </div>
+    <div>
+      <label for="ef-email" class={labelClass}>Email *</label>
+      <input id="ef-email" name="email" type="email" required autocomplete="email" class={inputClass} />
+    </div>
+    <div>
+      <label for="ef-phone" class={labelClass}>Phone</label>
+      <input id="ef-phone" name="phone" type="tel" autocomplete="tel" class={inputClass} />
+    </div>
+    <div>
+      <label for="ef-service" class={labelClass}>What are you interested in?</label>
+      <select id="ef-service" name="service" class={inputClass}>
+        {services.map((s) => <option value={s} selected={s === service}>{s}</option>)}
+      </select>
+    </div>
+    <div>
+      <label for="ef-dog-name" class={labelClass}>Dog's name</label>
+      <input id="ef-dog-name" name="dogName" type="text" class={inputClass} />
+    </div>
+    <div>
+      <label for="ef-breed" class={labelClass}>Breed</label>
+      <input id="ef-breed" name="breed" type="text" class={inputClass} />
+    </div>
+    <div>
+      <label for="ef-age" class={labelClass}>Dog's age</label>
+      <input id="ef-age" name="age" type="text" placeholder="e.g. 14 weeks, 3 years" class={inputClass} />
+    </div>
+  </div>
+
+  <fieldset>
+    <legend class={labelClass}>Anything we should know about? (tick any)</legend>
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      {
+        concerns.map((c, i) => (
+          <label class="flex items-center gap-2 py-1 text-sm text-bark-700 sm:py-0">
+            <input
+              type="checkbox"
+              name="concerns"
+              value={c}
+              id={`ef-concern-${i}`}
+              class="h-5 w-5 rounded border-cream-300 text-moss-600 focus:ring-moss-300 sm:h-4 sm:w-4"
+            />
+            {c}
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <label for="ef-contact-pref" class={labelClass}>How should we contact you?</label>
+      <select id="ef-contact-pref" name="contactPref" class={inputClass}>
+        <option>Phone call</option>
+        <option>WhatsApp</option>
+        <option>Email</option>
+        <option>Text message</option>
+      </select>
+    </div>
+    <div>
+      <label for="ef-contact-time" class={labelClass}>Best time to reach you</label>
+      <select id="ef-contact-time" name="contactTime" class={inputClass}>
+        <option>Any time</option>
+        <option>Morning</option>
+        <option>Afternoon</option>
+        <option>Evening</option>
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <label for="ef-message" class={labelClass}>Tell us about your dog and what you need *</label>
+    <textarea id="ef-message" name="message" rows="5" required class={inputClass}></textarea>
+  </div>
+
+  <!-- Honeypot: humans never see or fill this -->
+  <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+    <label for="ef-website">Website</label>
+    <input id="ef-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <button type="submit" class="btn btn-moss w-full sm:w-auto">
+    Send enquiry <span class="btn-arrow" aria-hidden="true">→</span>
+  </button>
+
+  <p id="ef-status" role="status" aria-live="polite" class="text-sm font-medium"></p>
+</form>
+
+<script>
+  const form = document.getElementById('enquiry-form') as HTMLFormElement | null;
+  if (form) {
+    const startedAt = Date.now();
+    const status = document.getElementById('ef-status')!;
+    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    const showSuccess = () => {
+      form.querySelectorAll('input, select, textarea, button').forEach((el) => {
+        (el as HTMLInputElement).disabled = true;
+      });
+      status.className = 'text-sm font-medium text-moss-700';
+      status.textContent =
+        "Thank you — we've got your enquiry and we'll be in touch soon. If it's urgent, call the salon on 01424 300668 or WhatsApp 07842 116216.";
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const fd = new FormData(form);
+      const elapsedMs = Date.now() - startedAt;
+
+      // Bot heuristics → pretend it worked, send nothing.
+      if ((fd.get('website') as string)?.trim() || elapsedMs < 4000) {
+        showSuccess();
+        return;
+      }
+
+      const payload = {
+        name: fd.get('name'),
+        email: fd.get('email'),
+        phone: fd.get('phone'),
+        service: fd.get('service'),
+        dogName: fd.get('dogName'),
+        breed: fd.get('breed'),
+        age: fd.get('age'),
+        concerns: fd.getAll('concerns'),
+        contactPref: fd.get('contactPref'),
+        contactTime: fd.get('contactTime'),
+        message: fd.get('message'),
+        page: form.dataset.page,
+        website: fd.get('website'),
+        elapsedMs,
+      };
+
+      const buttonHtml = button.innerHTML;
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      status.textContent = '';
+
+      try {
+        const res = await fetch(form.dataset.webhook!, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({ event: 'enquiry_submitted', service: payload.service });
+        showSuccess();
+      } catch {
+        button.disabled = false;
+        button.innerHTML = buttonHtml;
+        status.className = 'text-sm font-medium text-red-700';
+        status.textContent =
+          "Sorry — that didn't send. Please try again, or call the salon on 01424 300668 / WhatsApp 07842 116216.";
+      }
+    });
+  }
+</script>

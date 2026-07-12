@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+
+# GitHub Pages IS production for this site (unlike the Main Website, which
+# deploys to Hostinger and keeps Pages as a manual preview). Every push to
+# main deploys.
+#
+# Indexability: the INDEXABLE repo Actions variable is UNSET during the build
+# stage (→ noindex meta + robots Disallow, safe-by-default while the old
+# WordPress site is still live). The switchover runbook sets INDEXABLE=true.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_INDEXABLE: ${{ vars.INDEXABLE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build with Astro
+        uses: withastro/action@v6
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

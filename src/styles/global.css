@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/*
+  Design system — "Countryside editorial" (design pass 2026-06-12).
+  Warm & natural direction locked in the Board & Train pre-build interview:
+  earthy greens / warm cream paper / honey accents, premium but approachable.
+  Display: Fraunces Variable (warm, characterful serif).
+  Body: Karla Variable (humanist, slightly rounded warmth).
+*/
+@theme {
+  /* Creams — warm paper backgrounds */
+  --color-cream-50: #fbf7ed;
+  --color-cream-100: #f5eedd;
+  --color-cream-200: #eadfc4;
+  --color-cream-300: #dcc9a3;
+
+  /* Moss greens — primary brand */
+  --color-moss-100: #e6ecdb;
+  --color-moss-200: #cdd9b9;
+  --color-moss-300: #aebf93;
+  --color-moss-400: #8da272;
+  --color-moss-500: #708757;
+  --color-moss-600: #596f44;
+  --color-moss-700: #475a37;
+  --color-moss-800: #39482d;
+  --color-moss-900: #2c3823;
+
+  /* Pines — deep green darks for full-bleed sections */
+  --color-pine-800: #243023;
+  --color-pine-900: #1a241a;
+  --color-pine-950: #121a12;
+
+  /* Barks — warm text neutrals */
+  --color-bark-400: #8a7b66;
+  --color-bark-500: #6f6250;
+  --color-bark-700: #4a4036;
+  --color-bark-900: #2b251e;
+
+  /* Clay — terracotta earth accent (added 2026-07-09 for the whole-dog convergence
+     section: a fourth hue that stays inside the countryside palette. Sits below moss
+     on the luminance staircase so the four wire colours separate for colour-blind
+     viewers on lightness, not hue alone). */
+  --color-clay-500: #c16a41;
+
+  /* Honey — accent / CTA highlight */
+  --color-honey-200: #f3dcae;
+  --color-honey-300: #ecc27c;
+  --color-honey-400: #dfa854;
+  --color-honey-500: #cf9038;
+  --color-honey-600: #b27628;
+  --color-honey-700: #8f5d1d;
+
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-body: 'Karla Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-lift: 0 1px 2px rgb(43 37 30 / 0.06), 0 8px 24px -8px rgb(43 37 30 / 0.18);
+  --shadow-polaroid: 0 2px 4px rgb(43 37 30 / 0.08), 0 16px 32px -12px rgb(43 37 30 / 0.25);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  @apply bg-cream-50 font-body text-bark-900 antialiased;
+  font-variation-settings: 'wght' 440;
+}
+
+strong, b {
+  font-variation-settings: 'wght' 700;
+}
+
+/* Fraunces: lean into the soft, slightly wonky optical character */
+.font-display {
+  font-variation-settings: 'SOFT' 60, 'WONK' 1, 'opsz' 72;
+  letter-spacing: -0.015em;
+}
+
+::selection {
+  background: var(--color-honey-300);
+  color: var(--color-bark-900);
+}
+
+@layer components {
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3.5 text-base font-bold;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+  .btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+  .btn .btn-arrow {
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn:hover .btn-arrow {
+    transform: translateX(4px);
+  }
+  .btn-honey {
+    @apply bg-honey-400 text-bark-900;
+  }
+  .btn-honey:hover {
+    @apply bg-honey-300;
+  }
+  .btn-moss {
+    @apply bg-moss-700 text-cream-50;
+  }
+  .btn-moss:hover {
+    @apply bg-moss-600;
+  }
+  .btn-ghost-light {
+    @apply border border-cream-100/50 text-cream-50;
+  }
+  .btn-ghost-light:hover {
+    @apply border-cream-100 bg-cream-50/10;
+  }
+
+  /* ---------- Editorial helpers ---------- */
+  .eyebrow {
+    @apply text-[0.8rem] font-bold uppercase tracking-[0.22em];
+  }
+
+  /* Hand-drawn squiggle underline for accent words */
+  .squiggle {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8.5C20 3.5 38 3 60 6.5S102 9 118 4.5' fill='none' stroke='%23dfa854' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 0.32em;
+    padding-bottom: 0.18em;
+  }
+
+  /* Polaroid photo card */
+  .polaroid {
+    @apply rounded-sm bg-cream-50 p-3 pb-4;
+    box-shadow: var(--shadow-polaroid);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .polaroid:hover {
+    transform: rotate(0deg) translateY(-6px) scale(1.02) !important;
+  }
+
+  /* Subtle paper grain overlay (decorative) */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Paw bullet */
+  .paw-bullet::before {
+    content: '';
+    display: inline-block;
+    width: 0.85em;
+    height: 0.85em;
+    margin-right: 0.55em;
+    flex-shrink: 0;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cellipse cx='32' cy='30' rx='11' ry='14' transform='rotate(-18 32 30)'/%3E%3Cellipse cx='68' cy='30' rx='11' ry='14' transform='rotate(18 68 30)'/%3E%3Cellipse cx='14' cy='52' rx='10' ry='12' transform='rotate(-38 14 52)'/%3E%3Cellipse cx='86' cy='52' rx='10' ry='12' transform='rotate(38 86 52)'/%3E%3Cpath d='M50 48c14 0 25 12 25 24 0 9-7 15-15 15-4 0-7-2-10-2s-6 2-10 2c-8 0-15-6-15-15 0-12 11-24 25-24z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cellipse cx='32' cy='30' rx='11' ry='14' transform='rotate(-18 32 30)'/%3E%3Cellipse cx='68' cy='30' rx='11' ry='14' transform='rotate(18 68 30)'/%3E%3Cellipse cx='14' cy='52' rx='10' ry='12' transform='rotate(-38 14 52)'/%3E%3Cellipse cx='86' cy='52' rx='10' ry='12' transform='rotate(38 86 52)'/%3E%3Cpath d='M50 48c14 0 25 12 25 24 0 9-7 15-15 15-4 0-7-2-10-2s-6 2-10 2c-8 0-15-6-15-15 0-12 11-24 25-24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  /* Form fields */
+  .field {
+    @apply w-full rounded-xl border-2 border-cream-200 bg-white px-4 py-3 text-bark-900;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field:focus {
+    @apply border-moss-500 outline-none;
+    box-shadow: 0 0 0 4px rgb(112 135 87 / 0.15);
+  }
+  .field-label {
+    @apply mb-1.5 block text-sm font-bold text-bark-700;
+  }
+
+  /* Animated accordion */
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  details[open] .accordion-body {
+    grid-template-rows: 1fr;
+  }
+  .accordion-chevron {
+    transition: transform 0.3s ease;
+  }
+  details[open] .accordion-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Carousel drag affordance */
+  .drag-track {
+    cursor: grab;
+    scrollbar-width: none;
+  }
+  .drag-track::-webkit-scrollbar {
+    display: none;
+  }
+  .drag-track.dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+  }
+
+  /* Long-form blog post body (rendered markdown — no utility classes inside) */
+  .post-body {
+    @apply text-[1.0625rem] leading-relaxed text-bark-700;
+  }
+  .post-body h2 {
+    @apply mt-10 font-display text-2xl font-bold text-moss-800 sm:text-3xl;
+  }
+  .post-body h3 {
+    @apply mt-8 font-display text-xl font-bold text-moss-800 sm:text-2xl;
+  }
+  .post-body h4 {
+    @apply mt-6 font-display text-lg font-bold text-moss-700;
+  }
+  .post-body p {
+    @apply mt-5;
+  }
+  .post-body ul,
+  .post-body ol {
+    @apply mt-5 space-y-2.5 pl-6;
+  }
+  .post-body ul {
+    list-style: disc;
+  }
+  .post-body ol {
+    list-style: decimal;
+  }
+  .post-body li::marker {
+    color: var(--color-honey-600);
+  }
+  .post-body a {
+    @apply font-bold text-moss-700 underline decoration-honey-500 decoration-2 underline-offset-4;
+  }
+  .post-body a:hover {
+    @apply text-moss-800;
+  }
+  .post-body img {
+    @apply mt-8 h-auto w-full rounded-2xl shadow-[var(--shadow-polaroid)];
+  }
+  .post-body blockquote {
+    @apply mt-6 border-l-4 border-honey-500 pl-5 italic text-bark-700;
+  }
+  .post-body hr {
+    @apply mt-10 border-moss-200;
+  }
+  .post-body strong {
+    @apply text-bark-900;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn .btn-arrow,
+  .polaroid,
+  .accordion-body,
+  .accordion-chevron {
+    transition: none;
+  }
+  .animate-bounce {
+    animation: none;
+  }
+}

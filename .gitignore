@@ -1,0 +1,14 @@
+# dependencies (junctioned outside OneDrive to C:\dev\grooming-website-node_modules — see CLAUDE.md)
+node_modules/
+
+# build output
+dist/
+.astro/
+
+# verbatim harvest of the old WordPress site — NEVER commit (large; public repo)
+grooming-image-archive/
+
+# misc
+*.log
+.DS_Store
+Thumbs.db

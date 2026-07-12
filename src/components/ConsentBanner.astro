@@ -1,0 +1,69 @@
+---
+// Self-hosted Consent Mode v2 banner (~60 lines, no third-party CMP).
+// Defaults are set to 'denied' in Base.astro BEFORE GTM loads; this banner
+// only ever upgrades consent and persists the choice in localStorage.
+---
+
+<div
+  id="ft-consent-banner"
+  hidden
+  class="fixed inset-x-0 bottom-0 z-50 border-t border-cream-300 bg-cream-100 p-4 shadow-lg"
+>
+  <div class="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center">
+    <p class="flex-1 text-sm text-bark-700">
+      We use cookies to understand how the site is used and to measure our advertising. You can
+      say no — the site works either way.
+    </p>
+    <div class="flex shrink-0 gap-2">
+      <button
+        id="ft-consent-essential"
+        class="rounded-md border border-bark-500 px-4 py-2 text-sm text-bark-700 hover:bg-cream-200"
+        type="button">Essential only</button
+      >
+      <button
+        id="ft-consent-accept"
+        class="rounded-md bg-moss-700 px-4 py-2 text-sm font-semibold text-cream-50 hover:bg-moss-800"
+        type="button">Accept all</button
+      >
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = 'ft-consent';
+    var banner = document.getElementById('ft-consent-banner');
+    if (!banner) return;
+    try {
+      if (localStorage.getItem(KEY)) return; // already chosen — banner stays hidden
+    } catch (e) {}
+    banner.hidden = false;
+
+    function choose(consent) {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(consent));
+      } catch (e) {}
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('consent', 'update', consent);
+      banner.hidden = true;
+    }
+
+    document.getElementById('ft-consent-accept').addEventListener('click', function () {
+      choose({
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted',
+      });
+    });
+    document.getElementById('ft-consent-essential').addEventListener('click', function () {
+      choose({
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+      });
+    });
+  })();
+</script>

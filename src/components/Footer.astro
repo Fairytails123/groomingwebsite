@@ -1,0 +1,133 @@
+---
+import { business } from '../data/business';
+import ReviewsBadge from './ReviewsBadge.astro';
+const year = new Date().getFullYear();
+---
+
+<footer class="relative mt-24 bg-pine-950 text-cream-200">
+  <!-- Rolling-hill divider -->
+  <svg
+    class="absolute -top-px left-0 w-full -translate-y-full text-pine-950"
+    viewBox="0 0 1440 70"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    style="height: 70px;"
+  >
+    <path
+      d="M0 70 L0 48 C240 8 420 4 720 28 C1020 52 1240 18 1440 38 L1440 70 Z"
+      fill="currentColor"></path>
+  </svg>
+
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 pb-12 pt-16 sm:grid-cols-3">
+    <div>
+      <p class="font-display text-xl font-bold text-cream-50">The Fairy Tails Dog Grooming</p>
+      <address class="mt-3 text-sm not-italic leading-relaxed">
+        {business.address.line1}<br />
+        {business.address.town} {business.address.postcode}<br />
+        <span class="text-cream-200/70">On the edge of Alexandra Park</span>
+      </address>
+      <a
+        href={business.mapsUrl}
+        class="mt-3 inline-block text-sm font-bold text-honey-300 underline decoration-honey-600 underline-offset-4 hover:text-honey-200"
+      >
+        Find us on Google Maps
+      </a>
+      <p class="mt-4 text-sm">{business.hours.display}</p>
+    </div>
+    <div>
+      <p class="eyebrow text-honey-400">Talk to us</p>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        <li>
+          <a href={business.phones.main.tel} class="transition-colors hover:text-honey-300">
+            {business.phones.main.label}: <strong>{business.phones.main.display}</strong>
+          </a>
+        </li>
+        <li>
+          <a href={business.phones.mobile.whatsapp} class="transition-colors hover:text-honey-300">
+            WhatsApp: <strong>{business.phones.mobile.display}</strong>
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${business.emails.info}`} class="transition-colors hover:text-honey-300">
+            {business.emails.info}
+          </a>
+        </li>
+      </ul>
+      <ul class="mt-5 flex gap-5 text-sm font-bold">
+        <li>
+          <a href={business.socials.facebook} class="transition-colors hover:text-honey-300">Facebook</a>
+        </li>
+        <li>
+          <a href={business.socials.instagram} class="transition-colors hover:text-honey-300">Instagram</a>
+        </li>
+        <li>
+          <a href={business.socials.tiktok} class="transition-colors hover:text-honey-300">TikTok</a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow text-honey-400">Explore</p>
+      <!-- Two sub-columns, filled top-to-bottom. grid-rows-7 fits up to 14 links. -->
+      <ul class="mt-4 grid grid-flow-col grid-rows-7 gap-x-6 gap-y-2.5 text-sm">
+        <li>
+          <a href="/who-we-are/" class="transition-colors hover:text-honey-300">About us</a>
+        </li>
+        <li>
+          <a href="/services/" class="transition-colors hover:text-honey-300">Services</a>
+        </li>
+        <li>
+          <a href="/services/full-groom-price-list/" class="transition-colors hover:text-honey-300">Price list</a>
+        </li>
+        <li>
+          <a href="/services/haircut-lengths/" class="transition-colors hover:text-honey-300">Haircut lengths</a>
+        </li>
+        <li>
+          <a href="/services/teeth-cleaning/" class="transition-colors hover:text-honey-300">Teeth cleaning</a>
+        </li>
+        <li>
+          <a href="/services/doggy-massage/" class="transition-colors hover:text-honey-300">Doggy massage</a>
+        </li>
+        <li>
+          <a href="/services/homeless-dogs/" class="transition-colors hover:text-honey-300">Homeless dogs</a>
+        </li>
+        <li>
+          <a href="/services/frequently-asked-questions/" class="transition-colors hover:text-honey-300">FAQs</a>
+        </li>
+        <li>
+          <a href="/gallery/" class="transition-colors hover:text-honey-300">Gallery</a>
+        </li>
+        <li>
+          <a href="/blog/" class="transition-colors hover:text-honey-300">Blog</a>
+        </li>
+        <li>
+          <a href="/contact/" class="transition-colors hover:text-honey-300">Contact</a>
+        </li>
+        <li>
+          <a href="/terms-and-conditions/" class="transition-colors hover:text-honey-300">Terms and conditions</a>
+        </li>
+        <li>
+          <a href={business.sisterSite} class="transition-colors hover:text-honey-300">
+            The Fairy Tails K9 Centre
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Google reviews strip (the salon's social proof — 4.9★) -->
+  <div class="mx-auto max-w-6xl px-4 pb-10">
+    <div class="flex flex-col items-center gap-2 border-t border-pine-800 pt-8">
+      <ReviewsBadge align="center" />
+      <a
+        href={business.reviews.writeUrl}
+        class="mt-1 text-xs text-cream-200/70 underline decoration-cream-200/40 underline-offset-4 hover:text-cream-100"
+      >
+        Been in with your dog? Leave us a review
+      </a>
+    </div>
+  </div>
+
+  <div class="border-t border-pine-800 py-5 text-center text-xs text-cream-200/70">
+    <span class="paw-bullet inline-flex items-center">© {year} The Fairy Tails Dog Grooming · Part of The Fairy Tails K9 Centre</span>
+  </div>
+</footer>

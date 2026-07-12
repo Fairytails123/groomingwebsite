@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+
+// STAGE-1 STUB — the homepage is built LAST in the inside-out order
+// (WEBSITE-PLAN.md). Title/description are the harvested Yoast values so the
+// head is production-correct from day one; the body is a placeholder that
+// only ever appears on the noindexed preview.
+---
+
+<Base
+  title="Home - The Fairy Tails Dog Grooming"
+  description="Your friendly Hastings dog groomers that care for your dog as you would yourself. With free door to door service in the Hastings area!"
+  path="/"
+>
+  <section class="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-4 pt-28 text-center">
+    <p class="eyebrow text-honey-700">The Fairy Tails Dog Grooming</p>
+    <h1 class="mt-4 font-display text-4xl font-bold text-moss-900 sm:text-5xl">
+      A brand-new website is on its way
+    </h1>
+    <p class="mt-5 max-w-xl text-lg text-bark-700">
+      This is the build preview. The homepage ships last — every other page is
+      being rebuilt first, then this one ties them all together.
+    </p>
+  </section>
+</Base>
