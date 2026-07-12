@@ -1,0 +1,547 @@
+{
+  "_meta": {
+    "source": "Extracted from the harvested WordPress price-list page (grooming-image-archive/services__full-groom-price-list/page.html) + /services/ add-on blocks, 2026-07-12. Owner ruling: this page + /services/ add-ons are canonical; /services-2/ was stale and is retired.",
+    "disclaimers": [
+      "All prices are dependent on coat condition. Please note we charge extra for matting.",
+      "If your dog is a cross or mix, please select the breed they resemble the most."
+    ]
+  },
+  "fullGroom": {
+    "from": 25,
+    "breeds": [
+      {
+        "name": "Airedale (clip)",
+        "price": 45
+      },
+      {
+        "name": "Airedale (hand strip)",
+        "price": 65
+      },
+      {
+        "name": "Australian Labradoodle",
+        "price": 40
+      },
+      {
+        "name": "American Cocker Spaniel",
+        "price": 40
+      },
+      {
+        "name": "Basset Griffon Vendéen (small)",
+        "price": 35
+      },
+      {
+        "name": "Basset Griffon Vendéen (large)",
+        "price": 40
+      },
+      {
+        "name": "Bearded Collie",
+        "price": 40
+      },
+      {
+        "name": "Bedlington Terrier",
+        "price": 35
+      },
+      {
+        "name": "Bichon Frise",
+        "price": 40
+      },
+      {
+        "name": "Border Terrier (clip)",
+        "price": 35
+      },
+      {
+        "name": "Border Terrier (hand strip)",
+        "price": 55
+      },
+      {
+        "name": "Bouvier",
+        "price": 45
+      },
+      {
+        "name": "Briard",
+        "price": 50
+      },
+      {
+        "name": "Cairn Terrier",
+        "price": 35
+      },
+      {
+        "name": "Cavalier King Charles",
+        "price": 35
+      },
+      {
+        "name": "Chihuahua (long coat)",
+        "price": 30
+      },
+      {
+        "name": "Chinese Crested",
+        "price": 35
+      },
+      {
+        "name": "Cocker Spaniel (clip)",
+        "price": 40
+      },
+      {
+        "name": "Cocker Spaniel (hand strip)",
+        "price": 50
+      },
+      {
+        "name": "Corgi",
+        "price": 35
+      },
+      {
+        "name": "Dachshund (hand strip)",
+        "price": 45
+      },
+      {
+        "name": "Dachshund (long coat, clip)",
+        "price": 35
+      },
+      {
+        "name": "Dandi Dinmont Terrier",
+        "price": 35
+      },
+      {
+        "name": "Fox Terrier (clip)",
+        "price": 45
+      },
+      {
+        "name": "Fox Terrier (hand strip)",
+        "price": 55
+      },
+      {
+        "name": "Jack Russell (wire coat, clip)",
+        "price": 35
+      },
+      {
+        "name": "Jack Russell (hand strip)",
+        "price": 45
+      },
+      {
+        "name": "Lakeland Terrier (clip)",
+        "price": 40
+      },
+      {
+        "name": "Lakeland Terrier (hand strip)",
+        "price": 45
+      },
+      {
+        "name": "Lhasa Apso",
+        "price": 35
+      },
+      {
+        "name": "Maltese",
+        "price": 35
+      },
+      {
+        "name": "Norfolk Terrier",
+        "price": 35
+      },
+      {
+        "name": "Poodle (toy)",
+        "price": 40
+      },
+      {
+        "name": "Poodle (miniature)",
+        "price": 45
+      },
+      {
+        "name": "Poodle (standard)",
+        "price": 55
+      },
+      {
+        "name": "Schnauzer (miniature)",
+        "price": 40
+      },
+      {
+        "name": "Schnauzer (standard)",
+        "price": 45
+      },
+      {
+        "name": "Schnauzer (giant)",
+        "price": 55
+      },
+      {
+        "name": "Scottish Terrier",
+        "price": 35
+      },
+      {
+        "name": "Setter",
+        "price": 40
+      },
+      {
+        "name": "Shih Tzu",
+        "price": 35
+      },
+      {
+        "name": "Springer Spaniel (clip)",
+        "price": 40
+      },
+      {
+        "name": "Springer Spaniel (hand strip)",
+        "price": 50
+      },
+      {
+        "name": "Tibetan Terrier",
+        "price": 40
+      },
+      {
+        "name": "West Highland White",
+        "price": 40
+      },
+      {
+        "name": "Wheaten Terrier",
+        "price": 40
+      },
+      {
+        "name": "Yorkshire Terrier",
+        "price": 35
+      }
+    ],
+    "crossbreeds": [
+      {
+        "name": "Cavachon",
+        "price": 40
+      },
+      {
+        "name": "Cavapoo",
+        "price": 40
+      },
+      {
+        "name": "Cockerpoo",
+        "price": 40
+      },
+      {
+        "name": "Goldendoodle",
+        "price": 50
+      },
+      {
+        "name": "Labradoodle (lab type)",
+        "price": 40
+      },
+      {
+        "name": "Labradoodle (poodle type)",
+        "price": 50
+      },
+      {
+        "name": "Lurcher (long coat)",
+        "price": 40
+      },
+      {
+        "name": "Poochon",
+        "price": 40
+      },
+      {
+        "name": "Yorkiepoo",
+        "price": 35
+      },
+      {
+        "name": "Zuchon",
+        "price": 35
+      }
+    ],
+    "deShed": [
+      {
+        "name": "Afghan Hound",
+        "price": 55
+      },
+      {
+        "name": "Akita",
+        "price": 45
+      },
+      {
+        "name": "Alaskan Malamute",
+        "price": 50
+      },
+      {
+        "name": "American Bull Terrier",
+        "price": 35
+      },
+      {
+        "name": "Australian Shepherd",
+        "price": 45
+      },
+      {
+        "name": "Basset Hound",
+        "price": 35
+      },
+      {
+        "name": "Beagle",
+        "price": 35
+      },
+      {
+        "name": "Bernese Mountain Dog",
+        "price": 50
+      },
+      {
+        "name": "Blood Hound",
+        "price": 40
+      },
+      {
+        "name": "Border Collie (long coat)",
+        "price": 35
+      },
+      {
+        "name": "Border Collie (short coat)",
+        "price": 30
+      },
+      {
+        "name": "Boxer",
+        "price": 35
+      },
+      {
+        "name": "Bull Terrier",
+        "price": 35
+      },
+      {
+        "name": "Bulldog",
+        "price": 35
+      },
+      {
+        "name": "Bull Mastiff",
+        "price": 35
+      },
+      {
+        "name": "Chihuahua (smooth coat)",
+        "price": 25
+      },
+      {
+        "name": "Chow Chow",
+        "price": 50
+      },
+      {
+        "name": "Dachshund (smooth coat)",
+        "price": 30
+      },
+      {
+        "name": "Dalmatian",
+        "price": 35
+      },
+      {
+        "name": "Doberman",
+        "price": 40
+      },
+      {
+        "name": "Dogue de Bordeaux",
+        "price": 40
+      },
+      {
+        "name": "French Bulldog",
+        "price": 25
+      },
+      {
+        "name": "German Shepherd (long coat)",
+        "price": 50
+      },
+      {
+        "name": "German Shepherd (short coat)",
+        "price": 45
+      },
+      {
+        "name": "Golden Retriever",
+        "price": 40
+      },
+      {
+        "name": "Great Dane",
+        "price": 50
+      },
+      {
+        "name": "Greyhound",
+        "price": 25
+      },
+      {
+        "name": "Hungarian Viszla",
+        "price": 40
+      },
+      {
+        "name": "Jack Russell (smooth coat)",
+        "price": 25
+      },
+      {
+        "name": "Keeshond",
+        "price": 40
+      },
+      {
+        "name": "Labrador",
+        "price": 35
+      },
+      {
+        "name": "Leonberger",
+        "price": 50
+      },
+      {
+        "name": "Lurcher (short coat)",
+        "price": 35
+      },
+      {
+        "name": "Mastiff",
+        "price": 50
+      },
+      {
+        "name": "Newfoundland",
+        "price": 60
+      },
+      {
+        "name": "Old English Sheepdog",
+        "price": 50
+      },
+      {
+        "name": "Pomeranian",
+        "price": 35
+      },
+      {
+        "name": "Pug",
+        "price": 25
+      },
+      {
+        "name": "Rottweiler",
+        "price": 40
+      },
+      {
+        "name": "Rough Collie",
+        "price": 45
+      },
+      {
+        "name": "Saint Bernard",
+        "price": 50
+      },
+      {
+        "name": "Samoyed",
+        "price": 40
+      },
+      {
+        "name": "Shar Pei",
+        "price": 35
+      },
+      {
+        "name": "Sheltie",
+        "price": 40
+      },
+      {
+        "name": "Shiba Inu",
+        "price": 45
+      },
+      {
+        "name": "Siberian Husky",
+        "price": 45
+      },
+      {
+        "name": "Staffordshire Bull Terrier",
+        "price": 30
+      },
+      {
+        "name": "Weimaraner",
+        "price": 30
+      }
+    ],
+    "deShedNote": "All are full grooms which include a bath, brush, de-shed, sanitary trim and nail trim."
+  },
+  "bathBrushTidy": {
+    "sizes": [
+      {
+        "name": "Small – Medium (Shih Tzu, Cockerpoo etc.)",
+        "price": 25
+      },
+      {
+        "name": "Large (Standard Poodle, Giant Schnauzer etc.)",
+        "price": 30
+      }
+    ],
+    "note": "We do not offer free pick ups/drop offs for bath and brush appointments — please drop off and collect your doggy from our salon."
+  },
+  "subscription": {
+    "price": 25,
+    "unit": "per month, per dog",
+    "minTermMonths": 2,
+    "availability": "Available to our regular dog grooming dogs only.",
+    "includes": [
+      "Online code for bookings",
+      "Fit around your schedule",
+      "Booking reminders",
+      "Free pick ups and drop offs",
+      "One appointment per month: a 'Bath, Brush & Tidy' every other month, a 'Full Groom' every other month",
+      "Free nail clipping whenever required"
+    ]
+  },
+  "addOns": [
+    {
+      "name": "Bath, Brush and Tidy",
+      "priceDisplay": "£25 – £30",
+      "note": "Includes a bath, brush, sanitary trim, tidy up and nails (if the dog allows). See price list for details."
+    },
+    {
+      "name": "Hand stripping",
+      "priceDisplay": "£50+",
+      "note": "Removing dead hairs from the coat by hand – breed dependent, please enquire before booking in."
+    },
+    {
+      "name": "Teeth cleaning",
+      "price": 10,
+      "note": "Vibration free, sound free ultrasonic teeth cleaning – emmi®-pet oral hygiene. If booked with groom."
+    },
+    {
+      "name": "Intensive teeth cleaning",
+      "price": 70,
+      "note": "A series of 4 to 5 intensive treatments."
+    },
+    {
+      "name": "Doggy oil massage",
+      "price": 10,
+      "note": "A soothing massage for your dog. Ideal for itchy dogs or where the coat has been matted."
+    },
+    {
+      "name": "Mud bath",
+      "price": 10,
+      "note": "A natural boost for the coat that removes loose undercoat."
+    },
+    {
+      "name": "Nails",
+      "price": 10,
+      "note": "Additional nail clipping if the dog allows."
+    },
+    {
+      "name": "Puppy introduction",
+      "priceDisplay": "FREE",
+      "note": "Familiarisation visit with an introduction to different grooming routines for your pup."
+    },
+    {
+      "name": "Homeless dogs",
+      "priceDisplay": "FREE",
+      "note": "We offer FREE dog grooming for homeless dogs including pick up and drop-offs."
+    }
+  ],
+  "extraCharges": [
+    {
+      "name": "Matting — Level 1",
+      "price": 10
+    },
+    {
+      "name": "Matting — Level 2",
+      "price": 20
+    },
+    {
+      "name": "Matting — Level 3",
+      "price": 30
+    },
+    {
+      "name": "Sensitive dog",
+      "price": 15,
+      "note": "We may groom a sensitive dog at our discretion but if it is too much for the dog, we may not be able to groom."
+    },
+    {
+      "name": "Additional time",
+      "price": 15,
+      "note": "For dogs requiring more time for their groom, if suitable and at our discretion."
+    },
+    {
+      "name": "Flea de-flea charge",
+      "price": 10,
+      "note": "If your dog has fleas, or if we find any fleas on your dog, we charge £10 extra to cover the cost to de-flea the salon."
+    }
+  ],
+  "pickup": {
+    "areas": "Hastings and St Leonards",
+    "priceDisplay": "£1 per journey",
+    "note": "Pick up/drop offs are offered for full groom appointments only."
+  }
+}
