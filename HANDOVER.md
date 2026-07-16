@@ -50,6 +50,36 @@ info@ — safe to delete.
 checked on a phone for **responsiveness, visuals AND speed**. `npm run mobile-check` enforces the
 mechanical half; the other half is on Claude — **open `shots/<slug>-390.png` and look at it.**
 
+## 2026-07-16 (late night) — ✅ WEEKLY GOOGLE-REVIEWS ROTATION IS LIVE, END-TO-END VERIFIED
+
+**n8n workflow "Grooming Reviews Rotator" (`sXavTjxM4hzZ8bTo`) is ACTIVE**: every Monday 06:30
+London it fetches the salon's NEWEST Google reviews (legacy Place Details, `reviews_sort=newest`),
+keeps up to four 5★ excerpts (240-char word-boundary trim + ellipsis), and — only if they differ
+from the current file — commits `src/data/reviews-snapshot.json` to the repo, which auto-deploys
+the homepage. Fail-closed: ANY error (or <2 usable 5★ reviews) = no commit, the site keeps its
+current snapshot.
+
+**Live proof (all 2026-07-16):** a real run committed `2aff342` ("Rotate homepage Google review
+excerpts") → Pages deployed → the live homepage now shows a review from THIS WEEK (Sarah
+Griffiths; Sharon Terrell's even praises the pick-up service). A second run under the fully
+locked key returned `{skip:true, "reviews unchanged — no commit"}` — the idempotent path proven.
+Mobile gate re-run green on the rotated content. The TMP test workflow is deleted.
+
+**Credentials (both vaulted, both live-verified):**
+- Google Maps key: project `key-reference-454223-c7` (k.singh3184@gmail.com), restricted to
+  Places API + Places API (New) AND IP-locked to the VPS (187.124.214.24) — a non-VPS call is
+  provably denied. Vault: `_SECRETS/google-services.md`; n8n credential `eS143hAYMhsF9CHu`.
+- GitHub fine-grained PAT `n8n-grooming-reviews-rotator`: only `groomingwebsite`, Contents RW,
+  no expiry (deliberate — scope-minimal instead). Vault: `_SECRETS/github.md`; n8n credential
+  `hIufSEHQqW9OfTQx` (domain-locked to api.github.com).
+
+**Debugging lesson banked:** every Google error for over an hour — legacy "must enable Billing",
+(New) bare "caller does not have permission", even after `gcloud billing projects describe` said
+billing was enabled — was ONE root cause wearing masks: **the bank had DECLINED the Visa on
+Google's verification charge** (red banner + "Transaction declined" on billing → How you pay).
+When a fresh Google billing account misbehaves inconsistently, check the PAYMENT state before
+debugging keys, restrictions or propagation.
+
 ## 2026-07-16 (night, later) — owner interview round 2: four rulings applied
 
 Owner answered the queued questions: **"From £25" kept** (now interpolates `fullGroom.from`

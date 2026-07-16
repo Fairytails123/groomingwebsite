@@ -149,13 +149,12 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
       `src/data/reviews-snapshot.json`; (d) testimonial dog photos reused from the old homepage;
       (e) homepage share image = the /services/ group-of-dogs photo (the old one was a banned
       bubble composite).
-- [ ] 🔑 **WEEKLY REVIEW ROTATION — blocked on two credentials only the owner can create.**
-      Owner ruling: the Google excerpts should rotate weekly with fresh 5★ reviews. Design is
-      settled (n8n schedule → Google Places Details (`reviews_sort=newest`) → filter 5★ → commit
-      `src/data/reviews-snapshot.json` to the repo via GitHub API → Pages auto-deploys). Needs:
-      (1) a **Google Maps Platform API key** with Places API enabled (52 calls/yr — free tier);
-      (2) a **GitHub fine-grained PAT**, Contents read/write, scoped to
-      `Fairytails123/groomingwebsite` only. Until then the block shows the 2026-07-12 snapshot.
+- [x] ~~🔑 **WEEKLY REVIEW ROTATION**~~ — **LIVE 2026-07-16 (late night), end-to-end verified.**
+      n8n "Grooming Reviews Rotator" (`sXavTjxM4hzZ8bTo`, Mon 06:30) fetches the newest reviews,
+      keeps 4 five-star excerpts, commits `src/data/reviews-snapshot.json` only on change →
+      Pages auto-deploys. First real rotation committed `2aff342` the same night — the homepage
+      now shows reviews from that week. Credentials vaulted in `_SECRETS` (google-services.md,
+      github.md); full state + the declined-card debugging story in HANDOVER.
 - [ ] ⚑ **Replace `services/pickup.jpg`** (map naming Bexhill/Battle/Rye — not served) with a
       Hastings-centred map or a van/collection photo, at polish.
 
