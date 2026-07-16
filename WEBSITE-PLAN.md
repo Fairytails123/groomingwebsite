@@ -26,13 +26,13 @@ and mirror the date here).
 | `/who-we-are/` | **built** 2026-07-12 | Stage 2 |
 | `/contact/` | **built** 2026-07-12 | Stage 2 — form E2E verified via curl; on-page test pending |
 | `/terms-and-conditions/` | **built** 2026-07-12 | Stage 2 — legal copy verbatim |
-| `/services/` | planned | Stage 3 hub — add-ons from pricing.json |
-| `/services/full-groom-price-list/` | planned | Stage 3 — PriceTable + JS filter |
-| `/services/haircut-lengths/` | planned | Stage 3 — 6 clip lengths w/ photos |
-| `/services/teeth-cleaning/` | planned | Stage 3 — emmi-pet |
-| `/services/doggy-massage/` | planned | Stage 3 |
-| `/services/homeless-dogs/` | planned | Stage 3 |
-| `/services/frequently-asked-questions/` | planned | Stage 3 — 15 FAQs, `<details>` |
+| `/services/` | **built** 2026-07-16 | Stage 3 hub — add-ons/extras from pricing.json; Bruno video self-hosted |
+| `/services/full-groom-price-list/` | **built** 2026-07-16 | Stage 3 — 105 rows + breed filter (progressive enhancement) |
+| `/services/haircut-lengths/` | **built** 2026-07-16 | Stage 3 — 6 clip lengths w/ rescued photos |
+| `/services/teeth-cleaning/` | **built** 2026-07-16 | Stage 3 — emmi-pet |
+| `/services/doggy-massage/` | **built** 2026-07-16 | Stage 3 — 4 oils |
+| `/services/homeless-dogs/` | **built** 2026-07-16 | Stage 3 |
+| `/services/frequently-asked-questions/` | **built** 2026-07-16 | Stage 3 — 15 FAQs, `<details>` |
 | `/gallery/` | planned | Stage 4 — before/after polaroid grid |
 | `/blog/` | planned | Stage 4 |
 | `/why-dog-grooming-is-important/` | planned | Stage 4 — ROOT-level slug, orig date 17 Apr 2020 |
@@ -47,8 +47,10 @@ and mirror the date here).
   business.ts, 404, robots endpoint, stub homepage, Pages deploy, preview domain, noindex verified.
 - **Stage 2 — Utility** ✅ 2026-07-12: terms-and-conditions, contact (form E2E PASS), who-we-are.
   Owner eyeball pending.
-- **Stage 3 — Services cluster** (revenue/SEO core): services hub → price list → haircut-lengths
-  → teeth-cleaning → doggy-massage → homeless-dogs → FAQs.
+- **Stage 3 — Services cluster** ✅ 2026-07-16 (revenue/SEO core): all 7 pages built. Lighthouse
+  95–100 perf / 100 a11y / 100 SEO across the cluster. Gated by `npm run verify-stage3` (static
+  facts) + `npm run price-list-e2e` (browser: drives the filter, then re-loads with JS OFF and
+  asserts all 105 rows are visible by computed style).
 - **Stage 4 — Gallery + blog**: gallery grid → blog index + post.
 - **Stage 5 — Homepage + whole-site pass**: hero/teasers/reviews/subscription band; dist-wide
   link crawl, sitemap sanity, both-viewport sweep, full verify-urls.
@@ -57,10 +59,15 @@ Per-page definition of done = the 6 quality gates in CLAUDE.md.
 
 ## "Ready for switchover" gate
 
-- [ ] 15/15 pages `built`; `npm run verify-urls` 0 failures
+- [ ] 15/15 pages `built` (11/15 as of 2026-07-16 — `/`, `/gallery/`, `/blog/`,
+      `/why-dog-grooming-is-important/` remain); `npm run verify-urls` 0 failures
 - [ ] Per-page fact diff vs harvest signed off (prices, phones, hours, T&Cs verbatim)
-- [ ] Breed table rows == 105 (47+10+48) vs harvest; 10-breed spot check re-run; add-ons correct
-- [ ] 15 FAQs · 6 clip lengths · ~25 gallery pairs present
+- [x] Breed table rows == 105 (47+10+48) vs harvest; 10-breed spot check re-run; add-ons correct
+      — automated in `npm run verify-stage3`, which asserts it against the RENDERED table
+- [x] 15 FAQs · 6 clip lengths present — [ ] ~25 gallery pairs (Stage 4)
+- [ ] **`npm run verify-stage3` + `npm run price-list-e2e` green** (the second needs
+      `npx astro preview` running) — these encode the 2026-07-16 owner rulings and the
+      no-JS/crawler contract on the price list; a regression here is a silent revenue bug
 - [ ] Yoast titles/descriptions carried or deliberately improved (logged below)
 - [ ] Integrations clicked through ON the preview: JotForm opens · Stripe loads (NEVER complete)
       · EnquiryForm→n8n→email E2E · WhatsApp/tel/reviews links · GTM only after consent
@@ -83,9 +90,21 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 
 ## Open items
 
-- [ ] **Pickup price wording**: old homepage says "free door to door" for full grooms; the
-      canonical /services/ page says "£1 per journey" (Hastings & St Leonards) and /services-2/
-      said £5 for Bexhill/Battle/Rye. Owner to confirm final wording before /services/ ships.
+- [x] ~~**Pickup price wording**~~ — RESOLVED 2026-07-16, see the copy log below.
+- [ ] **"From £25" sets an expectation the price list can't meet.** All five £25 rows
+      (Chihuahua smooth, French Bulldog, Greyhound, Jack Russell smooth, Pug) are **de-shed**
+      breeds. The cheapest clipped/scissored full groom is £30 and the cheapest crossbreed is £35 —
+      so a Cockapoo owner reading "From £25" finds nothing under £40 for their dog. Not a
+      contradiction (it's true), but it's a bounce risk on the money page. Owner call: keep, or
+      say "from £25 (de-shed breeds) / £30 for a clipped groom"?
+- [ ] **Puppy groom £25 exists ONLY in the FAQ** — not in the price list, not in the /services/
+      add-ons, not in pricing.json. Distinct from the free "Puppy introduction". The FAQ page now
+      advertises a product nothing else on the site supports. Real service, or stale offer?
+- [ ] **/who-we-are/ drops the K9 Centre's "online shop"** and says "day school" where the harvest
+      says "day care". The shop was Adventure Dog, which is dead (see copy log), so dropping it is
+      probably right — but confirm "day school" vs "day care" is the real service name.
+- [ ] **`/gallery/` and `/blog/` 404 from the header nav and footer** until Stage 4. Expected during
+      the inside-out build; must not survive to switchover (verify-urls tracks both).
 - [ ] GitHub **account-level verified domain** for fairytailsdoggrooming.co.uk (Settings →
       Pages → Add a domain; TXT `_github-pages-challenge-Fairytails123`) — anti-takeover;
       needs the GitHub web UI (no REST API). Do before flip day.
@@ -110,6 +129,61 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - 2026-07-12 /who-we-are/: copy tightened per locked spec (all facts kept); old title
   "The Fairy Tails Dog Grooming - The Fairy Tails Dog Grooming" kept as-is for now — candidate
   for improvement at polish (it's a doubled site-name, weak SEO).
+
+### 2026-07-16 — Stage 3 owner rulings (the old site contradicted itself; these settle it)
+
+⚠️ **Never re-litigate these from the Yoast `article:modified_time` stamps.** The homepage,
+`/services/`, `/services-2/` and the price list all carry stamps inside one 7-minute window
+(16:47–16:53) on **the harvest date itself** — that is a migration re-save of the temporary
+Bluehost origin, **not** four content edits. `/services-2/` appears 39s "newer" than `/services/`
+purely as an artifact. Only the pre-2026 stamps (FAQ 2024, T&Cs 2023, who-we-are 2025-12,
+contact 2025-07) carry real signal.
+
+1. **Pick-up & drop-off = £2 PER JOURNEY** (£2 to collect + £2 to drop off = £4 round trip),
+   **Hastings and St Leonards**, full grooms and hand stripping only. This value appears **nowhere**
+   on the old site, which said four different things: homepage "at no extra cost", T&Cs "**Free**
+   pick up/drop off service", /services/ "£1 per journey", /services-2/ "£5 Bexhill/Battle/Rye".
+   **No out-of-area service** — Bexhill/Battle/Rye are not served at all.
+   Changed: `pricing.json` `pickup` (now the SINGLE source — `business.ts`'s duplicate `pickup`
+   object, which held a contradicting 5th variant, was **deleted**); T&Cs heading + body;
+   /who-we-are/ (its "fee-paid" hedge existed only because this was unresolved); the homepage stub's
+   meta description, which was shipping "With free door to door service in the Hastings area!".
+2. **Pick-up TIME WINDOWS — a new third set**, replacing both published versions:
+   morning collect **7:45–9:30** → home **12:45–13:30**; afternoon collect **12:45–13:45** → home
+   **15:30–16:45**. (The FAQ published 8:30–9:45/16:15–17:30; the T&Cs published 8:15–9:30/16:30–17:45,
+   whose 17:45 return was 15 min AFTER the 17:30 closing time.) Both pages now render them from
+   `pricing.json` so they cannot drift apart again.
+3. **Ear plucking — absolute "we never pluck"** (the FAQ's 2024 wording). The T&Cs' carve-out
+   "unless there are loose hairs that gently come away from the ear when rubbed" is **removed**.
+4. **Payment — invoicing is by prior arrangement only**, not a walk-up option. The T&Cs' flat "All
+   charges are payable before you leave the salon" now carries that exception; the FAQ's bare
+   "Invoice" bullet is reworded. (FAQ and T&Cs directly contradicted each other.)
+5. **Adventure Dog shop link DROPPED** from the FAQ. `adventure-dog.co.uk` is a dead Shopify domain
+   (`the-fairy-hut.myshopify.com`) — fails TLS, returns Shopify's 409 "domain not connected". The
+   answer is kept and reworded with no outbound link.
+6. **Hand stripping "£50+" → "£45+"**, and now DERIVED in `extract-prices.mjs` from the cheapest
+   `(hand strip)` row rather than typed. £50 was never the floor — the same canonical price list has
+   three hand-strip rows at £45 (Dachshund, Jack Russell, Lakeland Terrier).
+7. **Subscription perk "Free pick ups and drop offs" → "Pick ups and drop offs included."** Same
+   fact (it IS a real perk now pay-as-you-go is £2), but the word "free" sat on the same page as the
+   £2 price and read as a contradiction.
+8. **`bathBrushTidy.note`: "We do not offer ~~free~~ pick ups/drop offs for bath and brush"** — with
+   nothing free anywhere, "free" implied free pick-ups exist elsewhere. Bath-and-brush gets no
+   collection at any price.
+9. **Tick removal £5 added to `extraCharges`.** It was the one charge the old site mentioned in T&Cs
+   prose only, so it never reached the structured data.
+10. **Price list title improved** (pre-authorised by the "carried or deliberately improved" rule):
+    "The Fairy Tails Dog Grooming - The Fairy Tails Dog Grooming" → "Dog grooming price list - The
+    Fairy Tails Dog Grooming". The old title was a doubled site name with zero keyword value on the
+    site's highest commercial-intent page. Description kept verbatim.
+11. **Price list section order changed** (no facts moved): the three breed tables are now contiguous,
+    with bath/brush + subscription after them, so the breed filter runs over one uninterrupted block.
+    The old page interleaved them.
+12. **`business.ts` subscription comment corrected**: it described "alternating Full Groom / **Half
+    Groom**" with "**bus** pick-up" — neither term exists anywhere in the harvest ("bus" belongs to
+    the sister route-planner project). Standardised on **"Bath, Brush & Tidy"**, which is what both
+    the canonical /services/ page and the price-list table call it. (The price list also called it a
+    "Maintenance Groom" — three names for one product.)
 
 ## Polish backlog (post-switchover, indefinite)
 

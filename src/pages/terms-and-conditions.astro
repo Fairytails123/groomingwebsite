@@ -7,6 +7,7 @@
 import Base from '../layouts/Base.astro';
 import HillDivider from '../components/HillDivider.astro';
 import { business } from '../data/business';
+import pricing from '../data/pricing.json';
 ---
 
 <Base
@@ -95,9 +96,15 @@ import { business } from '../data/business';
         Whilst we are happy to work with nervous/timid dogs, these may incur extra charges due to
         the extra time and handling skills required.
       </p>
+      {/* DEVIATION, owner ruling 2026-07-16 (logged in WEBSITE-PLAN.md): the
+          harvested clause was an unqualified "All charges are payable before you
+          leave the salon with your pet", which flatly contradicted the newer FAQ
+          offering "Invoice" as a payment method. Invoicing is real but is by
+          arrangement only, so the clause now carries that exception. */}
       <p>
-        All charges are payable before you leave the salon with your pet. Payment can be made by
-        card, cash or BACS (payment before the appointment).
+        All charges are payable before you leave the salon with your pet, unless invoicing has been
+        arranged with us in advance. Payment can be made online when you book, or by card, cash or
+        bank transfer.
       </p>
 
       <h2>Cancellations and no shows</h2>
@@ -164,10 +171,15 @@ import { business } from '../data/business';
       <h2>Anal glands</h2>
       <p>We do NOT empty anal glands. It is a veterinary procedure.</p>
 
+      {/* DEVIATION, owner ruling 2026-07-16 (logged in WEBSITE-PLAN.md): the
+          harvested T&Cs opened "We do not pluck ears UNLESS there are loose hairs
+          that gently come away from the ear when rubbed" — a carve-out that
+          contradicted the newer FAQ's absolute "we will never pluck it". The
+          owner confirmed the absolute. The welfare reasoning below is verbatim. */}
       <h2>Ear plucking</h2>
       <p>
-        We do not pluck ears unless there are loose hairs that gently come away from the ear when
-        rubbed. Ear plucking is painful for the dog and can further irritate an ear canal already
+        We never pluck ears. We are happy to trim the outer hair, but we will not pluck the ear
+        canal. Ear plucking is painful for the dog and can further irritate an ear canal already
         prone to irritation and lead to ear problems that may not have occurred otherwise. Plucking
         the hair from a dog's ear canal leaves minute openings (essentially, tiny wounds) in the
         skin where bacteria can simply settle more quickly.
@@ -221,23 +233,31 @@ import { business } from '../data/business';
         charge of £5 will be added for their removal.
       </p>
 
-      <h2>Free pick up/drop off service</h2>
+      {/* DEVIATION from the otherwise-verbatim legal copy, owner rulings 2026-07-16
+          (both logged in WEBSITE-PLAN.md):
+          1. The harvested heading read "Free pick up/drop off service" and the body
+             "Our free pick up and drop off service". Pick-ups are NOT free — £2 per leg.
+          2. The harvested collection windows (8:15–9:30 / 12:45–13:45 → 16:30–17:45)
+             were stale AND the afternoon return overshot the 17:30 closing time. The
+             FAQ published a different set again; both pages now render the one set
+             held in pricing.json so they cannot drift apart a second time. */}
+      <h2>Pick up/drop off service</h2>
       <p>
-        Our free pick up and drop off service is available for dogs booked in for full grooms. We do
-        not offer pick ups/drop offs for bath and brush appointments.
+        Our pick up and drop off service is available for dogs booked in for full grooms and hand
+        stripping, in {pricing.pickup.areas}. Each journey is charged at £{pricing.pickup.journeyPrice}
+        {' '}— £{pricing.pickup.journeyPrice} to collect and £{pricing.pickup.journeyPrice} to drop off, so
+        {' '}£{pricing.pickup.roundTripPrice} for the round trip. We do not offer pick ups/drop offs for bath
+        and brush appointments.
       </p>
-      <p>
-        For morning appointments, we offer collections between 8:15 and 9:30. We will then return
-        your dog around midday, usually between 12:45 and 13:30.
-      </p>
-      <p>
-        For afternoon appointments, we offer collections between 12:45 and 13:45. We will then
-        return your dog late afternoon, usually between 16:30 and 17:45.
-      </p>
-      <p>
-        Please note: we recommend very nervous or sensitive dogs be dropped off to us at the salon
-        and collected by the owner.
-      </p>
+      {
+        pricing.pickup.windows.map((w) => (
+          <p>
+            For {w.appointment.toLowerCase()}, we offer collections between {w.collect}. We will then
+            return your dog between {w.home}.
+          </p>
+        ))
+      }
+      <p>Please note: {pricing.pickup.nervousNote.charAt(0).toLowerCase() + pricing.pickup.nervousNote.slice(1)}</p>
 
       <p><strong>We reserve the right to change any part of our terms and conditions policy at any time.</strong></p>
 

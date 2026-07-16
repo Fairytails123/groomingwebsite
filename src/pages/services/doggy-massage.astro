@@ -1,0 +1,142 @@
+---
+// Legacy URL preserved: /services/doggy-massage/ .
+// Source: grooming-image-archive/services__doggy-massage/copy.md — the four oils
+// and their benefit bullets are the harvested copy verbatim. Price from
+// pricing.json so it matches the /services/ add-on card.
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import HillDivider from '../../components/HillDivider.astro';
+import { business } from '../../data/business';
+import pricing from '../../data/pricing.json';
+import bubble from '../../assets/pages/doggy-massage/massage-bubble.png';
+import argan from '../../assets/pages/doggy-massage/argan.jpg';
+import jojoba from '../../assets/pages/doggy-massage/jojoba.jpg';
+import aloe from '../../assets/pages/doggy-massage/aloe-vera.jpg';
+import teaTree from '../../assets/pages/doggy-massage/tea-tree.jpg';
+
+const massage = pricing.addOns.find((a) => a.name === 'Doggy oil massage');
+
+const oils = [
+  {
+    name: 'Organic Argan Oil',
+    image: argan,
+    alt: 'A bottle of organic argan oil',
+    benefits: ['Moisturises skin', 'Treats a number of skin conditions', 'Improves coat appearance', 'Restores damaged hair'],
+  },
+  {
+    name: 'Natural Jojoba Oil',
+    image: jojoba,
+    alt: 'A bottle of natural jojoba oil',
+    benefits: ['Reduces itchiness', 'Promotes a silky and shiny coat', 'Reduces matting', 'Helps dry skin'],
+  },
+  {
+    name: 'Aloe Vera Oil',
+    image: aloe,
+    alt: 'A bottle of aloe vera oil',
+    benefits: ['Antibacterial properties', 'Accelerated skin healing', 'Great for sensitive skin', 'Excellent healing properties'],
+  },
+  {
+    name: 'Tea Tree Oil',
+    image: teaTree,
+    alt: 'A bottle of tea tree oil',
+    benefits: ['Antiseptic', 'Helps reduce itchiness', 'Excellent for sensitive skin', 'Natural deodorant'],
+  },
+];
+---
+
+<Base
+  title="Doggy massage - The Fairy Tails Dog Grooming"
+  description="If your dog is itchy, keeps biting its fur or has had matting, why not try a soothing dog massage for your fur baby."
+  path="/services/doggy-massage/"
+>
+  <article data-page="doggy-massage">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">£{massage.price} with your groom</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          A soothing doggy oil massage
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          For the itchy, the fur-biters, and the dogs whose coats have just come through matting.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <section class="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:pt-14">
+      <div class="grid items-center gap-10 md:grid-cols-2">
+        <div>
+          <p class="eyebrow text-honey-700">Why bother?</p>
+          <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+            You'll see the difference
+          </h2>
+          <p class="mt-4 leading-relaxed text-bark-700">
+            If your dog is itchy, keeps biting its fur or has had matting, a massage is worth a try.
+            You'll notice the difference in the coat, the shine, the matting and the itchiness.
+          </p>
+          <p class="mt-3 leading-relaxed text-bark-700">
+            If your dog has had matting, an oil massage during the groom helps the healing process
+            and gives your fur baby some comfort while the skin recovers.
+          </p>
+        </div>
+        <figure class="polaroid">
+          <Image
+            src={bubble}
+            alt="A dog enjoying an oil massage during a groom"
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading="eager"
+          />
+        </figure>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 pt-14">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow text-honey-700">Natural oils</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">Take your pick</h2>
+        <p class="mx-auto mt-4 max-w-xl leading-relaxed text-bark-700">
+          We use natural, cold-pressed oils from reputable sources. Choose whichever suits your
+          doggy best — or ask us and we'll suggest one for their skin.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          oils.map((oil) => (
+            <article class="rounded-3xl bg-cream-100 p-6 text-center">
+              <Image
+                src={oil.image}
+                alt={oil.alt}
+                class="mx-auto h-28 w-28 rounded-full object-cover"
+                widths={[112, 224]}
+                sizes="112px"
+                loading="lazy"
+              />
+              <h3 class="mt-4 font-display text-lg font-bold text-moss-900">{oil.name}</h3>
+              <ul class="mt-3 space-y-1.5 text-left text-sm text-bark-600">
+                {oil.benefits.map((b) => (
+                  <li class="paw-bullet flex items-start">{b}</li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-16 text-center">
+      <div class="rounded-3xl bg-cream-100 px-6 py-12">
+        <h2 class="font-display text-3xl font-bold text-moss-900">Add one to your groom</h2>
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+          Add a doggy oil massage when you book online for £{massage.price}, or contact us if you'd
+          like to talk it through first.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+          <a href="/contact/" class="btn btn-moss">Ask us first</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>

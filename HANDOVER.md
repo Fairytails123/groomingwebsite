@@ -2,26 +2,25 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
-## ⏸️ CURRENT STATE (paused 2026-07-12 evening)
+## ⏸️ CURRENT STATE (2026-07-16)
 
-**Stages 0–2 are DONE and deployed.** Preview live at
-**https://preview.fairytailsdoggrooming.co.uk** (HTTPS enforced, noindexed; old WordPress
-untouched). Built + gated: shell, `/terms-and-conditions/`, `/contact/`, `/who-we-are/`,
-3 redirect stubs, 404. verify-urls: 0 failures. Lighthouse 98–100/100/100 across the board.
+**Stages 0–3 are DONE.** Preview: **https://preview.fairytailsdoggrooming.co.uk** (HTTPS
+enforced, noindexed; old WordPress untouched). **11 of 15 pages built.** Remaining: `/`
+(homepage, ships last), `/gallery/`, `/blog/`, `/why-dog-grooming-is-important/`.
+verify-urls: 0 failures. Lighthouse across the Stage 3 cluster: 95–100 perf / 100 a11y / 100 SEO.
 
-**Waiting on the OWNER (blocks parts of Stage 3):**
-1. Eyeball the 3 pages on the preview URL — phone AND desktop.
-2. **Pickup pricing ruling** — old site contradicts itself: "free door-to-door for full
-   grooms" (homepage/T&Cs/price-list) vs "£1 per journey" (/services/) vs "£5
-   Bexhill/Battle/Rye" (/services-2/). Blocks the `/services/` hub page.
-3. Who-we-are photo: the old page's image looks like the K9 Centre BARN, not the town
-   salon — keep or replace?
+**Waiting on the OWNER:**
+1. **Eyeball the preview — phone AND desktop.** Now 10 real pages, not 3.
+2. **Who-we-are photo** — the old page's image looks like the K9 Centre BARN, not the town
+   salon. Keep or replace? (Unchanged from 2026-07-12.)
+3. Three new judgement calls from the Stage 3 fact audit — see WEBSITE-PLAN "Open items":
+   the **"From £25"** claim only holds via de-shed breeds (cheapest clipped groom is £30, cheapest
+   crossbreed £35); the **£25 puppy groom** exists only in the FAQ and on no other page; and
+   /who-we-are/ says "day school" where the harvest says "day care" + an online shop.
 
-**Next build work (Stage 3 — services cluster, inside-out):** the sub-pages NOT blocked by
-the pickup ruling can go first: `/services/full-groom-price-list/` (PriceTable + JS filter
-from pricing.json), `/services/haircut-lengths/`, `/services/teeth-cleaning/`,
-`/services/doggy-massage/`, `/services/homeless-dogs/`, `/services/frequently-asked-questions/`;
-the `/services/` hub LAST, after the ruling. Then Stage 4 (gallery + blog), Stage 5 (homepage).
+**Next build work:** Stage 4 (gallery grid + blog index + the root-level blog post), then
+Stage 5 (homepage + whole-site pass). ⚠️ `/gallery/` and `/blog/` are linked from the header
+nav and footer and **404 today** — Stage 4 closes that.
 
 **Also pending (needs a browser session with the owner):** GSC Domain property + DNS-TXT
 verification and baseline export; GitHub account-level verified domain
@@ -30,6 +29,58 @@ verification and baseline export; GitHub account-level verified domain
 
 **Housekeeping:** 2 TEST rows in the `grooming_enquiries` data table + 2 TEST emails at
 info@ — safe to delete.
+
+## 2026-07-16 — Stage 3 shipped: the whole services cluster (7 pages)
+
+**Built:** `/services/` hub, `/services/full-groom-price-list/`, `/services/haircut-lengths/`,
+`/services/teeth-cleaning/`, `/services/doggy-massage/`, `/services/homeless-dogs/`,
+`/services/frequently-asked-questions/`. New components: `PriceTable.astro`, `Faq.astro`.
+
+**The real story of this stage was the FACTS, not the pages.** A cross-page audit of the harvest
+found the old site contradicting itself in ~9 places. Five owner rulings settled it (all recorded
+in WEBSITE-PLAN's copy log — read that before touching any price):
+- **Pick-up = £2 per journey** (£2 each leg, £4 round trip), **Hastings and St Leonards**, full
+  grooms + hand stripping only, **no out-of-area**. The old site said *four* different things and
+  this value matched none of them. `business.ts`'s duplicate `pickup` object (a contradicting 5th
+  variant) is **deleted** — `pricing.json` is now the single source.
+- **New pick-up time windows** (7:45–9:30 → 12:45–13:30 / 12:45–13:45 → 15:30–16:45), replacing
+  two different published sets. Both pages render them from data now.
+- **Ear plucking**: absolute "we never pluck". **Payment**: invoicing by prior arrangement only.
+- **Adventure Dog shop link dropped** — the domain is dead (Shopify 409 / TLS failure).
+
+**⚠️ TRAP FOR THE NEXT SESSION — do NOT settle price disputes with the Yoast modified_time
+stamps.** The homepage, /services/, /services-2/ and the price list all carry stamps inside one
+7-minute window on the harvest date — that's a migration re-save of the Bluehost origin, not four
+edits. I initially misread it as a real edit session; it isn't. `/services-2/` looks 39s "newer"
+than `/services/` as a pure artifact, which would "prove" the retired page's £5 nails over the
+canonical £10. Only pre-2026 stamps carry signal.
+
+**Also fixed:** the homepage stub was shipping a `<meta name="description">` advertising "**free**
+door to door service" — live in dist, and it would have gone to Google at switchover.
+Hand-stripping's advertised "£50+" floor was contradicted by three £45 rows in its own price
+table; it's now **derived** from the table (`£45+`) so it can't drift again. Tick removal £5 (T&Cs
+prose only) added to structured data.
+
+**Bruno video rescued and shipped.** `/services/` embedded a self-hosted 20.6 MB MP4 on the
+WordPress origin we're replacing — the Stage-0 harvest only took images, so it was days from
+vanishing. Now at `public/media/brunos-groom.mp4`, `preload="none"` + a real poster frame, so it
+costs nothing until played (/services/ still scores 95 perf). Poster extracted via
+`npm run video-poster` — **there's no ffmpeg on this box**, so it decodes the frame in real Chrome
+(Playwright's bundled Chromium has no H.264 and a file:// video won't load from about:blank —
+both gotchas are documented in the script).
+
+**New gates (wired into package.json):**
+- `npm run verify-stage3` — static: asserts all 105 rows render, 0 hidden at t=0, a 10-breed spot
+  check against the RENDERED table, and that no banned wording ("free pick", "£1 per journey",
+  "£50+", stale windows, out-of-area towns) reappears on any built page.
+- `npm run price-list-e2e` — browser: drives the breed filter, then reloads with **JS disabled**
+  and asserts all 105 rows are visible **by computed style**. This is the guard against the
+  reveal bug that cost the main site 71% of a page's clicks.
+
+**Gates run:** verify-urls 0 failures · Lighthouse 95–100/100/100 on all 7 + the 2 amended pages ·
+dual-viewport 1440/390 sweeps · reduced-motion pass **with a negative control** (motion suppressed
+under `reduce`, still present under `no-preference` — colour/shadow fades deliberately left alone,
+they aren't motion).
 
 ## 2026-07-12 (later) — Stage 2 shipped: T&Cs, Contact, Who-we-are
 

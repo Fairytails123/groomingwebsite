@@ -1,0 +1,60 @@
+---
+// One question/answer row for /services/frequently-asked-questions/.
+//
+// Native <details>/<summary> — deliberately NOT a JS accordion. Keyboard and
+// screen-reader behaviour comes free, it works with JS disabled, and the answer
+// text is real HTML in the document rather than something a script reveals. The
+// open/close animation is the shared .accordion-body grid trick from global.css,
+// which is purely decorative and already respects prefers-reduced-motion.
+interface Props {
+  /** The question. Rendered inside <summary> — keep it a plain string. */
+  q: string;
+}
+const { q } = Astro.props;
+---
+
+<details class="faq group">
+  <summary
+    class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-display text-lg font-bold text-moss-900"
+  >
+    <span>{q}</span>
+    <span
+      class="accordion-chevron flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cream-100 text-moss-700"
+      aria-hidden="true"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+    </span>
+  </summary>
+  <div class="accordion-body">
+    <div class="overflow-hidden">
+      <div class="post-body pb-5 pr-12">
+        <slot />
+      </div>
+    </div>
+  </div>
+</details>
+
+<style>
+  /* Kill the default disclosure triangle (Safari needs the -webkit rule). */
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq summary::marker {
+    content: '';
+  }
+  .faq summary:hover {
+    color: var(--color-moss-700);
+  }
+  .faq summary:focus-visible {
+    outline: 2px solid var(--color-moss-500);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  /* The answers are already spaced by .post-body's p { margin-top }, so the
+     first paragraph must not double up against the summary. */
+  .faq .post-body > :global(p:first-child) {
+    margin-top: 0;
+  }
+</style>

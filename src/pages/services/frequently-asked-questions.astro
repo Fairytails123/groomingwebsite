@@ -1,0 +1,244 @@
+---
+// Legacy URL preserved: /services/frequently-asked-questions/ .
+// Source: grooming-image-archive/services__frequently-asked-questions/copy.md —
+// 15 questions (the harvest has 16 ##### headings; the 16th is the closing
+// "can't find what you need?" CTA, rendered as the CTA block at the foot).
+//
+// FOUR OWNER RULINGS 2026-07-16 land on this page (all logged in WEBSITE-PLAN.md).
+// The old FAQ and the old T&Cs contradicted each other on three of them; both
+// pages now say the same thing:
+//   1. Pick-up windows — a NEW third set, replacing the FAQ's (2024) and the
+//      T&Cs' (2023). Rendered from pricing.json so they cannot drift again.
+//   2. Ear plucking — the FAQ's absolute "we will never pluck" wins; the T&Cs'
+//      "unless loose hairs come away" carve-out is gone.
+//   3. Payment — "Invoice" is real but by arrangement only, not a walk-up option.
+//   4. The "Adventure Dog website" shop link is DROPPED — adventure-dog.co.uk is
+//      a dead Shopify domain (fails TLS, returns Shopify's 409 "domain not
+//      connected"). The answer stays, without an outbound link.
+import Base from '../../layouts/Base.astro';
+import HillDivider from '../../components/HillDivider.astro';
+import Faq from '../../components/Faq.astro';
+import { business } from '../../data/business';
+import pricing from '../../data/pricing.json';
+
+const puppyGroomPrice = 25;
+---
+
+<Base
+  title="FAQs - The Fairy Tails Dog Grooming"
+  description="Here are some frequently asked questions that many of our lovely clients have asked over the years to help you when booking your groom."
+  path="/services/frequently-asked-questions/"
+>
+  <article data-page="faqs">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">Before you book</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Frequently asked questions
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          The things our clients have asked us over the years — on grooming, and on keeping your dog
+          in good condition at home between appointments.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <div class="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:pt-14">
+      <div class="divide-y divide-cream-200 border-y border-cream-200">
+        <Faq q="How often should I bring my dog in for grooming?">
+          <p>
+            Most dogs do best with a groom every 6–8 weeks. It varies with the breed and coat length
+            of your pooch — some breeds need more frequent grooms. You can also book a bath, brush
+            and tidy up between grooms, which keeps the coat in condition and limits matting.
+          </p>
+        </Faq>
+
+        <Faq q="How long will my dog's grooming appointment take?">
+          <p>
+            It varies a lot with your dog's size, coat condition, health, age, style and
+            temperament. As a general guide, small to medium breeds take 1.5–2 hours and large
+            breeds 2.5–3 hours. We'll text you 30 minutes before your dog is ready to collect.
+          </p>
+        </Faq>
+
+        <Faq q="How do I keep my dog tangle free at home?">
+          <p>
+            Between appointments it's important to brush your pooch regularly, so the coat doesn't
+            become matted and uncomfortable. We recommend brushing at least every other day, using a
+            slicker or pin brush and a metal comb.
+          </p>
+        </Faq>
+
+        <Faq q="Will you give my dog treats and water on their visit?">
+          <p>
+            There's fresh water available for every dog visiting the salon, and we have fresh chicken
+            we can give your dog as a small treat. We'll always ask your permission first — we know
+            some dogs have allergies or are on strict diets.
+          </p>
+        </Faq>
+
+        <Faq q="My dog has become matted. Can you keep it fluffy?">
+          <p>
+            If your dog has a few knots and tangles, we're happy to brush or scissor them out. But if
+            the knots are more substantial over the body and the hair has developed matting, the
+            kindest and safest thing is to give your dog a fresh start by clipping the mattes away.
+            That may mean a shorter cut — but the great thing is hair grows back. With regular
+            at-home brushing we can work towards the look you want.
+          </p>
+          <p>
+            We'll always ask your permission before shaving a coat short, either when you drop your
+            dog off or by calling you before we proceed.
+          </p>
+          <p>
+            Please note we charge extra for grooming matted dogs, for the additional time needed to
+            remove the mattes safely and the wear and tear on our tools.
+          </p>
+        </Faq>
+
+        <Faq q="I've selected pick up and drop off. When will my dog be collected and dropped home?">
+          {
+            pricing.pickup.windows.map((w) => (
+              <p>
+                <strong>{w.appointment}:</strong> we collect between {w.collect}, and return your dog
+                between {w.home}.
+              </p>
+            ))
+          }
+          <p>
+            Pick ups and drop offs run across {pricing.pickup.areas} and are charged at
+            £{pricing.pickup.journeyPrice} per journey — £{pricing.pickup.journeyPrice} to collect and
+            £{pricing.pickup.journeyPrice} to drop off, so £{pricing.pickup.roundTripPrice} for the round trip. They're
+            available for full grooms and hand stripping only.
+          </p>
+          <p>Please note: {pricing.pickup.nervousNote.charAt(0).toLowerCase() + pricing.pickup.nervousNote.slice(1)}</p>
+        </Faq>
+
+        <Faq q="What if I need to cancel my appointment?">
+          <p>
+            We understand the unforeseen happens and you may need to cancel or re-schedule. Please
+            call us on
+            <a href={business.phones.mobile.tel}>{business.phones.mobile.display}</a> with as much
+            notice as possible — preferably at least 24 hours.
+          </p>
+        </Faq>
+
+        <Faq q="Can I purchase products from you to use at home?">
+          <p>
+            Yes — just ask us at your dog's next appointment. We're happy to recommend the products
+            we use, and to point you at what will actually help your dog's coat between grooms rather
+            than whatever's on offer.
+          </p>
+        </Faq>
+
+        <Faq q="When should professional grooming start for a puppy?">
+          <p>
+            All puppies must be fully vaccinated before their first appointment. The younger a puppy
+            is carefully introduced to the new sights, sounds and smells of a grooming salon, the
+            more confident they'll be — which makes for a far better grooming experience for them.
+          </p>
+          <p>
+            We offer <strong>free puppy introduction sessions</strong> for a first visit: they meet
+            the salon and the staff, have a good sniff about, get introduced to the grooming table,
+            have a brush, nails clipped if needed, lots of cuddles and — with your permission — a
+            treat.
+          </p>
+          <p>
+            After that you can book a puppy groom (£{puppyGroomPrice}), which includes all of the
+            above plus a bath, hygiene trim, paw pad shave and a tidy up around the feet and face.
+            Following grooms can be booked as a full groom from then on.
+          </p>
+        </Faq>
+
+        <Faq q="Can I stay and watch whilst my dog is being groomed?">
+          <p>
+            For your dog's safety we need their full attention. Most dogs become distracted by their
+            owner being there and wiggle about trying to get close to them, which makes it unsafe for
+            both dog and groomer. It's best to drop your pooch off at their appointment time and come
+            back once they're finished.
+          </p>
+          <p>
+            We're very happy to show you around the salon so you can see where your pooch will be
+            groomed — <a href="/contact/">contact us</a> and we'll find a good time. And you're
+            welcome to call at any point during the appointment to see how they're getting on.
+          </p>
+        </Faq>
+
+        <Faq q="Do you use cage dryers?">
+          <p>
+            No. Every pooch is dried by hand using a stand dryer, which lets us control the velocity
+            and the heat. We use stand dryers as a safety and wellbeing precaution, and for a more
+            one-to-one experience for your dog.
+          </p>
+        </Faq>
+
+        <Faq q="How often does my dog need its nails trimmed?">
+          <p>
+            At least once a month to keep them at a sensible length. If they're excessively long we
+            recommend trimming weekly, to encourage the quick (the nail vein) to recede. You don't
+            need a specific appointment for nail trimming — just call us on the day and we'll agree a
+            time for you to come up.
+          </p>
+        </Faq>
+
+        <Faq q="My dog can be aggressive when being groomed. Will you still take it on?">
+          <p>
+            Absolutely. Our team is well trained in handling sensitive dogs and has plenty of
+            experience with it. Grooming is something every dog needs, so we welcome all
+            temperaments and work to make it as stress-free as possible. If you know your dog is
+            sensitive about grooming, please say so when you book so the team are ready for them.
+          </p>
+          <p>
+            Please note we charge extra for grooming sensitive dogs, for the additional time needed
+            to keep both the dog and the groomer safe.
+          </p>
+          <p>
+            We'll call you if there are any issues during the groom. It's very rare to find an
+            ungroomable dog — but if we hit a serious problem that makes it impossible to proceed,
+            we'll call and agree a solution with you.
+          </p>
+        </Faq>
+
+        <Faq q="Does a groom include emptying anal glands and ear plucking?">
+          <p>Sorry — we don't offer either.</p>
+          <p>
+            Emptying anal glands is classed as a veterinary procedure. Many dogs' anal glands empty
+            naturally, but if your dog does need it done manually, we'd advise a vet.
+          </p>
+          <p>
+            Ear plucking is an invasive procedure which can be unnecessary and painful for dogs. We
+            can trim the outer hair, but we will never pluck it. If you think your dog needs its ears
+            plucked, we'd advise a vet.
+          </p>
+        </Faq>
+
+        <Faq q="How do I pay for my appointment?">
+          <p>You can pay:</p>
+          <ul>
+            <li>Online when you make the booking</li>
+            <li>By cash</li>
+            <li>By card</li>
+            <li>By bank transfer</li>
+          </ul>
+          <p>
+            Payment is due before you leave the salon with your dog. If you need to be invoiced
+            instead, that can be arranged with us in advance — just ask.
+          </p>
+        </Faq>
+      </div>
+
+      <div class="mt-12 rounded-3xl bg-cream-100 px-6 py-10 text-center">
+        <h2 class="font-display text-2xl font-bold text-moss-900">Can't find what you're after?</h2>
+        <p class="mx-auto mt-3 max-w-md leading-relaxed text-bark-700">
+          No problem — call us on
+          <a href={business.phones.mobile.tel} class="font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">{business.phones.mobile.display}</a>
+          or send us a message. We're always happy to help.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href="/contact/" class="btn btn-moss">Contact us</a>
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+        </div>
+      </div>
+    </div>
+  </article>
+</Base>

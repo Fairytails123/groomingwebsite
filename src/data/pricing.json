@@ -447,7 +447,7 @@
         "price": 30
       }
     ],
-    "note": "We do not offer free pick ups/drop offs for bath and brush appointments — please drop off and collect your doggy from our salon."
+    "note": "We do not offer pick ups/drop offs for bath and brush appointments — please drop off and collect your doggy from our salon."
   },
   "subscription": {
     "price": 25,
@@ -458,7 +458,7 @@
       "Online code for bookings",
       "Fit around your schedule",
       "Booking reminders",
-      "Free pick ups and drop offs",
+      "Pick ups and drop offs included",
       "One appointment per month: a 'Bath, Brush & Tidy' every other month, a 'Full Groom' every other month",
       "Free nail clipping whenever required"
     ]
@@ -471,7 +471,7 @@
     },
     {
       "name": "Hand stripping",
-      "priceDisplay": "£50+",
+      "priceDisplay": "£45+",
       "note": "Removing dead hairs from the coat by hand – breed dependent, please enquire before booking in."
     },
     {
@@ -537,11 +537,31 @@
       "name": "Flea de-flea charge",
       "price": 10,
       "note": "If your dog has fleas, or if we find any fleas on your dog, we charge £10 extra to cover the cost to de-flea the salon."
+    },
+    {
+      "name": "Tick removal",
+      "price": 5,
+      "note": "If ticks are found, an additional £5 is added for their removal."
     }
   ],
   "pickup": {
     "areas": "Hastings and St Leonards",
-    "priceDisplay": "£1 per journey",
-    "note": "Pick up/drop offs are offered for full groom appointments only."
+    "priceDisplay": "£2 per journey",
+    "journeyPrice": 2,
+    "roundTripPrice": 4,
+    "note": "Available for full grooms and hand stripping, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.",
+    "windows": [
+      {
+        "appointment": "Morning appointments",
+        "collect": "7:45 – 9:30",
+        "home": "12:45 – 13:30"
+      },
+      {
+        "appointment": "Afternoon appointments",
+        "collect": "12:45 – 13:45",
+        "home": "15:30 – 16:45"
+      }
+    ],
+    "nervousNote": "We recommend very nervous or sensitive dogs be dropped off to us at the salon and collected by the owner."
   }
 }

@@ -23,13 +23,13 @@ const MANIFEST = [
   // ---- rebuilt pages (final 200s), 1:1 with the old WordPress URLs ----
   { path: '/', type: 'page', status: 'planned' }, // homepage — LAST in the inside-out order
   { path: '/who-we-are/', type: 'page', status: 'built' }, // built 2026-07-12
-  { path: '/services/', type: 'page', status: 'planned' },
-  { path: '/services/full-groom-price-list/', type: 'page', status: 'planned' },
-  { path: '/services/haircut-lengths/', type: 'page', status: 'planned' },
-  { path: '/services/teeth-cleaning/', type: 'page', status: 'planned' },
-  { path: '/services/doggy-massage/', type: 'page', status: 'planned' },
-  { path: '/services/homeless-dogs/', type: 'page', status: 'planned' },
-  { path: '/services/frequently-asked-questions/', type: 'page', status: 'planned' },
+  { path: '/services/', type: 'page', status: 'built' }, // built 2026-07-16
+  { path: '/services/full-groom-price-list/', type: 'page', status: 'built' }, // built 2026-07-16
+  { path: '/services/haircut-lengths/', type: 'page', status: 'built' }, // built 2026-07-16
+  { path: '/services/teeth-cleaning/', type: 'page', status: 'built' }, // built 2026-07-16
+  { path: '/services/doggy-massage/', type: 'page', status: 'built' }, // built 2026-07-16
+  { path: '/services/homeless-dogs/', type: 'page', status: 'built' }, // built 2026-07-16
+  { path: '/services/frequently-asked-questions/', type: 'page', status: 'built' }, // built 2026-07-16
   { path: '/gallery/', type: 'page', status: 'planned' },
   { path: '/contact/', type: 'page', status: 'built' }, // built 2026-07-12
   { path: '/terms-and-conditions/', type: 'page', status: 'built' }, // built 2026-07-12

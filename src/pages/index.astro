@@ -5,11 +5,17 @@ import Base from '../layouts/Base.astro';
 // (WEBSITE-PLAN.md). Title/description are the harvested Yoast values so the
 // head is production-correct from day one; the body is a placeholder that
 // only ever appears on the noindexed preview.
+//
+// ⚠️ PICK-UP IS NOT FREE (owner ruling 2026-07-16: £2 per journey, see
+// pricing.json `pickup`). The harvested Yoast description ended "With free door
+// to door service in the Hastings area!" and the old homepage had a whole
+// "Door-to-door service … at no extra cost" section. Neither may be carried
+// over when this page is built for real in Stage 5.
 ---
 
 <Base
   title="Home - The Fairy Tails Dog Grooming"
-  description="Your friendly Hastings dog groomers that care for your dog as you would yourself. With free door to door service in the Hastings area!"
+  description="Your friendly Hastings dog groomers that care for your dog as you would yourself. Full grooms tailored to your dog's breed, from £25, in the heart of Hastings."
   path="/"
 >
   <section class="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-4 pt-28 text-center">

@@ -65,6 +65,15 @@ const crossbreeds = toEntries(crossRows, 'crossbreeds');
 const bathBrushTidy = toEntries(bathRows, 'bath-brush-tidy');
 const deShed = toEntries(deShedRows, 'de-shed');
 
+// The cheapest hand-strip in the breed table, for the /services/ add-on card's
+// "from" price. Derived, never typed — see the addOns note below.
+const handStripPrices = breeds.filter((b) => /hand strip/i.test(b.name)).map((b) => b.price);
+if (!handStripPrices.length) {
+  console.error('No "(hand strip)" rows found in the breed table — the /services/ hand-stripping "from" price is derived from them. Re-check the page structure.');
+  process.exit(1);
+}
+const handStripFrom = Math.min(...handStripPrices);
+
 const pricing = {
   _meta: {
     source: 'Extracted from the harvested WordPress price-list page (grooming-image-archive/services__full-groom-price-list/page.html) + /services/ add-on blocks, 2026-07-12. Owner ruling: this page + /services/ add-ons are canonical; /services-2/ was stale and is retired.',
@@ -84,7 +93,10 @@ const pricing = {
 
   bathBrushTidy: {
     sizes: bathBrushTidy,
-    note: 'We do not offer free pick ups/drop offs for bath and brush appointments — please drop off and collect your doggy from our salon.',
+    // The harvest said "we do not offer FREE pick ups/drop offs" — which now
+    // implies free ones exist somewhere. They don't (see `pickup`): bath-and-brush
+    // gets no collection at any price.
+    note: 'We do not offer pick ups/drop offs for bath and brush appointments — please drop off and collect your doggy from our salon.',
   },
 
   subscription: {
@@ -96,7 +108,11 @@ const pricing = {
       'Online code for bookings',
       'Fit around your schedule',
       'Booking reminders',
-      'Free pick ups and drop offs',
+      // Harvested as "Free pick ups and drop offs". It IS a genuine subscriber
+      // perk — pay-as-you-go pick-ups are £2 a journey — but the word "free" sat
+      // on the same page as the £2 price and read as a contradiction. Same fact,
+      // stated so the two cannot be misread against each other.
+      'Pick ups and drop offs included',
       "One appointment per month: a 'Bath, Brush & Tidy' every other month, a 'Full Groom' every other month",
       'Free nail clipping whenever required',
     ],
@@ -105,7 +121,11 @@ const pricing = {
   // Verbatim from /services/ "Additional services" (canonical per owner ruling).
   addOns: [
     { name: 'Bath, Brush and Tidy', priceDisplay: '£25 – £30', note: 'Includes a bath, brush, sanitary trim, tidy up and nails (if the dog allows). See price list for details.' },
-    { name: 'Hand stripping', priceDisplay: '£50+', note: 'Removing dead hairs from the coat by hand – breed dependent, please enquire before booking in.' },
+    // /services/ advertised "£50+" — but the breed table on the (equally canonical)
+    // price list has three hand-strip rows at £45 (Dachshund, Jack Russell,
+    // Lakeland Terrier), so £50 was never the floor. Derive it from the table so
+    // it cannot drift out of step again if a price changes.
+    { name: 'Hand stripping', priceDisplay: `£${handStripFrom}+`, note: 'Removing dead hairs from the coat by hand – breed dependent, please enquire before booking in.' },
     { name: 'Teeth cleaning', price: 10, note: 'Vibration free, sound free ultrasonic teeth cleaning – emmi®-pet oral hygiene. If booked with groom.' },
     { name: 'Intensive teeth cleaning', price: 70, note: 'A series of 4 to 5 intensive treatments.' },
     { name: 'Doggy oil massage', price: 10, note: 'A soothing massage for your dog. Ideal for itchy dogs or where the coat has been matted.' },
@@ -122,15 +142,45 @@ const pricing = {
     { name: 'Sensitive dog', price: 15, note: 'We may groom a sensitive dog at our discretion but if it is too much for the dog, we may not be able to groom.' },
     { name: 'Additional time', price: 15, note: 'For dogs requiring more time for their groom, if suitable and at our discretion.' },
     { name: 'Flea de-flea charge', price: 10, note: 'If your dog has fleas, or if we find any fleas on your dog, we charge £10 extra to cover the cost to de-flea the salon.' },
+    // From the T&Cs, not /services/ — it was the only charge the old site
+    // mentioned in prose only, so it never reached the structured data.
+    { name: 'Tick removal', price: 5, note: 'If ticks are found, an additional £5 is added for their removal.' },
   ],
 
+  // OWNER RULINGS 2026-07-16, and the SINGLE source of every pick-up fact for the
+  // whole site — price, areas AND time windows together. Splitting them is what
+  // broke this: the price lived in two files that disagreed, and the windows
+  // lived in two PAGES that disagreed.
+  //
+  // The old WordPress site stated the price four ways and none was right:
+  // homepage "no extra cost", T&Cs "Free pick up/drop off service", /services/
+  // "£1 per journey", retired /services-2/ "£5 Bexhill, Battle and Rye".
+  // ⚠️ Do NOT try to settle any of that on the Yoast modified_time stamps: the
+  // four pricing pages all carry stamps inside one 7-minute window on the 2026-07-12
+  // harvest date, which is a migration re-save of the Bluehost origin, not four
+  // content edits. /services-2/ appears 39s "newer" than /services/ purely as an
+  // artifact. Only the owner ruling settles these.
+  //
+  // business.ts deliberately carries NO pickup object: it used to hold a fifth
+  // variant (free + £5 out-of-area) that had already drifted from this one.
   pickup: {
     areas: 'Hastings and St Leonards',
-    priceDisplay: '£1 per journey',
-    note: 'Pick up/drop offs are offered for full groom appointments only.',
-    // ⚠ OPEN ITEM (WEBSITE-PLAN.md): the old homepage says "free door to door
-    // service" for full grooms while /services/ lists £1 per journey — owner to
-    // confirm the final wording before the /services/ page ships.
+    priceDisplay: '£2 per journey',
+    journeyPrice: 2,
+    roundTripPrice: 4,
+    // "Full grooms only" EXCEPT hand stripping — /services/ is explicit that
+    // every other add-on needs the dog brought to the salon "apart from hand
+    // stripping".
+    note: 'Available for full grooms and hand stripping, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.',
+    // Owner ruling 2026-07-16: a THIRD set of windows, replacing both the ones
+    // the FAQ published (2024) and the ones the T&Cs published (2023). Both
+    // pages now render these, so they can never drift apart again.
+    windows: [
+      { appointment: 'Morning appointments', collect: '7:45 – 9:30', home: '12:45 – 13:30' },
+      { appointment: 'Afternoon appointments', collect: '12:45 – 13:45', home: '15:30 – 16:45' },
+    ],
+    nervousNote:
+      'We recommend very nervous or sensitive dogs be dropped off to us at the salon and collected by the owner.',
   },
 };
 

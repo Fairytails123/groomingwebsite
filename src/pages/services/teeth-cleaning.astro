@@ -1,0 +1,128 @@
+---
+// Legacy URL preserved: /services/teeth-cleaning/ .
+// Source: grooming-image-archive/services__teeth-cleaning/copy.md. Prices come
+// from pricing.json (£10 with a groom, £70 for the intensive series) — the same
+// figures the /services/ add-on cards use, so they cannot drift apart.
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import HillDivider from '../../components/HillDivider.astro';
+import { business } from '../../data/business';
+import pricing from '../../data/pricing.json';
+import emmiPet from '../../assets/pages/teeth-cleaning/emmi-pet.jpg';
+import beforeAfter from '../../assets/pages/teeth-cleaning/before-and-after.jpg';
+
+const regular = pricing.addOns.find((a) => a.name === 'Teeth cleaning');
+const intensive = pricing.addOns.find((a) => a.name === 'Intensive teeth cleaning');
+---
+
+<Base
+  title="Teeth cleaning - The Fairy Tails Dog Grooming"
+  description="We are now able to offer a brand new service - emmi®-pet ultrasonic teeth cleaning for dogs."
+  path="/services/teeth-cleaning/"
+>
+  <article data-page="teeth-cleaning">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">emmi®-pet</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Ultrasonic teeth cleaning
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          No vibration, no sound, no scraping — and no need to hold your dog still for a
+          toothbrush they hate.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <section class="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:pt-14">
+      <div class="grid items-center gap-10 md:grid-cols-2">
+        <div>
+          <p class="eyebrow text-honey-700">How it works</p>
+          <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">Not a toothbrush</h2>
+          <p class="mt-4 leading-relaxed text-bark-700">
+            The emmi®-pet is a 100% ultrasound toothbrush. It doesn't work like a conventional or
+            electric brush, which clean by mechanical friction — it uses patented ultrasound
+            technology instead.
+          </p>
+          <p class="mt-3 leading-relaxed text-bark-700">
+            That's why most dogs sit happily through it: there's nothing for them to feel or hear.
+          </p>
+        </div>
+        <figure class="polaroid">
+          <Image
+            src={emmiPet}
+            alt="A dog having its teeth cleaned with the emmi®-pet ultrasonic brush"
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading="eager"
+          />
+        </figure>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 pt-14">
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="rounded-3xl bg-cream-100 p-7">
+          <p class="eyebrow text-honey-700">Regular cleaning</p>
+          <h2 class="mt-3 font-display text-2xl font-bold text-moss-900">
+            As part of your groom
+          </h2>
+          <p class="mt-2 font-display text-3xl font-bold text-moss-800">£{regular.price}</p>
+          <p class="mt-4 leading-relaxed text-bark-700">
+            Most dogs are good at chewing, which helps keep tartar down. Brushing during a grooming
+            visit takes around 15–20 minutes and keeps on top of their oral hygiene. Charged at
+            £{regular.price} on top of your normal grooming price.
+          </p>
+        </div>
+
+        <div class="rounded-3xl bg-cream-100 p-7">
+          <p class="eyebrow text-honey-700">Intensive cleaning</p>
+          <h2 class="mt-3 font-display text-2xl font-bold text-moss-900">
+            A series of 4 to 5 treatments
+          </h2>
+          <p class="mt-2 font-display text-3xl font-bold text-moss-800">£{intensive.price}</p>
+          <p class="mt-4 leading-relaxed text-bark-700">
+            Some dogs need an intensive programme to shift accumulated tartar — a series of 4 to 5
+            treatments for £{intensive.price}, carried out over a short period. We spend about 30
+            minutes brushing each session, which usually delivers good results and fresher breath.
+            Further treatments are available if needed.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pt-14">
+      <figure class="polaroid mx-auto max-w-lg">
+        <Image
+          src={beforeAfter}
+          alt="A dog's teeth before and after a course of emmi®-pet ultrasonic cleaning"
+          widths={[500, 1000]}
+          sizes="(min-width: 640px) 512px, 90vw"
+          loading="lazy"
+        />
+        <figcaption class="px-1 pt-3 text-center text-sm text-bark-500">
+          Before and after a course of ultrasonic cleaning.
+        </figcaption>
+      </figure>
+
+      <p class="mt-10 rounded-2xl border-2 border-honey-200 bg-honey-200/25 px-5 py-4 text-bark-700">
+        <strong>Please note:</strong> if your dog's teeth are significantly scaled, we'd recommend
+        you see a vet first for a dental descale, then keep them that way with a regular programme
+        of ultrasound cleaning.
+      </p>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-14 text-center">
+      <h2 class="font-display text-3xl font-bold text-moss-900">Not sure what your dog needs?</h2>
+      <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+        Ask us — we'll take a look at your dog's teeth at their next groom and tell you honestly
+        whether a single clean or the intensive course makes more sense.
+      </p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+        <a href="/contact/" class="btn btn-moss">Contact us for advice</a>
+        <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+      </div>
+    </section>
+  </article>
+</Base>

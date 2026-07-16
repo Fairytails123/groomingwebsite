@@ -54,10 +54,17 @@ export const business = {
     jotform: 'https://pci.jotform.com/form/251190647924057',
   },
 
-  // £25/month per dog, alternating Full Groom / Half Groom months, bus
-  // pick-up & drop-off included. 2-month minimum term (anti-gaming guard —
-  // always show it next to the sign-up CTA). Stripe link is LIVE — never
-  // complete a test checkout.
+  // £25/month per dog: a Full Groom one month, a Bath, Brush & Tidy the next,
+  // alternating; pick-ups included. 2-month minimum term (anti-gaming guard —
+  // always show it next to the sign-up CTA). Stripe link is LIVE (verified
+  // 2026-07-16: 200, recurring monthly, 2500) — never complete a test checkout.
+  //
+  // Naming: call the cheaper visit a "Bath, Brush & Tidy" everywhere. The old
+  // site also called it a "Maintenance Groom" (price list) and earlier notes here
+  // called it a "Half Groom" — three names for one product. "Bath, Brush & Tidy"
+  // is the one the canonical /services/ page and the price-list table both use.
+  // ("bus pick-up" was also in this comment — that term belongs to the sister
+  // route-planner project, not the salon.)
   subscription: {
     stripeUrl: 'https://buy.stripe.com/8x27sM5K57BR1IL94W9MY00',
     price: 25,
@@ -75,11 +82,9 @@ export const business = {
     writeUrl: 'https://search.google.com/local/writereview?placeid=ChIJV3P8-VAb30cRHoBgRmxCYIM',
   },
 
-  pickup: {
-    freeAreas: 'Hastings & St Leonards',
-    freeNote: 'Free pick-up and drop-off for full grooms in Hastings & St Leonards',
-    chargedNote: 'Bexhill, Battle and Rye: £5 per journey',
-  },
+  // NOTE: pick-up & drop-off pricing deliberately lives ONLY in pricing.json
+  // (`pickup`). A duplicate object here held a contradicting value — free
+  // locally + £5 out-of-area — for four days. Prices belong in one file.
 
   // The K9 Centre (training/day school) — the sister business this salon is part of.
   sisterSite: 'https://www.thefairytails.co.uk',

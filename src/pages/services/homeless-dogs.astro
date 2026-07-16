@@ -1,0 +1,63 @@
+---
+// Legacy URL preserved: /services/homeless-dogs/ .
+// Source: grooming-image-archive/services__homeless-dogs/copy.md. The old page
+// had no images of its own — this one is deliberately short and plain, because
+// the offer is the whole point.
+//
+// NOTE: the free pick-up here is a genuine, deliberate exception to the £2 per
+// journey rule (owner ruling 2026-07-16) and is stated as such — the harvest
+// supports it on three separate pages.
+import Base from '../../layouts/Base.astro';
+import HillDivider from '../../components/HillDivider.astro';
+import { business } from '../../data/business';
+---
+
+<Base
+  title="Homeless dogs - The Fairy Tails Dog Grooming"
+  description="For the love of dogs - we offer free dog grooming for homeless dogs including pick up and drop-offs (if needed)."
+  path="/services/homeless-dogs/"
+>
+  <article data-page="homeless-dogs">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">For the love of dogs</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Free grooming for homeless dogs
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          Completely free. Including collection and drop-off if it's needed.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:pt-14">
+      <p class="text-lg leading-relaxed text-bark-700">
+        We offer free dog grooming for homeless dogs — including pick up and drop-offs if they're
+        needed. No catch, no small print.
+      </p>
+      <p class="mt-5 leading-relaxed text-bark-700">
+        Please do refer homeless dogs to us. They deserve extra love and care, and a groom is one of
+        the few things we can give. Just mention <strong>"Homeless"</strong> when booking and the
+        whole session is free.
+      </p>
+      <p class="mt-5 leading-relaxed text-bark-700">
+        If you notice dogs with homeless people, please point them our way — let's give every dog
+        the best care we can.
+      </p>
+
+      <div class="mt-10 rounded-3xl bg-cream-100 px-6 py-10 text-center">
+        <h2 class="font-display text-2xl font-bold text-moss-900">Refer a dog to us</h2>
+        <p class="mx-auto mt-3 max-w-md leading-relaxed text-bark-700">
+          Send us a message, or call the salon on
+          <a href={business.phones.main.tel} class="font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">{business.phones.main.display}</a>
+          and we'll sort out a time.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href="/contact/" class="btn btn-moss">Contact us</a>
+          <a href={business.phones.mobile.whatsapp} class="btn btn-honey">WhatsApp us</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>

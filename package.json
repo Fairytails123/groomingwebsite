@@ -11,8 +11,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "verify-urls": "node scripts/verify-urls.mjs",
+    "verify-stage3": "node scripts/stage3-checks.mjs",
+    "price-list-e2e": "node scripts/price-list-e2e.mjs",
+    "shots": "node scripts/shots.mjs",
     "harvest": "node scripts/harvest.mjs",
-    "extract-prices": "node scripts/extract-prices.mjs"
+    "extract-prices": "node scripts/extract-prices.mjs",
+    "video-poster": "node scripts/video-poster.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

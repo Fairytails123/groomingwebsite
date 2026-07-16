@@ -1,0 +1,70 @@
+---
+// A breed -> price table for /services/full-groom-price-list/.
+//
+// ⚠️ CONTRACT: every row renders in the HTML at t=0. Nothing here is hidden by
+// default and nothing waits on JS or on a scroll event. The breed filter on the
+// page is pure progressive enhancement — it only ever ADDS the `hidden`
+// attribute to rows the user has filtered out. Do not "optimise" this into a
+// client-rendered or virtualised list: a price a crawler cannot read is a price
+// that cannot rank, and this is the site's highest commercial-intent page.
+// (See the animation/reveal contract in the user's global CLAUDE.md — the main
+// site lost 71% of a page's clicks to exactly this mistake.)
+interface Props {
+  id: string;
+  /** Visible section heading text, also used as the table's accessible caption. */
+  heading: string;
+  /** Column header for the name column, e.g. "Breed – full groom". */
+  colLabel: string;
+  rows: { name: string; price: number }[];
+}
+const { id, heading, colLabel, rows } = Astro.props;
+
+// Fold accents so typing "vendeen" still finds "Basset Griffon Vendéen".
+const fold = (s: string) =>
+  s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+---
+
+<section id={id} class="scroll-mt-24 pt-10" data-price-section data-heading={heading}>
+  <h2 class="font-display text-2xl font-bold text-moss-900 sm:text-3xl">{heading}</h2>
+  <slot name="intro" />
+
+  <table class="price-table mt-5 w-full border-collapse text-left">
+    <caption class="sr-only">{heading} — {rows.length} prices</caption>
+    <thead>
+      <tr class="border-b-2 border-moss-200">
+        <th scope="col" class="py-2.5 pr-3 text-sm font-bold text-bark-700">{colLabel}</th>
+        <th scope="col" class="py-2.5 pl-3 text-right text-sm font-bold text-bark-700">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr class="price-row border-b border-cream-200" data-row data-name={fold(r.name)}>
+            <td class="py-2.5 pr-3 text-bark-700">{r.name}</td>
+            <td class="py-2.5 pl-3 text-right font-bold tabular-nums text-moss-800">£{r.price}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <p class="no-match mt-5 text-sm text-bark-500" data-empty hidden>
+    No {heading.toLowerCase()} match that search.
+  </p>
+</section>
+
+<style>
+  /* Zebra striping. :nth-child counts DOM position, not visibility, so once the
+     filter hides rows the stripes would scramble. Unfiltered (and no-JS) is the
+     nth-child case; as soon as the filter runs it marks the table [data-filtered]
+     and re-stripes the surviving rows with .is-odd. */
+  .price-row:nth-child(odd) {
+    background: color-mix(in srgb, var(--color-cream-100) 55%, transparent);
+  }
+  [data-filtered] .price-row {
+    background: transparent;
+  }
+  [data-filtered] .price-row.is-odd {
+    background: color-mix(in srgb, var(--color-cream-100) 55%, transparent);
+  }
+</style>

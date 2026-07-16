@@ -1,0 +1,123 @@
+---
+// Legacy URL preserved: /services/haircut-lengths/ .
+// Source: grooming-image-archive/services__haircut-lengths/copy.md — all six
+// lengths, their taglines and their descriptions are the harvested copy, lightly
+// tightened. The six photos are the rescued originals (580x580, the largest that
+// ever existed on the old site).
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import HillDivider from '../../components/HillDivider.astro';
+import { business } from '../../data/business';
+import short1 from '../../assets/pages/haircut-lengths/short-1.jpg';
+import short2 from '../../assets/pages/haircut-lengths/short-2.jpg';
+import medium1 from '../../assets/pages/haircut-lengths/medium-1.jpg';
+import medium2 from '../../assets/pages/haircut-lengths/medium-2.jpg';
+import long1 from '../../assets/pages/haircut-lengths/long-1.jpg';
+import long2 from '../../assets/pages/haircut-lengths/long-2.jpg';
+
+const lengths = [
+  {
+    name: 'Short 1',
+    tagline: 'Short and sharp',
+    image: short1,
+    alt: 'A dog groomed to a Short 1 length — a close, even coat all over',
+    body: 'For doggy parents worried about matting. If your dog mats easily, or is already matted, we recommend keeping the coat short and sharp.',
+  },
+  {
+    name: 'Short 2',
+    tagline: 'Short and mild',
+    image: short2,
+    alt: 'A dog groomed to a Short 2 length — short all over with a little more coat left on',
+    body: "A short cut that suits most breeds through spring and summer. You can have the legs left fluffy or taken short to match the coat. If your fur baby loves water and mud, we'd keep the legs short to avoid matting.",
+  },
+  {
+    name: 'Medium 1',
+    tagline: 'Mid range blend',
+    image: medium1,
+    alt: 'A dog groomed to a Medium 1 length — a mid-length blended coat',
+    body: 'A mid-length cut, best suited to soft-coated breeds. This length needs regular brushing and maintenance at home.',
+  },
+  {
+    name: 'Medium 2',
+    tagline: 'Mid range fluff',
+    image: medium2,
+    alt: 'A dog groomed to a Medium 2 length — a mid-length coat with more volume',
+    body: 'A mid-length coat with volume, which gives your dog its fluff. It needs regular brushing to stay matt-free, and suits soft-coated, fluffy breeds best.',
+  },
+  {
+    name: 'Long 1',
+    tagline: 'Long and fluffy',
+    image: long1,
+    alt: 'A dog groomed to a Long 1 length — a full long coat, trimmed and thinned',
+    body: 'A full-length coat with some bulk taken out by brushing or de-shedding. Mostly for bigger dogs or long-coated breeds — a Long 1 is only trimmed or thinned as required.',
+  },
+  {
+    name: 'Long 2',
+    tagline: 'Long and royal',
+    image: long2,
+    alt: 'A dog groomed to a Long 2 length — a full long coat with maximum volume',
+    body: 'A full-length coat with all its volume and fluffiness. Mostly for bigger dogs and the fluff-ball models — a Long 2 is managed by de-shedding and scissoring alone.',
+  },
+];
+---
+
+<Base
+  title="Haircut lengths - The Fairy Tails Dog Grooming"
+  description="Take the guesswork out of how you wish us to groom your dog with this easy guide to the haircut lengths."
+  path="/services/haircut-lengths/"
+>
+  <article data-page="haircut-lengths">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">Easy guide</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Haircut lengths
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          Take the guesswork out of it. Pick the length you like from the six below and tell us the
+          name when you book — no grooming vocabulary required.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <section class="mx-auto max-w-6xl px-4 pb-16 pt-10 sm:pt-14">
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          lengths.map((l, i) => (
+            <article class="flex flex-col">
+              <figure class="polaroid">
+                <Image
+                  src={l.image}
+                  alt={l.alt}
+                  widths={[290, 580]}
+                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                />
+              </figure>
+              <div class="mt-5">
+                <h2 class="font-display text-2xl font-bold text-moss-900">{l.name}</h2>
+                <p class="eyebrow mt-1 text-honey-700">{l.tagline}</p>
+                <p class="mt-3 leading-relaxed text-bark-700">{l.body}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 text-center">
+      <div class="rounded-3xl bg-cream-100 px-6 py-12">
+        <h2 class="font-display text-3xl font-bold text-moss-900">Still not sure?</h2>
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+          Tell us what your dog's coat does at home — how often it mats, whether they swim, how much
+          brushing you can keep up with — and we'll recommend a length that works.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+          <a href="/services/full-groom-price-list/" class="btn btn-moss">See the price list</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>

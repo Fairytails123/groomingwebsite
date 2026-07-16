@@ -13,7 +13,20 @@ mkdirSync(OUT, { recursive: true });
 
 const paths = process.argv.slice(2).length
   ? process.argv.slice(2)
-  : ['/', '/terms-and-conditions/', '/contact/', '/who-we-are/'];
+  : [
+      '/',
+      '/terms-and-conditions/',
+      '/contact/',
+      '/who-we-are/',
+      // Stage 3 — services cluster
+      '/services/',
+      '/services/full-groom-price-list/',
+      '/services/haircut-lengths/',
+      '/services/teeth-cleaning/',
+      '/services/doggy-massage/',
+      '/services/homeless-dogs/',
+      '/services/frequently-asked-questions/',
+    ];
 
 const browser = await chromium.launch();
 for (const [w, h, tag] of [[1440, 950, '1440'], [390, 844, '390']]) {
