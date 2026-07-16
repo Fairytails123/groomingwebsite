@@ -56,6 +56,33 @@ origin). Per slug: `page.html`, `copy.md`, `meta.json` (Yoast title/description/
 `links.json`, `images/<host>/<path>`. Regenerate/extend with `npm run harvest` (idempotent).
 Every page build starts from its harvest folder; facts must match verbatim.
 
+⚠️ **The harvest has had TWO holes, and both times it reported `failed: 0`.** It missed the 20 MB
+Bruno case-study video (it never scanned for `<video>`) and all 5 gallery before/after images
+(protocol-relative `src="//host/…"` + a CSS `background-image`; the scanner only matched
+`https?://`). Both were rescued in time and the scanner is fixed. **If content seems missing,
+suspect the scanner before concluding the old site never had it.**
+
+⚠️ **The harvest is the source of record for the OLD SITE, not for the BUSINESS.** "Not in the
+harvest" ≠ "not real": "bus pick-up" appears nowhere on the website but is the salon's own term on
+the live JotForm. Check the booking form and the owner before calling a fact foreign. And the old
+site contradicted *itself* on ~9 facts — when two pages disagree, **ask the owner**; do NOT settle
+it with the Yoast `article:modified_time` stamps (the four pricing pages all carry stamps from a
+single migration re-save on the harvest date — see WEBSITE-PLAN's copy log).
+
+## Tooling (`npm run …`)
+
+| Script | What it does |
+|---|---|
+| `verify-urls` | URL manifest gate. `--preview` / `--live` check the deployed site over HTTP. |
+| `mobile-check` | 📱 The mobile gate (above). Needs `astro preview` running. |
+| `shots` | Dual-viewport screenshots → `shots/<slug>-{1440,390}.png`. Needs `astro preview`. |
+| `verify-stage3` | Services-cluster facts: 105 rows render, 0 hidden at t=0, spot-check vs the rendered table, and no banned pick-up/policy wording anywhere. |
+| `price-list-e2e` | Drives the breed filter, then reloads with **JS off** and asserts all 105 rows are visible by computed style. |
+| `extract-prices` | Regenerates `pricing.json` from the harvest. Edit the SCRIPT, never the JSON. |
+| `harvest` | Re-harvests the old site (idempotent). |
+| `video-poster` | Poster frame for the Bruno video. No ffmpeg here — decodes in real Chrome. |
+| `gallery-crop` | Recovers the 10 gallery photos from the old before/after composites. Read its header before touching a crop. |
+
 ## 📱 THE MOBILE GATE — no page ships without it (owner rule, 2026-07-16)
 
 **Before shipping ANY page, Claude must check it on a phone viewport for all three of:
@@ -64,21 +91,30 @@ that is only correct at 1440px is not done. This is not satisfied by "the CSS lo
 or by a desktop Lighthouse run — it requires actually rendering the page at phone size and
 **looking at it**.
 
-Run `npm run mobile-check` (needs `npx astro preview` running). It enforces the mechanical half
-and FAILS the build on:
-- **Responsiveness** — horizontal overflow at 390px (the page body must never scroll sideways;
-  a wide table/code block must scroll inside its own container), and any element wider than the
-  viewport.
-- **Visuals** — content hidden by computed style at t=0, images that are broken, badly
-  overflowing, or so upscaled they'll look soft (the old site's assets are small — several are
-  only 300×300, see below), and tap targets under 44×44 CSS px.
-- **Speed** — Lighthouse **mobile** performance ≥ 90. Note `npx lighthouse` already emulates a
-  mid-range phone on throttled 4G **by default**; if you ever pass `--preset=desktop` you have
-  NOT run this gate.
+**1. Responsiveness + visuals** — `npm run mobile-check` (needs `npx astro preview` running).
+It renders every page at 390×844 as a touch device and FAILS on:
+- **horizontal overflow** — the body must never scroll sideways at 390px (a wide table must
+  scroll inside its own `overflow-x` container), plus any element extending past the viewport;
+- **content hidden by computed style at t=0** (a closed `<details>` is fine);
+- **broken or overflowing images**;
+- **tap targets under 44×44 CSS px** — links, buttons, `summary`, inputs. Inline links inside a
+  paragraph are exempt (WCAG 2.5.8's sentence exception), and a checkbox is measured by its
+  `<label>`, which is what you actually tap.
+It only WARNS on low-resolution images, because the harvested sources are genuinely small (the
+clip photos are 580×580, the add-on thumbs 300×300, the gallery crops 242–309px) and a gate that
+demands an image we cannot create just teaches us to ignore it.
 
-The half a script cannot check is on Claude: **actually read the 390px screenshot**
+**2. Speed** — Lighthouse, run separately; `mobile-check` does NOT measure it. `npx lighthouse`
+already emulates a mid-range phone on throttled 4G **by default**, so a plain run IS the mobile
+number; if you ever pass `--preset=desktop` you have not run this gate. Must be ≥ 90, measured on
+a `PUBLIC_INDEXABLE=true` build (else SEO reads ~69 by design).
+⚠️ **One Lighthouse run is not evidence.** The gallery scored 88 on its first run and 99/99/99 on
+three re-runs — the first was competing with the build/preview starting up. If a score fails,
+re-run before "fixing" anything; check whether the individual metrics agree with the total.
+
+**3. The half no script can check is on Claude:** **actually open the 390px screenshot**
 (`npm run shots` → `shots/<slug>-390.png`) and look for text collision, cramped spacing, a CTA
-below the fold, or an image cropped to nonsense. Take the screenshot AND open it.
+below the fold, or an image cropped to nonsense. Take the screenshot AND look at it.
 
 ## Quality gates (every page, before it ships)
 

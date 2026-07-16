@@ -63,8 +63,13 @@ export const business = {
   // site also called it a "Maintenance Groom" (price list) and earlier notes here
   // called it a "Half Groom" — three names for one product. "Bath, Brush & Tidy"
   // is the one the canonical /services/ page and the price-list table both use.
-  // ("bus pick-up" was also in this comment — that term belongs to the sister
-  // route-planner project, not the salon.)
+  //
+  // "Bus pick-up" IS the salon's own term, despite appearing nowhere in the
+  // website harvest: the live JotForm asks for a "Full Groom or Hand Strip
+  // Appointment – with bus pick-up and/or drop-offs". Checked 2026-07-16 — an
+  // earlier note here wrongly called it a stray from the sister route-planner
+  // project. The website says "pick up and drop off"; the booking form the
+  // customer actually fills in says "bus". Same service.
   subscription: {
     stripeUrl: 'https://buy.stripe.com/8x27sM5K57BR1IL94W9MY00',
     price: 25,

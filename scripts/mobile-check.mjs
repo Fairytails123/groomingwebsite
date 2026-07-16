@@ -8,9 +8,10 @@
 // Claude: open shots/<slug>-390.png and LOOK at it (text collision, cramped
 // spacing, CTA below the fold, an image cropped to nonsense).
 //
-// Speed is NOT measured here — `npm run lighthouse` already emulates a mid-range
-// phone on throttled 4G by default. This script covers layout + visuals, which
-// Lighthouse does not check at all.
+// Speed is NOT measured here — run Lighthouse separately (`npx lighthouse <url>`
+// already emulates a mid-range phone on throttled 4G by default, so a plain run
+// IS the mobile number). This script covers layout + visuals, which Lighthouse
+// does not check at all.
 //
 // Usage:
 //   npx astro preview            # in another shell (or set BASE)

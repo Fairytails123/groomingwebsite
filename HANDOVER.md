@@ -2,25 +2,37 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
-## ⏸️ CURRENT STATE (2026-07-16)
+## ⏸️ PAUSED HERE (2026-07-16 evening)
 
-**Stages 0–3 DONE; Stage 4 half done (gallery shipped).** Preview:
-**https://preview.fairytailsdoggrooming.co.uk** (HTTPS enforced, noindexed; old WordPress
-untouched). **12 of 15 pages built.** Remaining: `/` (homepage, ships last), `/blog/`,
-`/why-dog-grooming-is-important/`. verify-urls: 0 failures. Lighthouse 95–100 across the board.
+**Stages 0–3 DONE. Stage 4 half done — /gallery/ shipped.** Preview:
+**https://preview.fairytailsdoggrooming.co.uk** (HTTPS enforced, **still noindexed** — the old
+WordPress site remains the indexed one and is untouched). **12 of 15 pages built.**
+Remaining: `/blog/`, `/why-dog-grooming-is-important/` (Stage 4b), then `/` (Stage 5, ships last).
 
-**Waiting on the OWNER:**
-1. **Eyeball the preview — phone AND desktop.** Now 10 real pages, not 3.
-2. **Who-we-are photo** — the old page's image looks like the K9 Centre BARN, not the town
-   salon. Keep or replace? (Unchanged from 2026-07-12.)
-3. Three new judgement calls from the Stage 3 fact audit — see WEBSITE-PLAN "Open items":
-   the **"From £25"** claim only holds via de-shed breeds (cheapest clipped groom is £30, cheapest
-   crossbreed £35); the **£25 puppy groom** exists only in the FAQ and on no other page; and
-   /who-we-are/ says "day school" where the harvest says "day care" + an online shop.
+All gates green at the pause: `verify-urls` 0 failures · `verify-stage3` 0 · `price-list-e2e` 0 ·
+`mobile-check` 12/12 · Lighthouse 95–100 perf / 100 a11y / 100 SEO on every built page.
+Everything is committed and pushed; the preview is deployed and live-verified.
 
-**Next build work:** Stage 4 (gallery grid + blog index + the root-level blog post), then
-Stage 5 (homepage + whole-site pass). ⚠️ `/gallery/` and `/blog/` are linked from the header
-nav and footer and **404 today** — Stage 4 closes that.
+### 🔴 Blocking the switchover (owner decisions)
+
+1. **The live booking form sells a service the site says we don't offer.** The JotForm
+   (updated 2026-07-15) has a **"Bath and Brush Appointment – Bus pick-up and drop-offs"**
+   question, while the T&Cs, /services/ and pricing.json all say bath-and-brush gets NO
+   collection. One is wrong. A customer who pays for a collection we then refuse is a real
+   complaint. **This is the top item for the next session.**
+2. **Eyeball the preview — phone AND desktop.** 12 real pages now.
+3. **Check the gallery breeds** — alt text names breeds where they were unmistakable and
+   deliberately doesn't where they weren't. Full list in WEBSITE-PLAN's open items.
+4. **Who-we-are photo** — the old image looks like the K9 Centre BARN, not the town salon.
+5. **"From £25"** only holds via de-shed breeds (cheapest clipped groom £30, crossbreed £35);
+   **£25 puppy groom** exists only in the FAQ; **"day school" vs "day care"** on who-we-are.
+
+### Next build work
+
+**Stage 4b — `/blog/` + `/why-dog-grooming-is-important/`** (the post is at ROOT level, not
+under /blog/ — see the manifest). ⚠️ `/blog/` is linked from the footer and **404s today**.
+Then **Stage 5 — homepage + whole-site pass**. When the homepage is built, do NOT carry over
+its harvested "free door to door service" claims (see the copy log — pick-ups are £2/journey).
 
 **Also pending (needs a browser session with the owner):** GSC Domain property + DNS-TXT
 verification and baseline export; GitHub account-level verified domain
@@ -29,6 +41,31 @@ verification and baseline export; GitHub account-level verified domain
 
 **Housekeeping:** 2 TEST rows in the `grooming_enquiries` data table + 2 TEST emails at
 info@ — safe to delete.
+
+### The rule that governs every page from here
+
+📱 **THE MOBILE GATE** (owner rule, 2026-07-16, in CLAUDE.md): no page ships until it has been
+checked on a phone for **responsiveness, visuals AND speed**. `npm run mobile-check` enforces the
+mechanical half; the other half is on Claude — **open `shots/<slug>-390.png` and look at it.**
+
+## 2026-07-16 (pause) — checked the LIVE booking form; two of my own claims were wrong
+
+Read the JotForm (`251190647924057`) directly at the pause instead of trusting the harvest. Two
+corrections, both mine:
+
+1. **"Bus pick-up" is the salon's own word, not a stray.** Earlier today I removed it from
+   `business.ts` claiming it belonged to the sister route-planner project, because a 15-page audit
+   found it nowhere in the harvest. But the live form asks for a *"Full Groom or Hand Strip
+   Appointment – with bus pick-up and/or drop-offs"*. **The harvest is the source of record for the
+   OLD SITE, not for the BUSINESS.** "Not in the harvest" ≠ "not real" — check the booking form and
+   the owner before calling a term foreign. Comment corrected.
+2. **🔴 The form sells bath-and-brush WITH bus pick-up** — a question titled *"Bath and Brush
+   Appointment – Bus pick-up and drop-offs"*, on a form updated 2026-07-15. Our site says the exact
+   opposite in three places. Logged as the top open item; owner must rule before switchover.
+
+Also corroborating: the form's *"Select pick-up, drop-off **or both** services"* question is
+independent evidence for the **per-LEG** £2 pricing the owner ruled — the model was already in
+their booking flow.
 
 ## 2026-07-16 (later still) — Stage 4a: /gallery/ shipped
 

@@ -92,6 +92,18 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 
 ## Open items
 
+- [ ] 🔴 **THE LIVE BOOKING FORM SELLS A SERVICE THE SITE SAYS WE DON'T OFFER.** The JotForm
+      (`251190647924057`, updated **2026-07-15**) contains the question **"Bath and Brush
+      Appointment – Bus pick-up and drop-offs"** — i.e. a customer can book a Bath & Brush *with*
+      collection. Our site says the opposite in three places, all inherited from the harvest and
+      reinforced by the 2026-07-16 rulings: `pricing.json` `bathBrushTidy.note`, the T&Cs
+      ("We do not offer pick ups/drop offs for bath and brush appointments"), and /services/
+      ("for full grooms and hand stripping only"). One of the two is wrong. **Owner must rule
+      before switchover** — a customer who books and pays for a collection we then refuse is a
+      real complaint, not a typo. (Found 2026-07-16 by reading the live form, not the harvest.)
+- [ ] **Does the £2 per journey apply to a bus Bath & Brush too, if it's offered?** Falls out of
+      the ruling above. Note the form's "Select pick-up, drop-off **or both** services" question
+      independently corroborates the per-LEG pricing model.
 - [x] ~~**Pickup price wording**~~ — RESOLVED 2026-07-16, see the copy log below.
 - [ ] **"From £25" sets an expectation the price list can't meet.** All five £25 rows
       (Chihuahua smooth, French Bulldog, Greyhound, Jack Russell smooth, Pug) are **de-shed**
@@ -212,11 +224,16 @@ contact 2025-07) carry real signal.
 11. **Price list section order changed** (no facts moved): the three breed tables are now contiguous,
     with bath/brush + subscription after them, so the breed filter runs over one uninterrupted block.
     The old page interleaved them.
-12. **`business.ts` subscription comment corrected**: it described "alternating Full Groom / **Half
-    Groom**" with "**bus** pick-up" — neither term exists anywhere in the harvest ("bus" belongs to
-    the sister route-planner project). Standardised on **"Bath, Brush & Tidy"**, which is what both
-    the canonical /services/ page and the price-list table call it. (The price list also called it a
-    "Maintenance Groom" — three names for one product.)
+12. **`business.ts` subscription comment corrected**: it described the cheaper visit as a "**Half
+    Groom**", a term that exists nowhere in the harvest. Standardised on **"Bath, Brush & Tidy"**,
+    which is what both the canonical /services/ page and the price-list table call it. (The price
+    list also called it a "Maintenance Groom" — three names for one product.)
+    ⚠️ **Corrected again the same day:** that comment ALSO claimed "**bus** pick-up" was a stray from
+    the sister route-planner project. **That was wrong.** "Bus" is the salon's own word — the live
+    JotForm asks for a "Full Groom or Hand Strip Appointment – with bus pick-up and/or drop-offs".
+    It is merely absent from the *website*, which says "pick up and drop off".
+    **Lesson: the harvest is the source of record for the OLD SITE, not for the BUSINESS.** "Not in
+    the harvest" ≠ "not real". Check the booking form and the owner before calling a term foreign.
 
 ## Polish backlog (post-switchover, indefinite)
 
