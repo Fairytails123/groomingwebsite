@@ -1,27 +1,27 @@
 {
   "_comment": "Fresh 5-star Google review excerpts shown on the homepage. OVERWRITTEN WEEKLY by the n8n 'Grooming Reviews Rotator' workflow (see HANDOVER) — do not hand-edit except to fix an emergency. Excerpts are verbatim contiguous fragments of real reviews (ellipsis = truncated), author-attributed, from the salon's own Google Business Profile. Seeded from the 2026-07-12 harvest of the old site's live reviews widget.",
-  "capturedAt": "2026-07-12",
+  "capturedAt": "2026-07-16",
   "placeId": "ChIJV3P8-VAb30cRHoBgRmxCYIM",
   "reviews": [
     {
+      "author": "Sarah Griffiths",
+      "rating": 5,
+      "text": "I used Fairy Tails for the first time this week. I couldn't be happier with the results. My dogs were brought back looking beautiful and smelling wonderful. I'll definitely be using this service again!"
+    },
+    {
+      "author": "Sharon Terrell",
+      "rating": 5,
+      "text": "I booked my two little dogs in for a groom and arranged for them to be collected and returned to me...... Well, from start to finish a very professional service. Great care was taken and they were groomed exactly as I had requested, both…"
+    },
+    {
       "author": "Mollie Taylor",
       "rating": 5,
-      "text": "The lovely people at the fairy tails grooming are so amazing and caring towards all the animals. My crazy caramel has been going there for her groom around 2 years now and she loves them all…"
+      "text": "The lovely people at the fairy tails grooming are so amazing and caring towards all the animals. My crazy caramel has been going there for her groom around 2 years now and she loves them all. My dog is such a people pleaser and loves…"
     },
     {
-      "author": "Deborah-Marie Aldred",
+      "author": "stella dunn",
       "rating": 5,
-      "text": "Great experience for my pup! He looks and smells gorgeous. Thank you Fairy Tails."
-    },
-    {
-      "author": "Samantha Lake",
-      "rating": 5,
-      "text": "Simply wonderful! The first proper 'professional bath/groom' for our 2 x year old Cane Corso, who is 'slightly sceptical around water!' Of course, the amazing Fairy Tails team put her straight at ease…"
-    },
-    {
-      "author": "Tonita Shale",
-      "rating": 5,
-      "text": "Today was Obie's very first trip to the groomers. Both he and I were very nervous! I am thrilled with how well Obie has been groomed and taken care of this afternoon…"
+      "text": "Darcy had her summer groom yesterday and what a difference it makes to her.. she looks younger and so cute. As always, the team did a fab job on her and looked after her well at a very reasonable price. I still wouldn't take her anywhere…"
     }
   ]
 }
