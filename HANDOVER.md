@@ -30,6 +30,42 @@ verification and baseline export; GitHub account-level verified domain
 **Housekeeping:** 2 TEST rows in the `grooming_enquiries` data table + 2 TEST emails at
 info@ — safe to delete.
 
+## 2026-07-16 (later) — 📱 THE MOBILE GATE is now a hard rule
+
+**Owner rule: no page ships until Claude has checked it on a phone for responsiveness, visuals
+AND speed.** Written into CLAUDE.md as its own gate, with `npm run mobile-check` to enforce the
+mechanical half (needs `npx astro preview` running). It fails on horizontal overflow at 390px,
+content hidden at t=0, broken/overflowing images, and sub-44px tap targets. The half it CANNOT
+check is on Claude: open `shots/<slug>-390.png` and actually look.
+
+**Run against the pages already shipped, it found 4 real defects — all pre-existing since Stage 1,
+all in shared components, so all 11 pages were affected:**
+- Footer "Find us on Google Maps" (20px tall), "From 63+ Google reviews" (20px) and "Been in with
+  your dog? Leave us a review" (**16px**) — the last two fail even WCAG 2.2 AA's 24px floor.
+- ConsentBanner "Essential only"/"Accept all" at 38px — the one control every phone visitor must
+  hit before they can read anything.
+- `/services/` "Find out more" card links (20px); `/contact/` "Open in Google Maps" (20px) — on a
+  contact page, on a phone, that link IS the page's job.
+- The enquiry form's concern checkboxes: a 28px label target, legal but tight for a stack of 10.
+All now `min-h-11` (44px). Layout is unchanged — centring 20px of text in a 44px box supplies the
+same visual gap the old margin did, so the margins came off.
+
+**⚠️ Three traps this script hit while being written — do not "simplify" them back out:**
+1. **`img.naturalWidth` is DENSITY-CORRECTED.** For a `w`-descriptor srcset the browser divides
+   the real width by the chosen density, so a *correctly served* image reports ≈its CSS width.
+   The obvious `naturalWidth < css * dpr` test flags **every image on the site**. It did, and the
+   images were fine all along. Parse the srcset's `w` candidates instead.
+2. **`scrollTo()` must use `behavior:'instant'`.** global.css sets `scroll-behavior: smooth`, so a
+   stepped scroll loop outruns the animation, never reaches the bottom of a long page, and reports
+   the last lazy images as "failed to load" — only on the longest page, which looks like a real bug.
+3. **A checkbox's tap target is its `<label>`, not the 20px box.** Measuring the input alone fails
+   every properly-labelled checkbox on the site.
+
+**Low-res warnings are expected and accepted** on /services/haircut-lengths/ (580w candidates for a
+334px slot ≈ 1.7x). The harvested originals ARE 580×580 — no bigger version has ever existed — so
+this warns rather than fails. Same story for the 300×300 add-on thumbs, which is why they're used
+at 64px.
+
 ## 2026-07-16 — Stage 3 shipped: the whole services cluster (7 pages)
 
 **Built:** `/services/` hub, `/services/full-groom-price-list/`, `/services/haircut-lengths/`,

@@ -15,14 +15,17 @@
       say no — the site works either way.
     </p>
     <div class="flex shrink-0 gap-2">
+      {/* min-h-11 = 44px tap targets (mobile gate, CLAUDE.md). These were py-2,
+          giving 38px — under the 44px norm, on the one control every visitor on a
+          phone has to hit before they can read the page. */}
       <button
         id="ft-consent-essential"
-        class="rounded-md border border-bark-500 px-4 py-2 text-sm text-bark-700 hover:bg-cream-200"
+        class="inline-flex min-h-11 items-center justify-center rounded-md border border-bark-500 px-4 text-sm text-bark-700 hover:bg-cream-200"
         type="button">Essential only</button
       >
       <button
         id="ft-consent-accept"
-        class="rounded-md bg-moss-700 px-4 py-2 text-sm font-semibold text-cream-50 hover:bg-moss-800"
+        class="inline-flex min-h-11 items-center justify-center rounded-md bg-moss-700 px-4 text-sm font-semibold text-cream-50 hover:bg-moss-800"
         type="button">Accept all</button
       >
     </div>

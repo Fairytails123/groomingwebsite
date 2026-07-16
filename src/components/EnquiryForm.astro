@@ -84,10 +84,14 @@ const labelClass = 'field-label';
 
   <fieldset>
     <legend class={labelClass}>Anything we should know about? (tick any)</legend>
+    {/* min-h-11 on the LABEL (not the box): tapping the label toggles the
+        checkbox, so the label IS the tap target. py-1 gave a 28px target — legal
+        under WCAG 2.5.8's 24px floor, but tight for a stack of checkboxes on a
+        phone (mobile gate, CLAUDE.md). Desktop keeps its compact rhythm. */}
     <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
       {
         concerns.map((c, i) => (
-          <label class="flex items-center gap-2 py-1 text-sm text-bark-700 sm:py-0">
+          <label class="flex min-h-11 items-center gap-2 text-sm text-bark-700 sm:min-h-0 sm:py-0">
             <input
               type="checkbox"
               name="concerns"

@@ -13,6 +13,7 @@
     "verify-urls": "node scripts/verify-urls.mjs",
     "verify-stage3": "node scripts/stage3-checks.mjs",
     "price-list-e2e": "node scripts/price-list-e2e.mjs",
+    "mobile-check": "node scripts/mobile-check.mjs",
     "shots": "node scripts/shots.mjs",
     "harvest": "node scripts/harvest.mjs",
     "extract-prices": "node scripts/extract-prices.mjs",

@@ -23,9 +23,13 @@ const fullStars = Math.round(rating);
     </span>
     <span class="text-sm font-bold">{rating} out of 5</span>
   </div>
+  {/* min-h-11 = a 44px tap target on a phone (the mobile gate in CLAUDE.md).
+      The link's text is only 20px tall; without this the hit area fails even
+      WCAG 2.2 AA's 24px floor. inline-flex keeps the underline hugging the text
+      rather than spanning the padding. */}
   <a
     href={readUrl}
-    class="text-sm font-bold text-honey-300 underline decoration-honey-600 underline-offset-4 hover:text-honey-200"
+    class="inline-flex min-h-11 items-center text-sm font-bold text-honey-300 underline decoration-honey-600 underline-offset-4 hover:text-honey-200"
   >
     From {count}+ Google reviews — read them here
   </a>

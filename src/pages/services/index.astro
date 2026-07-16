@@ -171,8 +171,10 @@ const priceOf = (a: { price?: number; priceDisplay?: string }) =>
                   <h3 class="font-display text-lg font-bold leading-tight text-moss-900">{a.name}</h3>
                   <p class="mt-1 font-bold text-honey-700">{priceOf(a)}</p>
                   <p class="mt-2 text-sm leading-relaxed text-bark-600">{a.note}</p>
+                  {/* min-h-11 = a 44px tap target (mobile gate, CLAUDE.md); mt drops
+                      to 0 because centring the text in a 44px box supplies the gap. */}
                   {meta?.href && (
-                    <a href={meta.href} class="mt-2 inline-block text-sm font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">
+                    <a href={meta.href} class="inline-flex min-h-11 items-center text-sm font-bold text-moss-800 underline decoration-honey-500 underline-offset-4">
                       Find out more
                     </a>
                   )}

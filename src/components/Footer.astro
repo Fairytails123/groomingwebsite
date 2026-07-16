@@ -26,9 +26,12 @@ const year = new Date().getFullYear();
         {business.address.town} {business.address.postcode}<br />
         <span class="text-cream-200/70">On the edge of Alexandra Park</span>
       </address>
+      {/* min-h-11 = a 44px tap target (mobile gate, CLAUDE.md). The margin drops
+          from mt-3 to mt-0 because centring 20px of text in a 44px box already
+          puts 12px above it — the visual gap is unchanged. */}
       <a
         href={business.mapsUrl}
-        class="mt-3 inline-block text-sm font-bold text-honey-300 underline decoration-honey-600 underline-offset-4 hover:text-honey-200"
+        class="inline-flex min-h-11 items-center text-sm font-bold text-honey-300 underline decoration-honey-600 underline-offset-4 hover:text-honey-200"
       >
         Find us on Google Maps
       </a>
@@ -116,11 +119,16 @@ const year = new Date().getFullYear();
 
   <!-- Google reviews strip (the salon's social proof — 4.9★) -->
   <div class="mx-auto max-w-6xl px-4 pb-10">
-    <div class="flex flex-col items-center gap-2 border-t border-pine-800 pt-8">
+    {/* gap-0: both links inside are now 44px-tall tap targets, so their own
+        height supplies the separation. Keeping a gap on top of that would push
+        two adjacent 44px targets far enough apart to look broken — and stacking
+        44px targets any CLOSER would make them overlap, which is worse than a
+        small target because you tap the wrong link. */}
+    <div class="flex flex-col items-center gap-0 border-t border-pine-800 pt-6">
       <ReviewsBadge align="center" />
       <a
         href={business.reviews.writeUrl}
-        class="mt-1 text-xs text-cream-200/70 underline decoration-cream-200/40 underline-offset-4 hover:text-cream-100"
+        class="inline-flex min-h-11 items-center text-xs text-cream-200/70 underline decoration-cream-200/40 underline-offset-4 hover:text-cream-100"
       >
         Been in with your dog? Leave us a review
       </a>

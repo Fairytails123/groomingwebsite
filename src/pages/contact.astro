@@ -44,9 +44,13 @@ import { business } from '../data/business';
             On the edge of Alexandra Park, at the bottom of Mount Pleasant Road — with outside
             shop parking for drop-offs and collections.
           </p>
+          {/* min-h-11 = a 44px tap target (mobile gate, CLAUDE.md); mt drops from
+              4 to 2 since centring 20px of text in a 44px box adds 12px of its own.
+              This one matters — "get me directions" is the whole job of a contact
+              page on a phone. */}
           <a
             href={business.mapsUrl}
-            class="mt-4 inline-block text-sm font-bold text-moss-800 underline decoration-honey-500 underline-offset-4"
+            class="mt-2 inline-flex min-h-11 items-center text-sm font-bold text-moss-800 underline decoration-honey-500 underline-offset-4"
           >
             Open in Google Maps
           </a>

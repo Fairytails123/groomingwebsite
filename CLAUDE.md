@@ -56,13 +56,39 @@ origin). Per slug: `page.html`, `copy.md`, `meta.json` (Yoast title/description/
 `links.json`, `images/<host>/<path>`. Regenerate/extend with `npm run harvest` (idempotent).
 Every page build starts from its harvest folder; facts must match verbatim.
 
+## 📱 THE MOBILE GATE — no page ships without it (owner rule, 2026-07-16)
+
+**Before shipping ANY page, Claude must check it on a phone viewport for all three of:
+responsiveness, visuals, and speed.** Most of this salon's customers arrive on a phone; a page
+that is only correct at 1440px is not done. This is not satisfied by "the CSS looks responsive"
+or by a desktop Lighthouse run — it requires actually rendering the page at phone size and
+**looking at it**.
+
+Run `npm run mobile-check` (needs `npx astro preview` running). It enforces the mechanical half
+and FAILS the build on:
+- **Responsiveness** — horizontal overflow at 390px (the page body must never scroll sideways;
+  a wide table/code block must scroll inside its own container), and any element wider than the
+  viewport.
+- **Visuals** — content hidden by computed style at t=0, images that are broken, badly
+  overflowing, or so upscaled they'll look soft (the old site's assets are small — several are
+  only 300×300, see below), and tap targets under 44×44 CSS px.
+- **Speed** — Lighthouse **mobile** performance ≥ 90. Note `npx lighthouse` already emulates a
+  mid-range phone on throttled 4G **by default**; if you ever pass `--preset=desktop` you have
+  NOT run this gate.
+
+The half a script cannot check is on Claude: **actually read the 390px screenshot**
+(`npm run shots` → `shots/<slug>-390.png`) and look for text collision, cramped spacing, a CTA
+below the fold, or an image cropped to nonsense. Take the screenshot AND open it.
+
 ## Quality gates (every page, before it ships)
 
 1. Copy fact-checked against `grooming-image-archive/<slug>/copy.md` (prices/phones/hours verbatim).
-2. Checked at BOTH desktop ~1440px AND phone ~390px (hard owner rule from the main site).
-3. Lighthouse ≥ 90 perf/SEO/a11y (production-flagged local build, see above).
+2. **The mobile gate above** — `npm run mobile-check` green AND the 390px screenshot eyeballed.
+   Then check desktop ~1440px too (hard owner rule from the main site: BOTH viewports).
+3. Lighthouse ≥ 90 perf/SEO/a11y, measured on MOBILE (production-flagged local build, see above).
 4. `prefers-reduced-motion` pass.
 5. `npm run build && npm run verify-urls` green; manifest entry flipped `planned` → `built`.
+   For the services cluster also: `npm run verify-stage3` + `npm run price-list-e2e`.
 6. HANDOVER.md updated; push; owner eyeballs the preview URL.
 
 ## Local dev on this machine (Windows + OneDrive)
