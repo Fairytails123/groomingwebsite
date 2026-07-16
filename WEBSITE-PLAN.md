@@ -22,7 +22,7 @@ and mirror the date here).
 
 | URL | Status | Notes |
 |---|---|---|
-| `/` | stub (Stage-1 placeholder) | Homepage ships LAST |
+| `/` | **built** 2026-07-16 | Stage 5 — shipped LAST per the inside-out order |
 | `/who-we-are/` | **built** 2026-07-12 | Stage 2 |
 | `/contact/` | **built** 2026-07-12 | Stage 2 — form E2E verified via curl; on-page test pending |
 | `/terms-and-conditions/` | **built** 2026-07-12 | Stage 2 — legal copy verbatim |
@@ -52,15 +52,15 @@ and mirror the date here).
   facts) + `npm run price-list-e2e` (browser: drives the filter, then re-loads with JS OFF and
   asserts all 105 rows are visible by computed style).
 - **Stage 4 — Gallery + blog** ✅ 2026-07-16: gallery ✅ → blog index + the root-level post ✅ (Stage 4b).
-- **Stage 5 — Homepage + whole-site pass**: hero/teasers/reviews/subscription band; dist-wide
-  link crawl, sitemap sanity, both-viewport sweep, full verify-urls.
+- **Stage 5 — Homepage + whole-site pass** ✅ 2026-07-16: hero/teasers/reviews/subscription band
+  shipped; whole-site pass run — dist-wide link crawl (82 internal URLs, 0 broken), sitemap
+  sanity (14 canonical trailing-slash entries), full mobile-check 15/15, full verify-urls.
 
 Per-page definition of done = the 6 quality gates in CLAUDE.md.
 
 ## "Ready for switchover" gate
 
-- [ ] 15/15 pages `built` (14/15 as of 2026-07-16 evening — only `/` remains, Stage 5);
-      `npm run verify-urls` 0 failures
+- [x] 15/15 pages `built` ✅ 2026-07-16 — the build is COMPLETE; `npm run verify-urls` 0 failures
 - [ ] Per-page fact diff vs harvest signed off (prices, phones, hours, T&Cs verbatim)
 - [x] Breed table rows == 105 (47+10+48) vs harvest; 10-breed spot check re-run; add-ons correct
       — automated in `npm run verify-stage3`, which asserts it against the RENDERED table
@@ -142,6 +142,14 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - [ ] Favicon .ico variant (PNG set shipped; .ico optional).
 - [ ] /who-we-are/ photo: the old page's `Fairy-Tails.jpg` looks like the K9 Centre BARN, not
       the town salon — owner to confirm or supply a salon photo (alt text kept neutral meanwhile).
+- [ ] ⚑ **Homepage choices made while the owner was away (2026-07-16 evening)** — eyeball and
+      overrule freely: (a) hero polaroids = gallery dogs 01/16/19/17; (b) door-to-door photo =
+      gallery dog-06 (Shih Tzu in bandana) because `pickup.jpg` is a map naming out-of-area
+      towns; (c) the Google widget's 4 review excerpts dropped (badge + link instead — see copy
+      log); (d) testimonial dog photos reused from the old homepage; (e) homepage share image =
+      the /services/ group-of-dogs photo (the old one was a banned bubble composite).
+- [ ] ⚑ **Replace `services/pickup.jpg`** (map naming Bexhill/Battle/Rye — not served) with a
+      Hastings-centred map or a van/collection photo, at polish.
 
 ## Deliberate copy/SEO changes log
 
@@ -173,6 +181,42 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
    only matched `https?://` (protocol-relative was handled for `srcset` only). The harvest reported
    "failed: 0" while silently skipping them. Rescued at 1200×600 on 2026-07-16 and
    `scripts/harvest.mjs` fixed. Same near-miss class as the Bruno video.
+
+### 2026-07-16 (evening) — Stage 5: / (homepage), shipped last per the inside-out order
+
+Section copy is verbatim from `grooming-image-archive/home/copy.md` except these logged
+deviations (owner away from desk — decisions flagged ⚑ below are noted in Open items for review):
+
+1. **The "Door-to-door service" section is rebuilt on the ruled facts.** The old body promised
+   pick-up "at no extra cost" (banned wording). Its first sentence is kept verbatim; the facts
+   now render from `pricing.json` `pickup` — £2/journey, £4 round trip, Hastings and St Leonards,
+   full grooms + hand stripping + bath & brush (the evening ruling) — with a link to the FAQ
+   windows.
+2. **The 2-slide hero carousel → a static hero**, same three lines of copy ("Hastings Dog
+   Groomers" / "Caring for your best friend" / "Dog Grooming to suit your needs", extended with
+   the breed-pricing + Hastings facts). The old carousel showed the SAME slide twice — nothing
+   is lost.
+3. **The live Google-reviews widget is not carried over.** Static replacement: ReviewsBadge
+   (4.9★/63 snapshot from business.ts) + a link out to the live Google reviews. ⚑ The widget's
+   4 review excerpts (Mollie Taylor, Deborah-Marie Aldred, Samantha Lake, Tonita Shale) are NOT
+   reproduced — a static copy of live reviews goes stale and reproduces third-party text. Owner
+   may want a refreshed excerpt block at polish.
+4. **The three site-authored testimonials are verbatim** (Sarah/Kadi/Laura, Hastings), with
+   their real dog photos from the old page (Reg & Ter = Sarah's, Boo = Kadi's, Hugo = Laura's —
+   association verified in the old markup).
+5. **The "Review us" section (Facebook/Google buttons) is folded into** the reviews link under
+   the testimonials + the footer's existing socials/review links — not a separate section.
+6. **Old-brand imagery not carried**: the bubble composites, the 200px bubble service thumbs and
+   the stock "dog on iPad" photo. Cards reuse the rescued real photos from /services/ and
+   /gallery/.
+7. **The five "specialist services at a glance" blurbs are verbatim** from the old homepage.
+8. ⚠️ **`services/pickup.jpg` is a MAP whose legible labels are Bexhill, Battle and Rye** — the
+   three towns the owner ruled we do NOT serve. The text gate bans those words but cannot read
+   pixels. The homepage deliberately does not use it; it survives only as a 64px thumbnail on
+   /services/ (labels illegible), with its alt corrected ("A map of the Hastings area" — it
+   previously claimed to be a van). ⚑ Replace with a Hastings-centred map at polish.
+9. Title and the (already-corrected) meta description carried from the Stage-1 stub — the
+   harvested description's "free door to door service" stays banned.
 
 ### 2026-07-16 (evening) — Owner ruling: bath & brush pick-ups ARE offered, £2/journey
 

@@ -100,6 +100,18 @@ for (const p of pages) {
 }
 ok('no banned pick-up/policy wording in any built page (see list above)');
 
+// POSITIVE assertion: every page that states pick-up eligibility must carry the
+// CURRENT list (pricing.pickup.eligible). Banned patterns only catch retired
+// wordings — this catches a page silently keeping a stale list after the next
+// ruling change (eligibility changed twice on 2026-07-16 alone).
+const eligiblePages = ['/', '/services/', '/services/frequently-asked-questions/', '/services/full-groom-price-list/', '/terms-and-conditions/'];
+const eligibleRe = /full grooms,? hand stripping and bath (and|&(amp;)?) brush/i;
+for (const p of eligiblePages) {
+  const html = read(p);
+  if (!html) continue;
+  check(eligibleRe.test(text(html)), `${p} carries the current pick-up eligibility list`);
+}
+
 console.log('\n--- single-sourced pick-up facts ---');
 check(pricing.pickup.areas === 'Hastings and St Leonards', `areas = "${pricing.pickup.areas}" (St Leonards restored per ruling)`);
 check(pricing.pickup.journeyPrice === 2 && pricing.pickup.roundTripPrice === 4, 'price = £2 per leg / £4 round trip');

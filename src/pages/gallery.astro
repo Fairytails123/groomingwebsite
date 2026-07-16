@@ -24,6 +24,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import HillDivider from '../components/HillDivider.astro';
 import { business } from '../data/business';
+import pricing from '../data/pricing.json';
 
 import p1b from '../assets/pages/gallery/pair-1-before.jpg';
 import p1a from '../assets/pages/gallery/pair-1-after.jpg';
@@ -175,8 +176,8 @@ const dogSrc = (n: number) =>
       <div class="rounded-3xl bg-cream-100 px-6 py-12">
         <h2 class="font-display text-3xl font-bold text-moss-900">Fancy your dog on here?</h2>
         <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
-          Book them in and we'll do the rest. Full grooms start at £25 — priced by breed, so you
-          know what you're paying before you arrive.
+          Book them in and we'll do the rest. Full grooms start at £{pricing.fullGroom.from} —
+          priced by breed, so you know what you're paying before you arrive.
         </p>
         <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
           <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>

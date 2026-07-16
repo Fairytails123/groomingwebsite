@@ -171,10 +171,14 @@ const pricing = {
     journeyPrice: 2,
     roundTripPrice: 4,
     // Eligible services: full grooms, hand stripping — and, per the 2026-07-16
-    // evening owner ruling, bath & brush appointments too (the live JotForm sells
-    // exactly that; the harvest's "no bath-and-brush collection" line is retired).
-    // Every OTHER add-on still needs the dog brought to the salon.
-    note: 'Available for full grooms, hand stripping and bath & brush appointments, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.',
+    // evening owner ruling, bath and brush appointments too (the live JotForm
+    // sells exactly that; the harvest's "no bath-and-brush collection" line is
+    // retired). Every OTHER add-on still needs the dog brought to the salon.
+    // `eligible` is the ONE display string every page renders (/, /services/,
+    // FAQ, T&Cs, price list via `note`) — eligibility changed twice on
+    // 2026-07-16 alone, so it must never be retyped as page prose.
+    eligible: 'full grooms, hand stripping and bath and brush appointments',
+    note: 'Available for full grooms, hand stripping and bath and brush appointments, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.',
     // Owner ruling 2026-07-16: a THIRD set of windows, replacing both the ones
     // the FAQ published (2024) and the ones the T&Cs published (2023). Both
     // pages now render these, so they can never drift apart again.

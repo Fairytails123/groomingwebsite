@@ -2,15 +2,20 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
-## ⏸️ CURRENT STATE (2026-07-16, after Stage 4b)
+## ✅ CURRENT STATE (2026-07-16 night) — THE BUILD IS COMPLETE: 15/15 PAGES
 
-**Stages 0–4 DONE.** Preview:
+**Stages 0–5 ALL DONE.** Preview:
 **https://preview.fairytailsdoggrooming.co.uk** (HTTPS enforced, **still noindexed** — the old
-WordPress site remains the indexed one and is untouched). **14 of 15 pages built.**
-Remaining: `/` (Stage 5, homepage + whole-site pass, ships last).
+WordPress site remains the indexed one and is untouched until the switchover runbook runs).
 
 All gates green: `verify-urls` 0 failures · `verify-stage3` 0 · `price-list-e2e` 0 ·
-`mobile-check` 14/14 · Lighthouse 97–100 perf / 100 a11y / 100 SEO on every built page.
+`mobile-check` 15/15 · Lighthouse 97–100 perf / 100 a11y / 100 SEO on every page · dist-wide
+link crawl 82 internal URLs 0 broken · sitemap = the 14 canonical URLs · reduced-motion clean.
+
+**What remains is NOT build work — it's the switchover checklist** (WEBSITE-PLAN "Ready for
+switchover" + docs/SWITCHOVER-RUNBOOK.md): owner walkthrough + sign-off, the ⚑ items below,
+GSC/Ahrefs baselines, GitHub verified domain, then the DNS flip. **Do not flip DNS without the
+owner.**
 
 ### 🔴 Blocking the switchover (owner decisions)
 
@@ -44,6 +49,45 @@ info@ — safe to delete.
 📱 **THE MOBILE GATE** (owner rule, 2026-07-16, in CLAUDE.md): no page ships until it has been
 checked on a phone for **responsiveness, visuals AND speed**. `npm run mobile-check` enforces the
 mechanical half; the other half is on Claude — **open `shots/<slug>-390.png` and look at it.**
+
+## 2026-07-16 (night) — Stage 5 shipped: the homepage. 15/15 — build complete
+
+**The owner's mid-session ruling landed first**: bath & brush pick-ups ARE offered at the same
+£2/journey (the JotForm was right, the site was wrong). Applied across T&Cs//services//FAQ +
+pricing.json regenerated + the retired wording added to stage3-checks' banned list. Committed
+separately (`8cb08cd`→ ruling commit).
+
+**Then the homepage** (owner away — ⚑ choices flagged in WEBSITE-PLAN open items for review):
+- Hero = the old carousel's copy as a static header + Book/price-list CTAs + ReviewsBadge;
+  polaroid strip of 4 gallery dogs; who-we-are teaser, the 5 "at a glance" services (blurbs
+  verbatim), door-to-door band (facts from pricing.json incl. the new bath & brush eligibility),
+  subscription band (mirrors /services/, 2-month term shown next to the CTA), 3 verbatim
+  testimonials with their real dog photos (Reg & Ter/Boo/Hugo), final CTA. Full deviation list:
+  WEBSITE-PLAN copy log Stage 5 entry.
+- **⚠️ Near-miss caught by the eyeball half of the mobile gate:** the door-to-door section
+  originally used `services/pickup.jpg` — which turns out to be a MAP whose legible labels are
+  **Bexhill, Battle and Rye**, the exact towns the owner ruled we don't serve. The text gate
+  bans those words but can't read pixels; at 286px wide it would have advertised the wrong
+  coverage area on the money page. Swapped for a gallery dog; the /services/ 64px thumb keeps it
+  (illegible) with its alt corrected — it had claimed to be "the salon van".
+- **A11y catch:** ReviewsBadge inherits its "4.9 out of 5" text colour — fine in the cream
+  footer, dark-on-dark in the moss hero (Lighthouse a11y 96). Fixed with `text-cream-100` on
+  the hero wrapper → 100.
+- **Whole-site pass:** dist-wide internal link crawl (82 URLs, 0 broken), sitemap sanity (14
+  canonical trailing-slash entries, stubs/404 correctly absent), full mobile-check 15/15,
+  verify-stage3 + price-list-e2e re-run green, reduced-motion clean (polaroids straighten).
+- Lighthouse home: 99 perf / 100 a11y / 100 bp / 100 seo (mobile, prod-flagged build).
+
+**Adversarial review before commit** (4 lenses → 7 raw findings → 5 confirmed, 2 refuted), all
+5 fixed: (1) the meta description's "from £25" and (2) the pick-up eligibility list were
+hardcoded prose — both now render from pricing.json (`pickup.eligible` is a new field; the
+eligibility list is rendered by FIVE pages and changed twice today alone, so stage3-checks now
+POSITIVELY asserts the current list on all five, not just bans retired wordings); (3) homepage
+had no og:image (the old Yoast one did) — now a 1200×530 JPEG derivative of the group-of-dogs
+photo; (4) Base.astro declared `summary_large_image` on pages with no image — now conditional,
+fixing 11 pre-existing pages' contradictory card metadata; (5) the ⚑ owner-review items were
+filed under the wrong WEBSITE-PLAN heading — moved to Open items. Also fixed in the same pass:
+gallery's hardcoded "£25" now interpolates.
 
 ## 2026-07-16 (evening) — Stage 4b shipped: /blog/ + /why-dog-grooming-is-important/
 

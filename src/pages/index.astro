@@ -1,31 +1,386 @@
 ---
-import Base from '../layouts/Base.astro';
-
-// STAGE-1 STUB — the homepage is built LAST in the inside-out order
-// (WEBSITE-PLAN.md). Title/description are the harvested Yoast values so the
-// head is production-correct from day one; the body is a placeholder that
-// only ever appears on the noindexed preview.
+// Legacy URL preserved: / . Ships LAST in the inside-out order (Stage 5).
+// Source: grooming-image-archive/home/copy.md — section copy verbatim except the
+// deviations logged in WEBSITE-PLAN.md (2026-07-16 Stage 5):
 //
-// ⚠️ PICK-UP IS NOT FREE (owner ruling 2026-07-16: £2 per journey, see
-// pricing.json `pickup`). The harvested Yoast description ended "With free door
-// to door service in the Hastings area!" and the old homepage had a whole
-// "Door-to-door service … at no extra cost" section. Neither may be carried
-// over when this page is built for real in Stage 5.
+// 1. ⚠️ The old "Door-to-door service" section claimed pick-up "at no extra cost"
+//    and the old Yoast description said "free door to door service". BANNED
+//    (owner ruling: £2 per journey — stage3-checks enforces it). The section is
+//    kept but its facts render from pricing.json `pickup`, including the
+//    2026-07-16 evening ruling that bath & brush appointments are eligible too.
+// 2. The old hero was a 2-slide carousel of the same slide, twice. It's a static
+//    hero now — same three lines of copy, nothing hidden behind a click.
+// 3. The old page embedded a live Google-reviews widget (4 review excerpts).
+//    Static rebuild: the three site-authored testimonials are kept verbatim with
+//    their real photos (Reg & Ter = Sarah's, Boo = Kadi's, Hugo = Laura's — the
+//    named dogs in the quotes), and the Google widget is replaced by
+//    ReviewsBadge + a link out to the live reviews. Owner may want the widget's
+//    review excerpts back at polish — noted in WEBSITE-PLAN open items.
+// 4. Old-brand imagery (bubble composites, 200px bubble service thumbs, the
+//    stock "dog on iPad" photo) is NOT carried over; cards reuse the rescued
+//    real photos already shipped on the services cluster and gallery.
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HillDivider from '../components/HillDivider.astro';
+import ReviewsBadge from '../components/ReviewsBadge.astro';
+import { business } from '../data/business';
+import pricing from '../data/pricing.json';
+
+import teeth from '../assets/pages/services/teeth.jpg';
+import massage from '../assets/pages/services/massage.jpg';
+import puppy from '../assets/pages/services/puppy.jpg';
+import matting from '../assets/pages/services/matting.jpg';
+import handStripping from '../assets/pages/services/hand-stripping.jpg';
+// ⚠️ Deliberately NOT services/pickup.jpg here: that image is a MAP whose legible
+// labels are Bexhill, Battle and Rye — the three out-of-area towns the owner
+// ruled we do NOT serve (stage3-checks bans them in text; a 286px image would
+// advertise them in pixels). A freshly groomed dog ready to go home instead.
+import dog06 from '../assets/pages/gallery/dog-06.jpg';
+import regAndTer from '../assets/pages/home/reg-and-ter.png';
+import boo from '../assets/pages/home/boo.png';
+import hugo from '../assets/pages/home/hugo.png';
+import groupOfDogs from '../assets/pages/services/group-of-dogs.png';
+import dog01 from '../assets/pages/gallery/dog-01.jpg';
+import dog16 from '../assets/pages/gallery/dog-16.jpg';
+import dog17 from '../assets/pages/gallery/dog-17.jpg';
+import dog19 from '../assets/pages/gallery/dog-19.jpg';
+
+const { pickup, subscription, fullGroom } = pricing;
+
+// Social share card (the old Yoast homepage had one too — bubble-3.png, which is
+// banned old-brand imagery). JPEG derivative with explicit dimensions, same
+// pattern as the blog pages; the homepage's own photos are too small (480px).
+const ogJpeg = await getImage({ src: groupOfDogs, format: 'jpeg', width: 1200 });
+
+// The five "at a glance" services from the old homepage — blurbs VERBATIM from
+// the harvest. Photos are the rescued 300x300 originals used on /services/
+// (small round thumbs, where 300px stays crisp at 2x).
+const glance = [
+  {
+    name: 'Teeth cleaning',
+    blurb: "Vibration- and sound-free ultrasonic teeth cleaning to help get your dog's gnashers white again.",
+    image: teeth,
+    alt: "A dog's teeth being cleaned",
+    href: '/services/teeth-cleaning/',
+  },
+  {
+    name: 'Doggy massage',
+    blurb: 'Try a dog massage for your fur baby and notice the difference in coat, shine, matting and itchiness.',
+    image: massage,
+    alt: 'A dog having an oil massage',
+    href: '/services/doggy-massage/',
+  },
+  {
+    name: 'Puppy introduction',
+    blurb: 'A familiarisation visit for your pup that includes an introduction to different grooming routines.',
+    image: puppy,
+    alt: 'A puppy meeting the grooming salon for the first time',
+    href: '/services/',
+  },
+  {
+    name: 'Dematting',
+    blurb: "If your dog's coat gets matted and out of hand we are here to help make your dog comfortable again.",
+    image: matting,
+    alt: 'A matted coat being worked on',
+    href: '/services/',
+  },
+  {
+    name: 'Hand stripping',
+    blurb: 'A traditional way of grooming the coat for wire coated breeds to reveal a neat, smooth texture and vibrant colour by removing excess topcoat.',
+    image: handStripping,
+    alt: 'A wire-coated terrier being hand stripped',
+    href: '/services/full-groom-price-list/',
+  },
+];
+
+// Hero polaroid strip — four gallery dogs (alt text follows the gallery's
+// breeds-only-where-unmistakable rule; these four are all asserted there).
+const heroDogs = [
+  { src: dog01, alt: 'A chocolate Labradoodle standing on the grooming table after a full groom' },
+  { src: dog16, alt: 'A white Bichon Frise with a rounded scissored coat' },
+  { src: dog19, alt: 'A brown Cockapoo with its tongue out after a full groom' },
+  { src: dog17, alt: 'An Afghan Hound with a bow in its topknot after a full groom' },
+];
+
+// Testimonials — quotes and attributions VERBATIM from the harvest. The photos
+// are the dogs named in (or belonging to) each quote, from the old homepage.
+const testimonials = [
+  {
+    quote: "I can't recommend The Fairy Tails Dog Grooming enough. My dogs get delivered back happy and smelling lovely!",
+    name: 'Sarah, Hastings',
+    image: regAndTer,
+    alt: 'Two black curly-coated dogs sitting on the grass',
+  },
+  {
+    quote: 'The only people I trust with Boo! Comes back so happy, looking and smelling amazing every time!',
+    name: 'Kadi, Hastings',
+    image: boo,
+    alt: 'Boo, a brown and white spaniel wearing a bandana',
+  },
+  {
+    quote: 'Lovely people, did such a great job on Hugo, he looks so handsome! I will definitely be going back!',
+    name: 'Laura, Hastings',
+    image: hugo,
+    alt: 'Hugo, a long-coated cream dog wearing a bandana',
+  },
+];
 ---
 
 <Base
   title="Home - The Fairy Tails Dog Grooming"
-  description="Your friendly Hastings dog groomers that care for your dog as you would yourself. Full grooms tailored to your dog's breed, from £25, in the heart of Hastings."
+  description={`Your friendly Hastings dog groomers that care for your dog as you would yourself. Full grooms tailored to your dog's breed, from £${fullGroom.from}, in the heart of Hastings.`}
   path="/"
+  ogImage={`${business.domain}${ogJpeg.src}`}
+  ogImageWidth={Number(ogJpeg.attributes.width)}
+  ogImageHeight={Number(ogJpeg.attributes.height)}
+  ogImageType="image/jpeg"
 >
-  <section class="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-4 pt-28 text-center">
-    <p class="eyebrow text-honey-700">The Fairy Tails Dog Grooming</p>
-    <h1 class="mt-4 font-display text-4xl font-bold text-moss-900 sm:text-5xl">
-      A brand-new website is on its way
-    </h1>
-    <p class="mt-5 max-w-xl text-lg text-bark-700">
-      This is the build preview. The homepage ships last — every other page is
-      being rebuilt first, then this one ties them all together.
-    </p>
-  </section>
+  <article data-page="home">
+    <!-- Hero — the old 2-slide carousel's copy, as a static header -->
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-24 sm:pt-44">
+      <div class="mx-auto max-w-6xl px-4">
+        <p class="eyebrow text-honey-300">Hastings dog groomers</p>
+        <h1 class="mt-4 max-w-2xl font-display text-4xl font-bold leading-tight text-cream-50 sm:text-6xl">
+          Caring for your best friend
+        </h1>
+        <p class="mt-5 max-w-xl text-lg text-cream-200">
+          Dog grooming to suit your needs — every groom tailored to your dog's breed, in the heart
+          of Hastings.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+          <a href="/services/full-groom-price-list/" class="btn btn-ghost-light">See the price list</a>
+        </div>
+        {/* text-cream-100: the badge's "4.9 out of 5" span inherits text colour —
+            in the footer it inherits cream, here it must be set or it renders
+            dark-on-dark (caught by Lighthouse a11y contrast). */}
+        <div class="mt-8 text-cream-100">
+          <ReviewsBadge />
+        </div>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <!-- Fresh off the table -->
+    <section class="mx-auto max-w-6xl px-4 pt-10 sm:pt-14">
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {
+          heroDogs.map((d, i) => (
+            <figure class="polaroid" style={`rotate: ${(i % 4) - 1.5}deg`}>
+              <Image
+                src={d.src}
+                alt={d.alt}
+                class="aspect-square w-full object-cover"
+                widths={[240, 480]}
+                sizes="(min-width: 1024px) 260px, (min-width: 640px) 22vw, 44vw"
+                loading="eager"
+              />
+            </figure>
+          ))
+        }
+      </div>
+      <p class="mt-6 text-center">
+        <a
+          href="/gallery/"
+          class="inline-flex min-h-11 items-center font-bold text-moss-700 underline decoration-honey-500 decoration-2 underline-offset-4 hover:text-moss-800"
+        >
+          Fresh off the table — see the gallery
+        </a>
+      </p>
+    </section>
+
+    <!-- Who we are -->
+    <section class="mx-auto max-w-3xl px-4 pt-16 text-center">
+      <p class="eyebrow text-honey-700">Who we are</p>
+      <h2 class="mt-3 font-display text-3xl font-bold text-moss-900 sm:text-4xl">
+        Happy dogs are what we are all about
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl leading-relaxed text-bark-700">
+        We offer a professional dog grooming service that matches your dog grooming preference
+        with a happy dog grooming experience.
+      </p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+        <a href="/who-we-are/" class="btn btn-moss">Know more</a>
+      </div>
+    </section>
+
+    <!-- Specialist services at a glance -->
+    <section class="mx-auto max-w-6xl px-4 pt-16">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow text-honey-700">At a glance</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+          Some of our specialist services
+        </h2>
+        <p class="mt-4 leading-relaxed text-bark-700">
+          We offer the full range of dog grooming services, plus we will do our utmost to
+          accommodate your specific needs on request.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          glance.map((s) => (
+            <article class="flex gap-4 rounded-2xl border-2 border-cream-200 p-5">
+              <Image
+                src={s.image}
+                alt={s.alt}
+                class="h-16 w-16 shrink-0 rounded-full object-cover"
+                widths={[64, 128]}
+                sizes="64px"
+                loading="lazy"
+              />
+              <div>
+                <h3 class="font-display text-lg font-bold leading-tight text-moss-900">{s.name}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-bark-700">{s.blurb}</p>
+                <a
+                  href={s.href}
+                  class="mt-1 inline-flex min-h-11 items-center text-sm font-bold text-moss-700 underline decoration-honey-500 decoration-2 underline-offset-4 hover:text-moss-800"
+                >
+                  Find out more<span class="sr-only"> about {s.name.toLowerCase()}</span>
+                </a>
+              </div>
+            </article>
+          ))
+        }
+        <div class="flex items-center justify-center rounded-2xl bg-cream-100 p-5">
+          <a href="/services/" class="btn btn-moss">See our full range of services</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Door-to-door service (facts single-sourced from pricing.json `pickup`) -->
+    <section class="mx-auto max-w-6xl px-4 pt-16">
+      <div class="rounded-3xl bg-cream-100 px-6 py-10 sm:px-10 sm:py-12">
+        <div class="grid items-center gap-10 md:grid-cols-2">
+          <div>
+            <p class="eyebrow text-honey-700">Door-to-door service</p>
+            <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+              Local pick ups and drop offs
+            </h2>
+            <p class="mt-4 leading-relaxed text-bark-700">
+              Your time is better spent doing the things you love, so don't wait around and let us
+              take the hassle out of dog grooming for your fur baby. We'll pick up and drop off at
+              a time which suits you, from your home or office — £{pickup.journeyPrice} per journey
+              (£{pickup.roundTripPrice} for the round trip) across {pickup.areas}, for {pickup.eligible}.
+            </p>
+            <p class="mt-3 text-sm text-bark-600">
+              Collection and drop-off time windows are on the
+              <a
+                href="/services/frequently-asked-questions/"
+                class="font-bold text-moss-700 underline decoration-honey-500 decoration-2 underline-offset-4 hover:text-moss-800"
+              >FAQ page</a>.
+            </p>
+            <div class="mt-6">
+              <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+            </div>
+          </div>
+          <figure class="polaroid mx-auto w-full max-w-sm">
+            <Image
+              src={dog06}
+              alt="A freshly groomed Shih Tzu in an orange bandana, ready for the trip home"
+              class="aspect-square w-full object-cover"
+              widths={[240, 480]}
+              sizes="(min-width: 768px) 384px, 90vw"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subscription (mirrors the /services/ band; facts from pricing.json) -->
+    <section class="mx-auto max-w-6xl px-4 pt-16">
+      <div class="rounded-3xl bg-moss-900 px-6 py-10 text-cream-50 sm:px-10 sm:py-12">
+        <div class="grid gap-8 md:grid-cols-2 md:items-center">
+          <div>
+            <p class="eyebrow text-honey-300">Dog grooming subscription</p>
+            <h2 class="mt-3 font-display text-3xl font-bold sm:text-4xl">
+              £{subscription.price} a month, per dog
+            </h2>
+            <p class="mt-4 text-cream-200">{subscription.availability}</p>
+            <div class="mt-7 flex flex-wrap items-center gap-4">
+              <a href={business.subscription.stripeUrl} class="btn btn-honey">
+                Set up Grooming Subscription
+              </a>
+              <p class="text-sm text-cream-200">
+                £{subscription.price} {subscription.unit}<br />
+                {subscription.minTermMonths}-month minimum term
+              </p>
+            </div>
+          </div>
+          <ul class="grid gap-2.5 text-cream-100">
+            {subscription.includes.map((i) => <li class="paw-bullet flex items-start text-sm">{i}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Satisfied customers -->
+    <section class="mx-auto max-w-6xl px-4 pt-16">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow text-honey-700">Satisfied customers</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">What our customers say</h2>
+        <p class="mt-4 leading-relaxed text-bark-700">
+          We are lucky to receive many compliments on our work and here is what some of our
+          customers have to say about our services.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-7 sm:grid-cols-3">
+        {
+          testimonials.map((t) => (
+            <figure class="flex flex-col rounded-2xl bg-cream-100 p-6">
+              <blockquote class="flex-1 leading-relaxed text-bark-700">
+                &ldquo;{t.quote}&rdquo;
+              </blockquote>
+              <figcaption class="mt-5 flex items-center gap-3 border-t border-cream-200 pt-4">
+                <Image
+                  src={t.image}
+                  alt={t.alt}
+                  class="h-12 w-12 rounded-full object-cover"
+                  widths={[48, 96]}
+                  sizes="48px"
+                  loading="lazy"
+                />
+                <span class="font-bold text-moss-900">{t.name}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+
+      <p class="mt-8 text-center">
+        <a
+          href={business.reviews.readUrl}
+          class="inline-flex min-h-11 items-center font-bold text-moss-700 underline decoration-honey-500 decoration-2 underline-offset-4 hover:text-moss-800"
+        >
+          {business.reviews.rating} out of 5 from {business.reviews.count}+ Google reviews — read them here
+        </a>
+      </p>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-16 text-center">
+      <div class="rounded-3xl bg-cream-100 px-6 py-12">
+        <h2 class="font-display text-3xl font-bold text-moss-900">Ready when you are</h2>
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+          Book your dog's groom online, or get in touch and we'll help you work out what's right
+          for their coat.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+          <a href="/contact/" class="btn btn-moss">Get in touch</a>
+        </div>
+      </div>
+    </section>
+  </article>
 </Base>
+
+<style>
+  /* The polaroid tilt is decorative (same rule as /gallery/). */
+  @media (prefers-reduced-motion: reduce) {
+    .polaroid {
+      rotate: 0deg !important;
+    }
+  }
+</style>
