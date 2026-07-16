@@ -50,6 +50,24 @@ info@ — safe to delete.
 checked on a phone for **responsiveness, visuals AND speed**. `npm run mobile-check` enforces the
 mechanical half; the other half is on Claude — **open `shots/<slug>-390.png` and look at it.**
 
+## 2026-07-16 (night, later) — owner interview round 2: four rulings applied
+
+Owner answered the queued questions: **"From £25" kept** (now interpolates `fullGroom.from`
+everywhere); **£25 puppy groom = stale, removed from the FAQ**; **who-we-are: "training, day
+school and daycare"** (both real, different things — matches the K9 Centre's own naming);
+**Google review excerpts back on the homepage, rotated weekly**. The "Fresh from Google" block
+ships now with 4 five-star excerpts from `src/data/reviews-snapshot.json` (2026-07-12 harvest
+snapshot, verbatim fragments).
+
+**⏳ The weekly rotation is designed but blocked on two credentials only Kam can create** (the
+auto-mode classifier also correctly refused to let a session invent n8n credential entries
+unprompted): a Google Maps Platform key (Places API) and a fine-grained GitHub PAT (Contents RW,
+`Fairytails123/groomingwebsite` only). Flow: n8n weekly schedule → Place Details
+(`reviews_sort=newest`, place `ChIJV3P8-VAb30cRHoBgRmxCYIM`) → filter 5★, take 4, trim →
+compare + PUT `src/data/reviews-snapshot.json` via GitHub contents API → Pages auto-deploys.
+Gates already re-run green after these edits (verify-urls 0 · verify-stage3 0 · mobile-check on
+the 3 changed pages · home Lighthouse 99/100/100/100 · 390px screenshot eyeballed).
+
 ## 2026-07-16 (night) — Stage 5 shipped: the homepage. 15/15 — build complete
 
 **The owner's mid-session ruling landed first**: bath & brush pick-ups ARE offered at the same

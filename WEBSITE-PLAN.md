@@ -101,18 +101,17 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - [x] ~~**Does the £2 per journey apply to a bus Bath & Brush too?**~~ — YES, same ruling: same
       rate, £2 per journey / £4 round trip.
 - [x] ~~**Pickup price wording**~~ — RESOLVED 2026-07-16, see the copy log below.
-- [ ] **"From £25" sets an expectation the price list can't meet.** All five £25 rows
-      (Chihuahua smooth, French Bulldog, Greyhound, Jack Russell smooth, Pug) are **de-shed**
-      breeds. The cheapest clipped/scissored full groom is £30 and the cheapest crossbreed is £35 —
-      so a Cockapoo owner reading "From £25" finds nothing under £40 for their dog. Not a
-      contradiction (it's true), but it's a bounce risk on the money page. Owner call: keep, or
-      say "from £25 (de-shed breeds) / £30 for a clipped groom"?
-- [ ] **Puppy groom £25 exists ONLY in the FAQ** — not in the price list, not in the /services/
-      add-ons, not in pricing.json. Distinct from the free "Puppy introduction". The FAQ page now
-      advertises a product nothing else on the site supports. Real service, or stale offer?
-- [ ] **/who-we-are/ drops the K9 Centre's "online shop"** and says "day school" where the harvest
-      says "day care". The shop was Adventure Dog, which is dead (see copy log), so dropping it is
-      probably right — but confirm "day school" vs "day care" is the real service name.
+- [x] ~~**"From £25" sets an expectation the price list can't meet.**~~ — RESOLVED 2026-07-16
+      (evening interview): **owner ruled KEEP "From £25" as is.** It's accurate (five real £25
+      de-shed rows) and the price list is a click away. The value now interpolates from
+      `pricing.fullGroom.from` everywhere it appears (home meta, gallery CTA, services pages).
+- [x] ~~**Puppy groom £25 exists ONLY in the FAQ**~~ — RESOLVED 2026-07-16 (evening interview):
+      **stale offer, REMOVED.** The FAQ now says a puppy's first proper groom books as a normal
+      full groom, priced by breed. The free puppy introduction stays. (FAQ ruling #5.)
+- [x] ~~**/who-we-are/ "day school" vs "day care"**~~ — RESOLVED 2026-07-16 (evening interview):
+      **both are real and different things.** The line now reads "training, day school and
+      daycare", matching the K9 Centre site's own naming (Dog Day School is its flagship named
+      service; daycare is distinct). Dropping the dead Adventure Dog shop stands.
 - [x] ~~**`/blog/` 404s from the footer**~~ — RESOLVED 2026-07-16: `/blog/` and the root-level
       post are built; the footer link and the `/category/blog/` stub now land on a real page.
 - [ ] **BREEDS ON /gallery/ NEED THE OWNER'S EYE.** Owner ruling 2026-07-16 was "use breeds, no
@@ -145,9 +144,18 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - [ ] ⚑ **Homepage choices made while the owner was away (2026-07-16 evening)** — eyeball and
       overrule freely: (a) hero polaroids = gallery dogs 01/16/19/17; (b) door-to-door photo =
       gallery dog-06 (Shih Tzu in bandana) because `pickup.jpg` is a map naming out-of-area
-      towns; (c) the Google widget's 4 review excerpts dropped (badge + link instead — see copy
-      log); (d) testimonial dog photos reused from the old homepage; (e) homepage share image =
-      the /services/ group-of-dogs photo (the old one was a banned bubble composite).
+      towns; (c) ~~review excerpts dropped~~ → owner ruled them BACK IN (evening interview): a
+      "Fresh from Google" block now renders 4 five-star excerpts from
+      `src/data/reviews-snapshot.json`; (d) testimonial dog photos reused from the old homepage;
+      (e) homepage share image = the /services/ group-of-dogs photo (the old one was a banned
+      bubble composite).
+- [ ] 🔑 **WEEKLY REVIEW ROTATION — blocked on two credentials only the owner can create.**
+      Owner ruling: the Google excerpts should rotate weekly with fresh 5★ reviews. Design is
+      settled (n8n schedule → Google Places Details (`reviews_sort=newest`) → filter 5★ → commit
+      `src/data/reviews-snapshot.json` to the repo via GitHub API → Pages auto-deploys). Needs:
+      (1) a **Google Maps Platform API key** with Places API enabled (52 calls/yr — free tier);
+      (2) a **GitHub fine-grained PAT**, Contents read/write, scoped to
+      `Fairytails123/groomingwebsite` only. Until then the block shows the 2026-07-12 snapshot.
 - [ ] ⚑ **Replace `services/pickup.jpg`** (map naming Bexhill/Battle/Rye — not served) with a
       Hastings-centred map or a van/collection photo, at polish.
 
@@ -181,6 +189,20 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
    only matched `https?://` (protocol-relative was handled for `srcset` only). The harvest reported
    "failed: 0" while silently skipping them. Rescued at 1200×600 on 2026-07-16 and
    `scripts/harvest.mjs` fixed. Same near-miss class as the Bruno video.
+
+### 2026-07-16 (evening, after the owner interview) — four rulings applied post-build
+
+1. **"From £25" kept as is** (owner ruling) — now interpolated from `pricing.fullGroom.from`
+   wherever it appears, never typed.
+2. **£25 puppy groom REMOVED from the FAQ** (owner ruling: stale). The answer now points a
+   puppy's first proper groom at the breed-priced full groom. Free puppy introduction unchanged.
+3. **/who-we-are/: "training, day school and daycare"** (owner ruling: both are real, different
+   things). Matches the K9 Centre site's own service naming.
+4. **Homepage gains a "Fresh from Google" block** (owner ruling: excerpts back, rotated weekly).
+   4 five-star excerpts render from `src/data/reviews-snapshot.json` (seeded from the 2026-07-12
+   harvest of the old live widget — verbatim contiguous fragments, ellipses mark truncation).
+   Weekly rotation via n8n is designed but blocked on two owner-created credentials (see the 🔑
+   open item).
 
 ### 2026-07-16 (evening) — Stage 5: / (homepage), shipped last per the inside-out order
 

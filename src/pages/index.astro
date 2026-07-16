@@ -13,9 +13,11 @@
 // 3. The old page embedded a live Google-reviews widget (4 review excerpts).
 //    Static rebuild: the three site-authored testimonials are kept verbatim with
 //    their real photos (Reg & Ter = Sarah's, Boo = Kadi's, Hugo = Laura's — the
-//    named dogs in the quotes), and the Google widget is replaced by
-//    ReviewsBadge + a link out to the live reviews. Owner may want the widget's
-//    review excerpts back at polish — noted in WEBSITE-PLAN open items.
+//    named dogs in the quotes), plus (owner ruling 2026-07-16 evening) a
+//    "Fresh from Google" excerpt block rendered from
+//    src/data/reviews-snapshot.json — the contract file the n8n
+//    "Grooming Reviews Rotator" workflow overwrites weekly with fresh 5-star
+//    excerpts. Never hardcode review text here.
 // 4. Old-brand imagery (bubble composites, 200px bubble service thumbs, the
 //    stock "dog on iPad" photo) is NOT carried over; cards reuse the rescued
 //    real photos already shipped on the services cluster and gallery.
@@ -25,6 +27,7 @@ import HillDivider from '../components/HillDivider.astro';
 import ReviewsBadge from '../components/ReviewsBadge.astro';
 import { business } from '../data/business';
 import pricing from '../data/pricing.json';
+import reviewsSnapshot from '../data/reviews-snapshot.json';
 
 import teeth from '../assets/pages/services/teeth.jpg';
 import massage from '../assets/pages/services/massage.jpg';
@@ -347,6 +350,27 @@ const testimonials = [
             </figure>
           ))
         }
+      </div>
+
+      <!-- Fresh from Google — rendered from reviews-snapshot.json (rotated weekly) -->
+      <div class="mt-12">
+        <h3 class="text-center font-display text-xl font-bold text-moss-900">Fresh from Google</h3>
+        <div class="mt-6 grid gap-5 sm:grid-cols-2">
+          {
+            reviewsSnapshot.reviews.map((r) => (
+              <figure class="rounded-2xl border-2 border-cream-200 p-5">
+                <span class="text-honey-500" aria-hidden="true">
+                  {'★'.repeat(r.rating)}
+                </span>
+                <span class="sr-only">{r.rating} out of 5 stars</span>
+                <blockquote class="mt-2 text-sm leading-relaxed text-bark-700">{r.text}</blockquote>
+                <figcaption class="mt-3 text-sm font-bold text-moss-900">
+                  {r.author} <span class="font-normal text-bark-600">· Google review</span>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
       </div>
 
       <p class="mt-8 text-center">

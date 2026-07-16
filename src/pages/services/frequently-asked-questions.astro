@@ -4,7 +4,7 @@
 // 15 questions (the harvest has 16 ##### headings; the 16th is the closing
 // "can't find what you need?" CTA, rendered as the CTA block at the foot).
 //
-// FOUR OWNER RULINGS 2026-07-16 land on this page (all logged in WEBSITE-PLAN.md).
+// FIVE OWNER RULINGS 2026-07-16 land on this page (all logged in WEBSITE-PLAN.md).
 // The old FAQ and the old T&Cs contradicted each other on three of them; both
 // pages now say the same thing:
 //   1. Pick-up windows — a NEW third set, replacing the FAQ's (2024) and the
@@ -15,13 +15,15 @@
 //   4. The "Adventure Dog website" shop link is DROPPED — adventure-dog.co.uk is
 //      a dead Shopify domain (fails TLS, returns Shopify's 409 "domain not
 //      connected"). The answer stays, without an outbound link.
+//   5. The "£25 puppy groom" is REMOVED (evening ruling: a stale offer). It
+//      existed nowhere but this FAQ — not in the price list, not in pricing.json.
+//      The free puppy introduction stays; after it, a puppy books a normal full
+//      groom priced by breed.
 import Base from '../../layouts/Base.astro';
 import HillDivider from '../../components/HillDivider.astro';
 import Faq from '../../components/Faq.astro';
 import { business } from '../../data/business';
 import pricing from '../../data/pricing.json';
-
-const puppyGroomPrice = 25;
 ---
 
 <Base
@@ -144,9 +146,9 @@ const puppyGroomPrice = 25;
             treat.
           </p>
           <p>
-            After that you can book a puppy groom (£{puppyGroomPrice}), which includes all of the
-            above plus a bath, hygiene trim, paw pad shave and a tidy up around the feet and face.
-            Following grooms can be booked as a full groom from then on.
+            After their introduction, your puppy's first proper groom can be booked as a full
+            groom — priced by breed on our
+            <a href="/services/full-groom-price-list/">price list</a>.
           </p>
         </Faq>
 
