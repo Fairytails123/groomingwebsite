@@ -2,16 +2,15 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
-## ⏸️ PAUSED HERE (2026-07-16 evening)
+## ⏸️ CURRENT STATE (2026-07-16, after Stage 4b)
 
-**Stages 0–3 DONE. Stage 4 half done — /gallery/ shipped.** Preview:
+**Stages 0–4 DONE.** Preview:
 **https://preview.fairytailsdoggrooming.co.uk** (HTTPS enforced, **still noindexed** — the old
-WordPress site remains the indexed one and is untouched). **12 of 15 pages built.**
-Remaining: `/blog/`, `/why-dog-grooming-is-important/` (Stage 4b), then `/` (Stage 5, ships last).
+WordPress site remains the indexed one and is untouched). **14 of 15 pages built.**
+Remaining: `/` (Stage 5, homepage + whole-site pass, ships last).
 
-All gates green at the pause: `verify-urls` 0 failures · `verify-stage3` 0 · `price-list-e2e` 0 ·
-`mobile-check` 12/12 · Lighthouse 95–100 perf / 100 a11y / 100 SEO on every built page.
-Everything is committed and pushed; the preview is deployed and live-verified.
+All gates green: `verify-urls` 0 failures · `verify-stage3` 0 · `price-list-e2e` 0 ·
+`mobile-check` 14/14 · Lighthouse 97–100 perf / 100 a11y / 100 SEO on every built page.
 
 ### 🔴 Blocking the switchover (owner decisions)
 
@@ -20,7 +19,7 @@ Everything is committed and pushed; the preview is deployed and live-verified.
    question, while the T&Cs, /services/ and pricing.json all say bath-and-brush gets NO
    collection. One is wrong. A customer who pays for a collection we then refuse is a real
    complaint. **This is the top item for the next session.**
-2. **Eyeball the preview — phone AND desktop.** 12 real pages now.
+2. **Eyeball the preview — phone AND desktop.** 14 real pages now.
 3. **Check the gallery breeds** — alt text names breeds where they were unmistakable and
    deliberately doesn't where they weren't. Full list in WEBSITE-PLAN's open items.
 4. **Who-we-are photo** — the old image looks like the K9 Centre BARN, not the town salon.
@@ -29,10 +28,10 @@ Everything is committed and pushed; the preview is deployed and live-verified.
 
 ### Next build work
 
-**Stage 4b — `/blog/` + `/why-dog-grooming-is-important/`** (the post is at ROOT level, not
-under /blog/ — see the manifest). ⚠️ `/blog/` is linked from the footer and **404s today**.
-Then **Stage 5 — homepage + whole-site pass**. When the homepage is built, do NOT carry over
-its harvested "free door to door service" claims (see the copy log — pick-ups are £2/journey).
+**Stage 5 — homepage + whole-site pass** (hero/teasers/reviews/subscription band; dist-wide
+link crawl, sitemap sanity, both-viewport sweep, full verify-urls). When the homepage is built,
+do NOT carry over its harvested "free door to door service" claims (see the copy log —
+pick-ups are £2/journey).
 
 **Also pending (needs a browser session with the owner):** GSC Domain property + DNS-TXT
 verification and baseline export; GitHub account-level verified domain
@@ -47,6 +46,43 @@ info@ — safe to delete.
 📱 **THE MOBILE GATE** (owner rule, 2026-07-16, in CLAUDE.md): no page ships until it has been
 checked on a phone for **responsiveness, visuals AND speed**. `npm run mobile-check` enforces the
 mechanical half; the other half is on Claude — **open `shots/<slug>-390.png` and look at it.**
+
+## 2026-07-16 (evening) — Stage 4b shipped: /blog/ + /why-dog-grooming-is-important/
+
+**14 of 15 pages built — only the homepage remains.** Owner interview locked 4 rulings before the
+build: **date only, NO author byline** (the old post credited Grace Humbles); **hero = the K9
+Centre repo's 1600×1180 salon photo** (copied byte-exact, sha256-verified, replacing the old
+650×433 studio shot); **both sites stay self-canonical** — the cross-domain duplicate decision
+stays at polish; **more posts are planned** → /blog/ is a growing tips section (a new post =
+one markdown file in `src/content/blog/`, everything else is generated).
+
+**What the harvest investigation established** (full detail in WEBSITE-PLAN's copy log):
+- The visible "November 6, 2022" byline was a site-rebuild artifact. The body's own first line
+  was a typed "17th April 2020", WP's auto-excerpt on /blog/ proved it body text, and the Main
+  Website's copy of the same post already used 2020-04-17. That date is now `pubDate`; the stray
+  body line is dropped.
+- The old article body had **zero headings** — its four section labels were
+  `<p><strong>` paragraphs. Promoted to real H2s. The old /blog/ index had **no H1 and a null
+  meta description**; both written new (logged).
+- The post is word-identical on thefairytails.co.uk (its copy fixed 2 typos; ours now carries
+  the same 2 fixes, logged like the T&Cs precedent).
+
+**New infrastructure:** content collection populated (filename = ROOT-level legacy slug; new
+`src/pages/[slug].astro` route renders it); `Base.astro` gained optional `articlePublished`
+(og:type article + article:published_time, as old Yoast emitted) and og:image
+width/height/type props; both new pages added to mobile-check/shots/verify-urls.
+
+**Adversarial review before commit** (4 lenses → 7 raw findings → 3 confirmed, 4 refuted), all
+3 fixed: an empty-collection guard in blog.astro (a verifier **watched the post .md transiently
+vanish from src/content/blog/ mid-OneDrive-sync** — the guard turns a cryptic build TypeError
+into a diagnosis); /blog/ was missing its og:image; both pages' og:image is now a **JPEG
+derivative with explicit dimensions** (some scrapers render the first scrape imageless for a
+bare WebP; old Yoast shipped dimensions too).
+
+**Gates:** verify-urls 0 · mobile-check 14/14 (the 2 new pages add ZERO low-res warnings — the
+salon photo choice) · Lighthouse blog 100/100/100/100, post 97/100/100/100 · verify-stage3 0 ·
+price-list-e2e 0 · reduced-motion: 0 running animations, 0 hidden at t=0 · 1440+390 screenshots
+eyeballed on both pages.
 
 ## 2026-07-16 (pause) — checked the LIVE booking form; two of my own claims were wrong
 

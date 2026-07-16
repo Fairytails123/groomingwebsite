@@ -28,6 +28,8 @@ const paths = process.argv.slice(2).length
       '/services/frequently-asked-questions/',
       // Stage 4
       '/gallery/',
+      '/blog/',
+      '/why-dog-grooming-is-important/',
     ];
 
 const browser = await chromium.launch();

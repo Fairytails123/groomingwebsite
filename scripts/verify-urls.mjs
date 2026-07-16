@@ -33,8 +33,8 @@ const MANIFEST = [
   { path: '/gallery/', type: 'page', status: 'built' }, // built 2026-07-16
   { path: '/contact/', type: 'page', status: 'built' }, // built 2026-07-12
   { path: '/terms-and-conditions/', type: 'page', status: 'built' }, // built 2026-07-12
-  { path: '/blog/', type: 'page', status: 'planned' },
-  { path: '/why-dog-grooming-is-important/', type: 'page', status: 'planned' }, // blog post at ROOT level
+  { path: '/blog/', type: 'page', status: 'built' }, // built 2026-07-16
+  { path: '/why-dog-grooming-is-important/', type: 'page', status: 'built' }, // blog post at ROOT level — built 2026-07-16
   // ---- meta-refresh stubs (hand-authored in public/ — canonical + noindex) ----
   { path: '/services-2/', type: 'stub', status: 'built' }, // stale duplicate services page → /services/
   { path: '/category/blog/', type: 'stub', status: 'built' }, // WP category archive → /blog/

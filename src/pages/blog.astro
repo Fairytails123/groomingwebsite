@@ -1,0 +1,141 @@
+---
+// Legacy URL preserved: /blog/ .
+// Source: grooming-image-archive/blog/copy.md — the old WordPress index listed
+// exactly ONE post ("Why dog grooming is important") with no H1, no sidebar, no
+// thumbnails, and a broken auto-excerpt that opened with a stray "17th April 2020".
+//
+// DELIBERATE CHANGES (logged in WEBSITE-PLAN.md, 2026-07-16 Stage 4b):
+//   - the page gains an H1 and a meta description (the old page had neither —
+//     Yoast description was null);
+//   - the excerpt is the post's own description instead of WP's auto-excerpt;
+//   - framed as a growing tips-and-advice section (owner ruling 2026-07-16:
+//     more posts are planned) — new posts are markdown files in src/content/blog/.
+import { getCollection } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HillDivider from '../components/HillDivider.astro';
+import { business } from '../data/business';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const [latest, ...older] = posts;
+if (!latest) {
+  // /blog/ is a shipped manifest URL (scripts/verify-urls.mjs) — it can never
+  // legitimately be empty. This repo lives in OneDrive, where files can
+  // transiently vanish mid-sync; fail with a diagnosis, not a bare TypeError.
+  throw new Error('Blog collection is empty — check src/content/blog/*.md exists.');
+}
+
+// Social share card: a JPEG derivative with explicit dimensions (some scrapers
+// mishandle bare WebP og:images; the old Yoast emitted dimensions too).
+const ogJpeg = await getImage({ src: latest.data.heroImage, format: 'jpeg', width: 1200 });
+
+const dateOf = (d: Date) =>
+  d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const isoOf = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base
+  title="Blog - The Fairy Tails Dog Grooming"
+  description="Grooming tips and advice from The Fairy Tails salon in Hastings — healthy coats, brushing at home, puppies' first grooms and more."
+  path="/blog/"
+  ogImage={`${business.domain}${ogJpeg.src}`}
+  ogImageWidth={Number(ogJpeg.attributes.width)}
+  ogImageHeight={Number(ogJpeg.attributes.height)}
+  ogImageType="image/jpeg"
+>
+  <article data-page="blog">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">Tips &amp; advice</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Blog
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          Grooming advice from the salon — keeping coats healthy between visits, brushing at home,
+          and getting puppies off to a good start.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <!-- Latest post, featured -->
+    <section class="mx-auto max-w-5xl px-4 pt-10 sm:pt-14">
+      <a
+        href={`/${latest.id}/`}
+        class="group grid overflow-hidden rounded-3xl bg-cream-100 shadow-[var(--shadow-polaroid)] sm:grid-cols-2"
+      >
+        <Image
+          src={latest.data.heroImage}
+          alt={latest.data.heroAlt}
+          class="h-56 w-full object-cover sm:h-full"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 496px, (min-width: 640px) 50vw, 100vw"
+          loading="eager"
+        />
+        <div class="p-6 sm:p-8 lg:p-10">
+          <p class="eyebrow text-honey-700">
+            {latest.data.category} &middot;
+            <time datetime={isoOf(latest.data.pubDate)}>{dateOf(latest.data.pubDate)}</time>
+          </p>
+          <h2
+            class="mt-3 font-display text-2xl font-bold leading-tight text-moss-900 group-hover:underline group-hover:decoration-honey-500 group-hover:decoration-2 group-hover:underline-offset-4 sm:text-3xl"
+          >
+            {latest.data.title}
+          </h2>
+          <p class="mt-4 leading-relaxed text-bark-700">{latest.data.description}</p>
+          <p class="mt-6 inline-flex min-h-11 items-center font-bold text-moss-700">
+            Read the post <span class="ml-2" aria-hidden="true">&rarr;</span>
+          </p>
+        </div>
+      </a>
+
+      {
+        older.length > 0 && (
+          <div class="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            {older.map((post) => (
+              <a
+                href={`/${post.id}/`}
+                class="group flex flex-col overflow-hidden rounded-2xl bg-cream-100 shadow-[var(--shadow-polaroid)]"
+              >
+                <Image
+                  src={post.data.heroImage}
+                  alt={post.data.heroAlt}
+                  class="aspect-[16/10] w-full object-cover"
+                  widths={[480, 768]}
+                  sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 100vw"
+                  loading="lazy"
+                />
+                <div class="flex flex-1 flex-col p-5">
+                  <p class="eyebrow text-honey-700">
+                    {post.data.category} &middot;
+                    <time datetime={isoOf(post.data.pubDate)}>{dateOf(post.data.pubDate)}</time>
+                  </p>
+                  <h2 class="mt-2 font-display text-lg font-bold leading-tight text-moss-900 group-hover:underline group-hover:decoration-honey-500 group-hover:decoration-2 group-hover:underline-offset-4">
+                    {post.data.title}
+                  </h2>
+                  <p class="mt-2 text-sm leading-relaxed text-bark-700">{post.data.description}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-16 text-center">
+      <div class="rounded-3xl bg-cream-100 px-6 py-12">
+        <h2 class="font-display text-3xl font-bold text-moss-900">Prefer advice in person?</h2>
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+          Every dog is different — book in and we'll talk you through what's right for your dog's
+          coat, or check what a groom costs for your breed.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+          <a href="/services/full-groom-price-list/" class="btn btn-moss">See the price list</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>

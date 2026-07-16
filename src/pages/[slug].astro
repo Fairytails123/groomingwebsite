@@ -1,0 +1,100 @@
+---
+// Blog posts live at ROOT level (legacy WordPress URLs): the one migrated post is
+// /why-dog-grooming-is-important/, NOT /blog/why-dog-grooming-is-important/.
+// Filename = collection id = legacy slug (see src/content.config.ts).
+//
+// The displayed date is the ORIGINAL publish date (17 Apr 2020 — owner ruling
+// 2026-07-16: date only, NO author byline). The old page's "November 6, 2022"
+// byline was a site-rebuild artifact; the old /author/grace/ URL already
+// redirects to /who-we-are/. Deviations from the harvest are logged in the
+// post's own frontmatter and WEBSITE-PLAN.md.
+import { getCollection, render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HillDivider from '../components/HillDivider.astro';
+import { business } from '../data/business';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const published = post.data.pubDate.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+const isoDate = post.data.pubDate.toISOString().slice(0, 10);
+
+// Social share card: a JPEG derivative with explicit dimensions (some scrapers
+// mishandle bare WebP og:images; the old Yoast emitted dimensions too).
+const ogJpeg = await getImage({ src: post.data.heroImage, format: 'jpeg', width: 1200 });
+---
+
+<Base
+  title={`${post.data.title} - The Fairy Tails Dog Grooming`}
+  description={post.data.description}
+  path={`/${post.id}/`}
+  ogImage={`${business.domain}${ogJpeg.src}`}
+  ogImageWidth={Number(ogJpeg.attributes.width)}
+  ogImageHeight={Number(ogJpeg.attributes.height)}
+  ogImageType="image/jpeg"
+  articlePublished={isoDate}
+>
+  <article data-page="blog-post">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">{post.data.category}</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          {post.data.title}
+        </h1>
+        <p class="mt-4 text-cream-200">
+          <time datetime={isoDate}>{published}</time>
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <div class="mx-auto max-w-3xl px-4 pt-10 sm:pt-14">
+      <Image
+        src={post.data.heroImage}
+        alt={post.data.heroAlt}
+        class="h-auto w-full rounded-2xl shadow-[var(--shadow-polaroid)]"
+        widths={[480, 800, 1200, 1600]}
+        sizes="(min-width: 768px) 736px, calc(100vw - 2rem)"
+        loading="eager"
+      />
+    </div>
+
+    <div class="post-body mx-auto max-w-3xl px-4 pb-4 pt-2">
+      <Content />
+    </div>
+
+    <div class="mx-auto max-w-3xl px-4 pt-8">
+      <a
+        href="/blog/"
+        class="inline-flex min-h-11 items-center font-bold text-moss-700 underline decoration-honey-500 decoration-2 underline-offset-4 hover:text-moss-800"
+      >
+        &larr; Back to the blog
+      </a>
+    </div>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-10 text-center">
+      <div class="rounded-3xl bg-cream-100 px-6 py-12">
+        <h2 class="font-display text-3xl font-bold text-moss-900">Due a groom?</h2>
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+          From a bath and brush to a full breed-standard groom, we'd love to meet your dog —
+          prices are listed by breed, so you know the cost before you book.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+          <a href="/services/full-groom-price-list/" class="btn btn-moss">See the price list</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>

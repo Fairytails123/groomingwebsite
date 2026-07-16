@@ -34,8 +34,8 @@ and mirror the date here).
 | `/services/homeless-dogs/` | **built** 2026-07-16 | Stage 3 |
 | `/services/frequently-asked-questions/` | **built** 2026-07-16 | Stage 3 — 15 FAQs, `<details>` |
 | `/gallery/` | **built** 2026-07-16 | Stage 4 — 5 before/after pairs (cropped out of the old composites) + 20-photo polaroid grid |
-| `/blog/` | planned | Stage 4 |
-| `/why-dog-grooming-is-important/` | planned | Stage 4 — ROOT-level slug, orig date 17 Apr 2020 |
+| `/blog/` | **built** 2026-07-16 | Stage 4b — one-post index (featured card + growth-ready grid) |
+| `/why-dog-grooming-is-important/` | **built** 2026-07-16 | Stage 4b — ROOT-level slug via content collection; date only, no byline (owner ruling) |
 | `/services-2/` → `/services/` | **stub built** 2026-07-12 | public/ meta-refresh+canonical+noindex |
 | `/category/blog/` → `/blog/` | **stub built** 2026-07-12 | " |
 | `/author/grace/` → `/who-we-are/` | **stub built** 2026-07-12 | " |
@@ -51,7 +51,7 @@ and mirror the date here).
   95–100 perf / 100 a11y / 100 SEO across the cluster. Gated by `npm run verify-stage3` (static
   facts) + `npm run price-list-e2e` (browser: drives the filter, then re-loads with JS OFF and
   asserts all 105 rows are visible by computed style).
-- **Stage 4 — Gallery + blog**: gallery ✅ 2026-07-16 → blog index + the root-level post (next).
+- **Stage 4 — Gallery + blog** ✅ 2026-07-16: gallery ✅ → blog index + the root-level post ✅ (Stage 4b).
 - **Stage 5 — Homepage + whole-site pass**: hero/teasers/reviews/subscription band; dist-wide
   link crawl, sitemap sanity, both-viewport sweep, full verify-urls.
 
@@ -59,8 +59,8 @@ Per-page definition of done = the 6 quality gates in CLAUDE.md.
 
 ## "Ready for switchover" gate
 
-- [ ] 15/15 pages `built` (11/15 as of 2026-07-16 — `/`, `/gallery/`, `/blog/`,
-      `/why-dog-grooming-is-important/` remain); `npm run verify-urls` 0 failures
+- [ ] 15/15 pages `built` (14/15 as of 2026-07-16 evening — only `/` remains, Stage 5);
+      `npm run verify-urls` 0 failures
 - [ ] Per-page fact diff vs harvest signed off (prices, phones, hours, T&Cs verbatim)
 - [x] Breed table rows == 105 (47+10+48) vs harvest; 10-breed spot check re-run; add-ons correct
       — automated in `npm run verify-stage3`, which asserts it against the RENDERED table
@@ -117,8 +117,8 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - [ ] **/who-we-are/ drops the K9 Centre's "online shop"** and says "day school" where the harvest
       says "day care". The shop was Adventure Dog, which is dead (see copy log), so dropping it is
       probably right — but confirm "day school" vs "day care" is the real service name.
-- [ ] **`/blog/` 404s from the footer** until Stage 4 completes. Expected during the inside-out
-      build; must not survive to switchover (verify-urls tracks it). `/gallery/` is now built.
+- [x] ~~**`/blog/` 404s from the footer**~~ — RESOLVED 2026-07-16: `/blog/` and the root-level
+      post are built; the footer link and the `/category/blog/` stub now land on a real page.
 - [ ] **BREEDS ON /gallery/ NEED THE OWNER'S EYE.** Owner ruling 2026-07-16 was "use breeds, no
       names", accepting the risk that a guess could be wrong. Breeds are asserted in alt text ONLY
       where unmistakable; where it was a judgement call the alt text describes the coat instead.
@@ -139,7 +139,10 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - [ ] **Ahrefs baseline** via web UI (API plan-blocked): organic keywords, top pages, backlinks →
       `docs/seo-baseline/`; decide `/feed/` + wp-content stub questions from the backlink report.
 - [ ] Identify the external .co.uk registrar + confirm auto-renew (not blocking; DNS is at Hostinger).
-- [ ] The blog post exists on BOTH this domain and the Main Website — canonical decision at polish.
+- [ ] The blog post exists on BOTH this domain and the Main Website — **owner confirmed
+      2026-07-16: decide at polish.** Both copies ship self-canonical (exactly the old status
+      quo). Note for the polish session: the Main Website's Base.astro computes canonicals
+      generically — pointing its copy here needs a small per-post override prop there.
 - [ ] Favicon .ico variant (PNG set shipped; .ico optional).
 - [ ] /who-we-are/ photo: the old page's `Fairy-Tails.jpg` looks like the K9 Centre BARN, not
       the town salon — owner to confirm or supply a salon photo (alt text kept neutral meanwhile).
@@ -174,6 +177,35 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
    only matched `https?://` (protocol-relative was handled for `srcset` only). The harvest reported
    "failed: 0" while silently skipping them. Rescued at 1200×600 on 2026-07-16 and
    `scripts/harvest.mjs` fixed. Same near-miss class as the Bruno video.
+
+### 2026-07-16 — Stage 4b: /blog/ + /why-dog-grooming-is-important/ (owner interview same day)
+
+Owner rulings (locked via interview before the build): **date only, no author byline** (the old
+post credited Grace Humbles); **hero = the K9 Centre site's 1600×1180 salon photo** (replacing the
+old 650×433 end-of-post studio shot, alt=""); **both sites stay self-canonical for now** — the
+cross-domain duplicate decision stays "at polish"; **more posts are planned**, so /blog/ is framed
+as a growing tips section (new posts = markdown files in `src/content/blog/`).
+
+1. **Post date = 17 April 2020, displayed without an author.** The old page's visible byline
+   ("By Grace Humbles / November 6, 2022") carried a site-rebuild date: the body's own first line
+   was a typed "17th April 2020", the WP auto-excerpt on /blog/ confirmed it as body text, and the
+   Main Website's copy of this same post already uses 2020-04-17. The stray body line is dropped —
+   it became the real `pubDate`.
+2. **Four bold-paragraph section labels promoted to real H2s** ("Importance of Dog Grooming",
+   "Dog grooming at home", "Puppies and grooming", "How often should I get my dog groomed?"). The
+   old markup was `<p><strong>…</strong></p>` — zero headings in the whole article body.
+3. **Two typo fixes** (same class as the T&Cs precedent): "brushing them to hard" → "too hard";
+   "you can be confident pooch will leave" → "confident your pooch will leave". Everything else
+   verbatim from the harvest, curly apostrophes included.
+4. **/blog/ gains an H1 and a meta description** — the old index had NO H1 anywhere and a null
+   Yoast description. The old card's excerpt was WP's broken auto-excerpt (it opened with the
+   stray "17th April 2020"); the new card uses the post's own description (= its Yoast meta
+   description, verbatim).
+5. **og:type=article + article:published_time restored** on the post via a new optional
+   `articlePublished` prop on Base.astro (the old Yoast emitted the same pair; og:type stays
+   "website" everywhere else).
+6. Titles verbatim: "Blog - The Fairy Tails Dog Grooming" and "Why dog grooming is important -
+   The Fairy Tails Dog Grooming".
 
 ### 2026-07-16 — Stage 3 owner rulings (the old site contradicted itself; these settle it)
 

@@ -38,6 +38,8 @@ const PAGES = process.argv.slice(2).length
       '/services/homeless-dogs/',
       '/services/frequently-asked-questions/',
       '/gallery/',
+      '/blog/',
+      '/why-dog-grooming-is-important/',
     ];
 
 const problems = [];
