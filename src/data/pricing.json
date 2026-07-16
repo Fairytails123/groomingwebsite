@@ -447,7 +447,7 @@
         "price": 30
       }
     ],
-    "note": "We do not offer pick ups/drop offs for bath and brush appointments — please drop off and collect your doggy from our salon."
+    "note": "Pick ups and drop offs are available for bath and brush appointments too — £2 per journey, the same as full grooms."
   },
   "subscription": {
     "price": 25,
@@ -549,7 +549,7 @@
     "priceDisplay": "£2 per journey",
     "journeyPrice": 2,
     "roundTripPrice": 4,
-    "note": "Available for full grooms and hand stripping, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.",
+    "note": "Available for full grooms, hand stripping and bath & brush appointments, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.",
     "windows": [
       {
         "appointment": "Morning appointments",

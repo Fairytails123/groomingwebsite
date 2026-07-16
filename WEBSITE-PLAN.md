@@ -92,18 +92,14 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 
 ## Open items
 
-- [ ] 🔴 **THE LIVE BOOKING FORM SELLS A SERVICE THE SITE SAYS WE DON'T OFFER.** The JotForm
-      (`251190647924057`, updated **2026-07-15**) contains the question **"Bath and Brush
-      Appointment – Bus pick-up and drop-offs"** — i.e. a customer can book a Bath & Brush *with*
-      collection. Our site says the opposite in three places, all inherited from the harvest and
-      reinforced by the 2026-07-16 rulings: `pricing.json` `bathBrushTidy.note`, the T&Cs
-      ("We do not offer pick ups/drop offs for bath and brush appointments"), and /services/
-      ("for full grooms and hand stripping only"). One of the two is wrong. **Owner must rule
-      before switchover** — a customer who books and pays for a collection we then refuse is a
-      real complaint, not a typo. (Found 2026-07-16 by reading the live form, not the harvest.)
-- [ ] **Does the £2 per journey apply to a bus Bath & Brush too, if it's offered?** Falls out of
-      the ruling above. Note the form's "Select pick-up, drop-off **or both** services" question
-      independently corroborates the per-LEG pricing model.
+- [x] ~~🔴 **THE LIVE BOOKING FORM SELLS A SERVICE THE SITE SAYS WE DON'T OFFER.**~~ —
+      **RESOLVED 2026-07-16 (evening), owner ruling: the FORM was right.** Bath & Brush pick-ups
+      **are offered, at the same £2 per journey**. All three site claims of the old restriction
+      updated (T&Cs, /services/, FAQ), `bathBrushTidy.note` + `pickup.note` regenerated via
+      `extract-prices.mjs`, and the retired wording added to `stage3-checks.mjs`'s banned list so
+      it cannot creep back. See the copy log entry below.
+- [x] ~~**Does the £2 per journey apply to a bus Bath & Brush too?**~~ — YES, same ruling: same
+      rate, £2 per journey / £4 round trip.
 - [x] ~~**Pickup price wording**~~ — RESOLVED 2026-07-16, see the copy log below.
 - [ ] **"From £25" sets an expectation the price list can't meet.** All five £25 rows
       (Chihuahua smooth, French Bulldog, Greyhound, Jack Russell smooth, Pug) are **de-shed**
@@ -178,7 +174,22 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
    "failed: 0" while silently skipping them. Rescued at 1200×600 on 2026-07-16 and
    `scripts/harvest.mjs` fixed. Same near-miss class as the Bruno video.
 
-### 2026-07-16 — Stage 4b: /blog/ + /why-dog-grooming-is-important/ (owner interview same day)
+### 2026-07-16 (evening) — Owner ruling: bath & brush pick-ups ARE offered, £2/journey
+
+The blocking contradiction is settled: **the live JotForm was right and the site was wrong.**
+Bath and brush appointments get bus pick-up/drop-off at the same rate as full grooms — £2 per
+journey, £4 round trip. Changes (all fact edits, no layout):
+1. `extract-prices.mjs` → `pricing.json`: `bathBrushTidy.note` now advertises the service
+   ("Pick ups and drop offs are available for bath and brush appointments too — £2 per journey,
+   the same as full grooms."); `pickup.note` now lists "full grooms, hand stripping and bath &
+   brush appointments".
+2. T&Cs: the harvested sentence "We do not offer pick ups/drop offs for bath and brush
+   appointments" is **removed**; the eligibility sentence now names all three services
+   (deviation #3 in the page's comment block).
+3. /services/ add-ons intro and the FAQ pick-up answer: "full grooms and hand stripping only" →
+   all three services named.
+4. `stage3-checks.mjs`: the two retired wordings are now **banned patterns**, and a new check
+   asserts both notes carry the bath & brush offer.
 
 Owner rulings (locked via interview before the build): **date only, no author byline** (the old
 post credited Grace Humbles); **hero = the K9 Centre site's 1600×1180 salon photo** (replacing the

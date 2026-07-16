@@ -14,11 +14,9 @@ All gates green: `verify-urls` 0 failures · `verify-stage3` 0 · `price-list-e2
 
 ### 🔴 Blocking the switchover (owner decisions)
 
-1. **The live booking form sells a service the site says we don't offer.** The JotForm
-   (updated 2026-07-15) has a **"Bath and Brush Appointment – Bus pick-up and drop-offs"**
-   question, while the T&Cs, /services/ and pricing.json all say bath-and-brush gets NO
-   collection. One is wrong. A customer who pays for a collection we then refuse is a real
-   complaint. **This is the top item for the next session.**
+1. ~~**The live booking form sells a service the site says we don't offer.**~~ **RESOLVED
+   2026-07-16 evening — owner ruled the FORM was right**: bath & brush pick-ups ARE offered,
+   same £2/journey. Site updated in all three places + gate hardened (see WEBSITE-PLAN copy log).
 2. **Eyeball the preview — phone AND desktop.** 14 real pages now.
 3. **Check the gallery breeds** — alt text names breeds where they were unmistakable and
    deliberately doesn't where they weren't. Full list in WEBSITE-PLAN's open items.

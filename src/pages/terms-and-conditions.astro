@@ -234,20 +234,24 @@ import pricing from '../data/pricing.json';
       </p>
 
       {/* DEVIATION from the otherwise-verbatim legal copy, owner rulings 2026-07-16
-          (both logged in WEBSITE-PLAN.md):
+          (all logged in WEBSITE-PLAN.md):
           1. The harvested heading read "Free pick up/drop off service" and the body
              "Our free pick up and drop off service". Pick-ups are NOT free — £2 per leg.
           2. The harvested collection windows (8:15–9:30 / 12:45–13:45 → 16:30–17:45)
              were stale AND the afternoon return overshot the 17:30 closing time. The
              FAQ published a different set again; both pages now render the one set
-             held in pricing.json so they cannot drift apart a second time. */}
+             held in pricing.json so they cannot drift apart a second time.
+          3. (evening ruling) Pick ups/drop offs ARE offered for bath and brush
+             appointments, same £2 rate — the harvested "We do not offer pick ups/
+             drop offs for bath and brush appointments" sentence is REMOVED. The live
+             booking form sells exactly that service; the owner confirmed the form. */}
       <h2>Pick up/drop off service</h2>
       <p>
-        Our pick up and drop off service is available for dogs booked in for full grooms and hand
-        stripping, in {pricing.pickup.areas}. Each journey is charged at £{pricing.pickup.journeyPrice}
+        Our pick up and drop off service is available for dogs booked in for full grooms, hand
+        stripping and bath and brush appointments, in {pricing.pickup.areas}. Each journey is
+        charged at £{pricing.pickup.journeyPrice}
         {' '}— £{pricing.pickup.journeyPrice} to collect and £{pricing.pickup.journeyPrice} to drop off, so
-        {' '}£{pricing.pickup.roundTripPrice} for the round trip. We do not offer pick ups/drop offs for bath
-        and brush appointments.
+        {' '}£{pricing.pickup.roundTripPrice} for the round trip.
       </p>
       {
         pricing.pickup.windows.map((w) => (

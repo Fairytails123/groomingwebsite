@@ -85,6 +85,10 @@ const banned = [
   [/8:15|17:45|16:30 and 17:45/i, 'a stale pick-up time window'],
   [/unless there are loose hairs/i, 'the retired ear-plucking carve-out'],
   [/£50\+/i, 'the contradicted "£50+" hand-strip floor (the table has £45 rows)'],
+  // Owner ruling 2026-07-16 (evening): bath-and-brush pick-ups ARE offered at the
+  // same £2/journey — the live JotForm sells them. The old restriction is retired.
+  [/do not offer pick ups?\s*\/?\s*drop offs? for bath/i, 'the retired "no bath-and-brush pick-ups" restriction (offered at £2/journey since 2026-07-16)'],
+  [/full grooms and hand stripping only/i, 'the retired "full grooms and hand stripping only" pick-up restriction (bath & brush now included)'],
 ];
 for (const p of pages) {
   const html = read(p);
@@ -100,6 +104,8 @@ console.log('\n--- single-sourced pick-up facts ---');
 check(pricing.pickup.areas === 'Hastings and St Leonards', `areas = "${pricing.pickup.areas}" (St Leonards restored per ruling)`);
 check(pricing.pickup.journeyPrice === 2 && pricing.pickup.roundTripPrice === 4, 'price = £2 per leg / £4 round trip');
 check(Array.isArray(pricing.pickup.windows) && pricing.pickup.windows.length === 2, 'both collection windows present');
+check(/bath/i.test(pricing.pickup.note) && /bath and brush appointments too/i.test(pricing.bathBrushTidy.note),
+  'bath & brush pick-ups offered (owner ruling 2026-07-16 evening) — both notes carry it');
 const tc = read('/terms-and-conditions/');
 if (tc) {
   const t = text(tc);

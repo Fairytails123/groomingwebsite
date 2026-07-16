@@ -93,10 +93,12 @@ const pricing = {
 
   bathBrushTidy: {
     sizes: bathBrushTidy,
-    // The harvest said "we do not offer FREE pick ups/drop offs" — which now
-    // implies free ones exist somewhere. They don't (see `pickup`): bath-and-brush
-    // gets no collection at any price.
-    note: 'We do not offer pick ups/drop offs for bath and brush appointments — please drop off and collect your doggy from our salon.',
+    // OWNER RULING 2026-07-16 (evening): bath-and-brush pick-ups ARE offered, at
+    // the same £2-per-journey rate as full grooms. This REVERSES the harvest T&Cs
+    // ("We do not offer pick ups/drop offs for bath and brush") — the live JotForm
+    // had been selling a "Bath and Brush Appointment – Bus pick-up and drop-offs"
+    // since at least 2026-07-15, and the owner confirmed the form is right.
+    note: 'Pick ups and drop offs are available for bath and brush appointments too — £2 per journey, the same as full grooms.',
   },
 
   subscription: {
@@ -168,10 +170,11 @@ const pricing = {
     priceDisplay: '£2 per journey',
     journeyPrice: 2,
     roundTripPrice: 4,
-    // "Full grooms only" EXCEPT hand stripping — /services/ is explicit that
-    // every other add-on needs the dog brought to the salon "apart from hand
-    // stripping".
-    note: 'Available for full grooms and hand stripping, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.',
+    // Eligible services: full grooms, hand stripping — and, per the 2026-07-16
+    // evening owner ruling, bath & brush appointments too (the live JotForm sells
+    // exactly that; the harvest's "no bath-and-brush collection" line is retired).
+    // Every OTHER add-on still needs the dog brought to the salon.
+    note: 'Available for full grooms, hand stripping and bath & brush appointments, in Hastings and St Leonards. Each leg is charged separately: £2 to collect and £2 to drop off — £4 for the round trip.',
     // Owner ruling 2026-07-16: a THIRD set of windows, replacing both the ones
     // the FAQ published (2024) and the ones the T&Cs published (2023). Both
     // pages now render these, so they can never drift apart again.
