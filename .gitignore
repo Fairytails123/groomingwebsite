@@ -8,6 +8,12 @@ dist/
 # verbatim harvest of the old WordPress site — NEVER commit (large; public repo)
 grooming-image-archive/
 
+# hero-animation design handoff — the prototypes + their source artwork (1.5MB). Same rule as
+# the harvest: the bulky SOURCE stays out of the public repo, while the derived assets
+# (src/assets/pages/home/hero-*.png) and the script that makes them (scripts/hero-assets.mjs)
+# are committed. Re-run that script only if this folder's artwork changes.
+Luxury dog grooming animation/
+
 # viewport-gate screenshots (scripts/shots.mjs output)
 shots/
 

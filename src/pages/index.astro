@@ -24,6 +24,7 @@
 import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import HillDivider from '../components/HillDivider.astro';
+import HeroStage from '../components/HeroStage.astro';
 import ReviewsBadge from '../components/ReviewsBadge.astro';
 import { business } from '../data/business';
 import pricing from '../data/pricing.json';
@@ -139,32 +140,72 @@ const testimonials = [
   ogImageType="image/jpeg"
 >
   <article data-page="home">
-    <!-- Hero — the old 2-slide carousel's copy, as a static header -->
-    <header class="bg-moss-900 pb-16 pt-32 sm:pb-24 sm:pt-44">
-      <div class="mx-auto max-w-6xl px-4">
-        <p class="eyebrow text-honey-300">Hastings dog groomers</p>
-        <h1 class="mt-4 max-w-2xl font-display text-4xl font-bold leading-tight text-cream-50 sm:text-6xl">
-          Caring for your best friend
-        </h1>
-        <p class="mt-5 max-w-xl text-lg text-cream-200">
-          Dog grooming to suit your needs — every groom tailored to your dog's breed, in the heart
-          of Hastings.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center gap-4">
-          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
-          <a href="/services/full-groom-price-list/" class="btn btn-ghost-light">See the price list</a>
+    {/* Hero — the old 2-slide carousel's copy, as a static header, now with the scroll-scrubbed
+        grooming transformation as its media half (see components/HeroStage.astro).
+
+        The TRACK is what the animation scrubs against, and it only exists at lg+: there the hero
+        pins for 240vh and the dog transforms as you scroll, with the headline and CTA held on
+        screen the whole way. Below lg the track collapses to auto height, nothing sticks, and
+        the stage plays through once when it scrolls into view — most of this salon's customers
+        arrive on a phone (CLAUDE.md), and pinning them for two extra screens before any content
+        is a conversion cost the animation has not earned. Copy is unchanged and verbatim. */}
+    <div class="relative bg-moss-900 lg:h-[240vh]" data-hero-track>
+      <header
+        class="flex items-center pb-16 pt-32 sm:pb-24 sm:pt-44 lg:sticky lg:top-0 lg:h-screen lg:py-24"
+      >
+        <div class="mx-auto w-full max-w-6xl px-4">
+          {/* The media column takes the larger share: the stage's own 760×620 coordinate box
+              carries generous empty margins around the dog, so an even split renders her
+              smaller than she reads on paper. The copy column still holds ~500px, which is what
+              the h1 needs to wrap to two lines at text-6xl. */}
+          <div class="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div>
+              <p class="eyebrow text-honey-300">Hastings dog groomers</p>
+              <h1 class="mt-4 max-w-2xl font-display text-4xl font-bold leading-tight text-cream-50 sm:text-6xl">
+                Caring for your best friend
+              </h1>
+              <p class="mt-5 max-w-xl text-lg text-cream-200">
+                Dog grooming to suit your needs — every groom tailored to your dog's breed, in the
+                heart of Hastings.
+              </p>
+              <div class="mt-8 flex flex-wrap items-center gap-4">
+                <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+                <a href="/services/full-groom-price-list/" class="btn btn-ghost-light">
+                  See the price list
+                </a>
+              </div>
+              {/* text-cream-100: the badge's "4.9 out of 5" span inherits text colour —
+                  in the footer it inherits cream, here it must be set or it renders
+                  dark-on-dark (caught by Lighthouse a11y contrast). */}
+              <div class="mt-8 text-cream-100">
+                <ReviewsBadge />
+              </div>
+            </div>
+
+            <div>
+              <HeroStage />
+              {/* A <div>/<span>, never a <p>: mobile-check fails any h1/h2/h3/p/td/li whose
+                  computed opacity is under 0.05 at t=0, and this fades out on scroll. Desktop
+                  only — it is an affordance for the scrub, and there is no scrub below lg.
+                  Authored at opacity 0 and armed to 1 by the CSS below, for the same reason the
+                  stage is (see HeroStage.astro divergence 4): its FINISHED value is 0, so if the
+                  module never runs, a cue authored at 1 would sit there promising a
+                  transformation next to a dog that is already transformed. */}
+              <div class="mt-2 hidden text-center lg:block" data-hero-cue aria-hidden="true">
+                <span class="eyebrow text-honey-300/75">Scroll to see the transformation</span>
+              </div>
+            </div>
+          </div>
         </div>
-        {/* text-cream-100: the badge's "4.9 out of 5" span inherits text colour —
-            in the footer it inherits cream, here it must be set or it renders
-            dark-on-dark (caught by Lighthouse a11y contrast). */}
-        <div class="mt-8 text-cream-100">
-          <ReviewsBadge />
-        </div>
-      </div>
-    </header>
+      </header>
+    </div>
     <HillDivider class="text-moss-900" flip />
 
-    <!-- Fresh off the table -->
+    {/* Fresh off the table — these four were loading="eager" when they sat directly under a
+        one-screen hero. The hero now owns a 240vh scroll track on desktop, so the strip is 2.4
+        screens below the fold and eager-loading ~85KB of it ahead of the fonts the headline is
+        waiting on is simply wrong now. Lazy defers them out of the load without deferring
+        anything a visitor can actually see. */}
     <section class="mx-auto max-w-6xl px-4 pt-10 sm:pt-14">
       <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {
@@ -176,7 +217,7 @@ const testimonials = [
                 class="aspect-square w-full object-cover"
                 widths={[240, 480]}
                 sizes="(min-width: 1024px) 260px, (min-width: 640px) 22vw, 44vw"
-                loading="eager"
+                loading="lazy"
               />
             </figure>
           ))
@@ -405,6 +446,32 @@ const testimonials = [
   @media (prefers-reduced-motion: reduce) {
     .polaroid {
       rotate: 0deg !important;
+    }
+  }
+
+  /* The scroll cue follows the stage's "authored finished, armed backwards" rule (see the
+     markup note and HeroStage.astro divergence 4). Its finished value is 0, so 0 is the
+     default; it only appears once JS has armed the stage AND motion is welcome — i.e. exactly
+     when there is a scrub to cue. :global() is required on the stage half: it is rendered by
+     HeroStage and carries THAT component's scope id, so an unqualified selector here would be
+     scoped to this page's id and silently never match. The cue is a following SIBLING of the
+     stage, not a descendant — `[data-ft-armed] [data-hero-cue]` would never match either. */
+  [data-hero-cue] {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-hero-stage][data-ft-armed]) ~ [data-hero-cue] {
+      opacity: 1;
+    }
+  }
+
+  /* Reduced motion: there is no scrub, so the 240vh track is pure dead scroll — 1.5 screens of
+     a pinned, static hero before any content, which reads as a stuck page. The track's whole
+     justification is giving the animation room to play; when the visitor's OS has switched the
+     animation off, only the cost remains. Same principle the mobile layout already applies. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-hero-track] {
+      height: auto;
     }
   }
 </style>

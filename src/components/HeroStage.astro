@@ -1,0 +1,808 @@
+---
+// The homepage hero's scroll-scrubbed transformation: a scruffy puppy is groomed by the
+// Fairy Tails fairy's wand as you scroll. Ported from the design handoff
+// (`Luxury dog grooming animation/design_handoff_hero_animation/`) — read its README for the
+// choreography spec. The handoff's coordinates, easing and timing windows are FINAL and are
+// reproduced verbatim. The five deliberate divergences, and why:
+//
+// 1. COLOUR. The handoff was designed against the salon's OLD brand blue (#00AFF1 — the legacy
+//    "K9 Centre" logo) on a #FFFFFF page. This site is "Countryside editorial" (global.css
+//    @theme): cream paper, moss greens, honey accents, and NO blue anywhere. Every blue literal
+//    is remapped onto honey. The remap also re-anchors LIGHTNESS: the blue set carried its
+//    sparkle on two dark members (#00AFF1, #0090C8) that only work on white — against this
+//    hero's bg-moss-900 band they are the weakest of the four. Minimum contrast rises
+//    3.04 → 5.93. Corollary: honey-500/600/700 must never be used for sparkle here — on moss
+//    they read as mud.
+//
+// 2. THE FAIRY IS PAINTED BY CSS. Her artwork's RGB is a flat blue gradient (hue locked
+//    196–197°, S 100%, L 47%→30% top-to-bottom) — there is no modelling in it worth keeping,
+//    only her alpha. Worse, that gradient runs light-at-head/dark-at-skirt: correct on white
+//    (contrast grows downward 2.58→5.77), backwards on moss (4.74→2.12 — her skirt sinks into
+//    the band), and no filter can invert a gradient's direction. So scripts/hero-assets.mjs
+//    reduces her to an alpha stencil and CSS masks a honey gradient through it — chosen for
+//    THIS background, tunable in one line, and preserving her translucent wing panes for free
+//    (they live in her alpha). Same idiom as .paw-bullet in global.css.
+//
+// 3. NO JS LAYOUT. The handoff scales the stage by measuring the container in JS and writing px
+//    width/height onto it (`measure()`). In the handoff that is safe — its script is inline and
+//    synchronous — but Astro hoists component scripts to a DEFERRED type="module", so ported
+//    as-is it would size the stage after first paint: layout shift on every load. Here the
+//    whole static composition is percentages of an `aspect-ratio: 760/620` box, laid out and
+//    scaled entirely by CSS: zero CLS, and no element is ever sized in px, so nothing can
+//    overflow a narrow viewport. Only the PARTICLES — which exist solely because JS is running
+//    — live in `.ft-fx`, a 760×620 layer scaled by a JS-set `--ft-s` (from the CONTAINER's
+//    width, never innerWidth) that defaults to scale(0) so they cannot flash at 1:1.
+//
+// 4. AUTHORED FINISHED, ARMED BACKWARDS. The markup below renders the FINAL state — groomed
+//    dog, fairy present, bow on. The p=0 "before" state is imposed by CSS, only under
+//    [data-ft-armed] and only inside @media (prefers-reduced-motion: no-preference). This is
+//    the inverse of the handoff (which bakes p=0 into its HTML) and it buys two of the brief's
+//    hard requirements for free: with JS off the hero is a correct finished illustration rather
+//    than a dull grey dog with no fairy, and reduced-motion users get the finished state with
+//    no flash rather than a p=0 paint that snaps forward. See the arming script for the rest.
+//
+// 5. TWO MODES, ONE TIMELINE. Desktop (≥lg) scrubs to a sticky 240vh track, per the handoff
+//    (whose 340vh is a documented tuning knob) — the CTA stays pinned on screen throughout.
+//    Below lg there is NO scroll-jack: the stage plays through once when it scrolls into view.
+//    Owner rule (CLAUDE.md): most of this salon's customers arrive on a phone, and pinning them
+//    for 3.4 screens before any content is a conversion cost the animation has not earned.
+//    Only the PRODUCER of p forks; update(p) is one pure function, not two code paths.
+import { getImage } from 'astro:assets';
+import dogSrc from '../assets/pages/home/hero-dog.png';
+import fairyStencil from '../assets/pages/home/hero-fairy-stencil.png';
+
+// ONE derivative, at the source's NATIVE width, with NO widths/densities — so the <img> and the
+// sheen's CSS mask resolve to the same deterministic URL and the browser fetches the dog ONCE.
+// (Any srcset would emit several candidate URLs; the mask can only name one, so it would very
+// likely name the one the browser didn't pick and pay for a second download.) 664KB → 41KB.
+// 635px covers every slot we render: ~300 CSS px at desktop and ~177 on a phone, i.e. 2–3x.
+//
+// Native width is not laziness — it is the SMALLEST option, counter-intuitively. Measured, at
+// q80: 635w (native) 52.9KB · 560w 63.9KB · 500w 54.9KB. Any downscale resamples smooth painted
+// fur into ringing artefacts that cost more entropy than the pixels saved. Do not "optimise"
+// this by shrinking it.
+//
+// q68 vs Astro's default q80 saves 12KB (52.9 → 40.7) and was compared side by side at 2x — on
+// a soft-gradient illustration like this it is indistinguishable, with no banding in the fur or
+// around the eyes. q60 is also clean if bytes ever get desperate.
+const dog = await getImage({ src: dogSrc, format: 'webp', width: 635, quality: 68 });
+
+// The fairy's mask, also at native width and for the same reason (downscaling a hard-edged
+// two-tone stencil ADDS antialiasing entropy: 440w webp 8.4KB · 360w 19.3KB · 300w 15.5KB).
+// webp beats her PNG here (8.4KB vs 12.8KB) because hero-assets.mjs flattens her RGB to a
+// constant, leaving only the alpha channel to encode. Verified to decode as a mask in WebKit —
+// see scripts/hero-mask-support.mjs, which exists because a mask that fails to load falls back
+// to `none`, and an unmasked fairy is a solid gold RECTANGLE in the hero.
+const fairy = await getImage({ src: fairyStencil, format: 'webp', width: 440 });
+
+// Stage coordinates from the handoff live in a 760×620 space; percentages keep that exact
+// composition while letting CSS do the scaling. Kept as literal maths so the handoff's numbers
+// stay greppable against its README.
+const SW = 760;
+const SH = 620;
+const pct = (n: number, of: number) => `${((n / of) * 100).toFixed(4)}%`;
+---
+
+<div class="ft-stage" data-hero-stage aria-hidden="true">
+  {/* Grounding. The handoff uses rgba(28,28,30,.05) — on moss-900 that composites to under
+      1.5/255 per channel, i.e. mathematically invisible, and she would float. Replaced by the
+      pair a dark band actually needs: a warm pool (the fairy's light falling on the floor) and
+      a contact core DARKER than the band, which is the only thing that reads as contact here.
+      Both warm up as the groom completes. */}
+  <div class="ft-ground-pool"></div>
+  <div class="ft-ground-core"></div>
+
+  {/* Ambient motes — the only time-based (non-scroll) motion in the piece. Alphas are lifted
+      ~+0.06 over the handoff's: at 5–8px under blur(1px), its values composite to roughly
+      (102,97,62) over moss — present, but too timid to register. */}
+  <div class="ft-mote ft-mote-1"></div>
+  <div class="ft-mote ft-mote-2"></div>
+  <div class="ft-mote ft-mote-3"></div>
+
+  {/* Dog: muted "before" underneath, full-colour "after" on top behind a soft reveal mask.
+      Plain <img>, not <Image>: we need the single shared URL (see the getImage note above), and
+      width/height are set so the box is reserved before the bytes arrive.
+
+      loading="lazy" is deliberate and does the right thing on BOTH layouts, because lazy only
+      defers images that are OUT of the viewport: on desktop the stage is beside the headline, so
+      it loads at once; on a phone it sits below the fold, so it waits. That matters more than it
+      sounds. The LCP element here is the H1, which cannot paint until Fraunces arrives — and an
+      eager, fetchpriority="high" dog (measured: it cost ~0.3s of LCP) queues 54KB of decoration
+      AHEAD of the font the headline is waiting on. The illustration must never outrank the
+      headline; nothing about it is worth a slower first impression. */}
+  <div class="ft-dog" data-dog>
+    <img
+      class="ft-dog-img ft-dog-before"
+      src={dog.src}
+      width={dog.attributes.width}
+      height={dog.attributes.height}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      fetchpriority="low"
+      data-before
+    />
+    <div class="ft-after" data-after>
+      <img
+        class="ft-dog-img"
+        src={dog.src}
+        width={dog.attributes.width}
+        height={dog.attributes.height}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        fetchpriority="low"
+      />
+      {/* The mask URL must be interpolated into an INLINE STYLE attribute, never written as a
+          literal url() in the <style> block below: a scoped block is compiled statically, so it
+          cannot see this runtime value, and a literal path there would be resolved by Vite
+          against the wrong thing — silently 404ing with no build warning and no gate to catch
+          it. This is the one hazard in the whole component that nothing downstream would flag. */}
+      <div class="ft-sheen-clip" style={`--ft-dog-mask: url('${dog.src}')`}>
+        <div class="ft-sheen" data-sheen></div>
+      </div>
+    </div>
+
+    {/* Bow — the sequence's payoff, popping onto the topknot at p≈.735.
+        COLOUR: the handoff paints it brand blue. Honey (the obvious accent) was measured and
+        rejected — the topknot it lands on is #f8e1bb–#eebc7b, which IS honey-300 territory, so a
+        honey bow is invisible on it. Moss is the only palette hue separating from her coat on
+        both hue and lightness (3.2:1 against the topknot), it echoes the band, and the honey
+        knot lands a focal glint exactly at the pop.
+        SHAPE: redrawn, and this one is not a taste call. The handoff's loops sweep UPWARD from
+        the knot and its tails hang below — at the size this actually renders (33px desktop /
+        47px tablet) that silhouette is a MOTH, and with its big round knot it read as a green
+        flower. Rendered at 1:1 against the topknot's real colour to check, which is the only way
+        to judge a 33px mark. A bow's loops sit HORIZONTAL, level with the knot; that reads
+        instantly at 33px. Tails were dropped for the same reason — at this size they are two
+        dark specks under the knot, which is exactly what made it look insectile. */}
+    <svg class="ft-bow" data-bow viewBox="0 0 44 34" width="44" height="34">
+      <path
+        d="M21.2 17 C15 12 8 8.6 4.6 9.4 C2.2 10.2 2.2 23.8 4.6 24.6 C8 25.4 15 22 21.2 17 Z"
+        fill="#596f44"></path>
+      <path
+        d="M22.8 17 C29 12 36 8.6 39.4 9.4 C41.8 10.2 41.8 23.8 39.4 24.6 C36 25.4 29 22 22.8 17 Z"
+        fill="#596f44"></path>
+      <rect x="19.8" y="12.4" width="4.4" height="9.2" rx="2.2" fill="#dfa854"></rect>
+    </svg>
+  </div>
+
+  {/* Fairy — static by explicit client request (no path movement); she only fades and settles.
+      The glow lives on this wrapper, NOT on .ft-fairy-art: CSS applies filter BEFORE mask, so a
+      drop-shadow on the masked element would be a shadow of its rectangular box which its own
+      mask then clips away. On the parent it correctly traces her silhouette. */}
+  <div class="ft-fairy" data-fairy>
+    <div class="ft-fairy-art" style={`--ft-fairy-mask: url('${fairy.src}')`}></div>
+    <svg class="ft-wand-star" viewBox="-6 -6 12 12" width="22" height="22">
+      <path
+        d="M0 -5 C0.9 -1.6 1.6 -0.9 5 0 C1.6 0.9 0.9 1.6 0 5 C-0.9 1.6 -1.6 0.9 -5 0 C-1.6 -0.9 -0.9 -1.6 0 -5 Z"
+        fill="#fbf7ed"></path>
+    </svg>
+  </div>
+
+  {/* Particle layer — populated by JS only. scale(0) until measured, so nothing can flash. */}
+  <div class="ft-fx" data-fx></div>
+</div>
+
+<script is:inline>
+  // Arms the stage to its p=0 "before" state BEFORE first paint. The markup is authored at the
+  // FINISHED state (see divergence 4), and the module script that drives the animation is
+  // deferred — so without this, every load would paint the groomed dog and then snap backwards.
+  //
+  // The safety net matters as much as the arming: if the module never initialises (bundle
+  // failed, threw, browser too old), disarm and let the finished illustration stand. The brief
+  // requires the hero stay usable when the animation does not load, and a permanently dull dog
+  // with no fairy is not that. JS off entirely → this never runs → finished state → also right.
+  (function () {
+    var s = document.querySelector('[data-hero-stage]');
+    if (!s) return;
+    s.setAttribute('data-ft-armed', '');
+    setTimeout(function () {
+      if (!s.dataset.ftInit) s.removeAttribute('data-ft-armed');
+    }, 3000);
+  })();
+</script>
+
+<style
+  define:vars={{
+    dogL: pct(202, SW),
+    dogT: pct(150, SH),
+    dogW: pct(376, SW),
+    dogH: pct(440, SH),
+    fairyL: pct(572, SW),
+    fairyT: pct(64, SH),
+    fairyW: pct(180, SW),
+    fairyH: pct(236, SH),
+    bowL: pct(168, 376),
+    bowT: pct(57, 440),
+    bowW: pct(46, 376),
+    bowH: pct(36, 440),
+  }}
+>
+  /* The stage is a pure-CSS box: aspect-ratio reserves it before JS, and every child is a
+     percentage of it, so the composition scales to any width with no measuring and no shift. */
+  .ft-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 760 / 620;
+    /* The stage never eats a tap, a scroll or a drag — the brief's hard rule that no
+       interaction may interfere with scrolling, navigation or buttons. */
+    pointer-events: none;
+  }
+
+  /* Both grounds sit at the paws' contact line (stage y≈572) — 8px above the handoff's ellipse,
+     because hero-assets.mjs cut the artwork's painted floor away at source y≈714, and the
+     handoff's y580 was aligned to that floor rather than to her paws. */
+  .ft-ground-pool,
+  .ft-ground-core {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+    border-radius: 50%;
+    /* The room warms as she is groomed. Default 1 = finished; armed resets it to 0. */
+    opacity: calc(0.5 + 0.5 * var(--ft-warm, 1));
+  }
+  .ft-ground-pool {
+    top: 88.7097%;
+    width: 54%;
+    height: 7.0968%;
+    background: radial-gradient(
+      ellipse at center,
+      rgb(236 194 124 / 0.26) 0%,
+      rgb(236 194 124 / 0.09) 54%,
+      rgb(236 194 124 / 0) 78%
+    );
+    filter: blur(6px);
+  }
+  .ft-ground-core {
+    top: 91.6129%;
+    width: 38%;
+    height: 2.9032%;
+    background: radial-gradient(ellipse at center, rgb(18 26 18 / 0.5) 0%, rgb(18 26 18 / 0) 72%);
+    filter: blur(5px);
+  }
+
+  .ft-mote {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(1px);
+    animation: ftFloat 6s ease-in-out infinite alternate;
+  }
+  .ft-mote-1 {
+    left: 15.7895%;
+    top: 19.3548%;
+    width: 1.0526%;
+    background: rgb(243 220 174 / 0.42);
+  }
+  .ft-mote-2 {
+    left: 92.1053%;
+    top: 54.8387%;
+    width: 0.7895%;
+    background: rgb(236 194 124 / 0.34);
+    animation-duration: 7.5s;
+    animation-delay: 0.8s;
+  }
+  .ft-mote-3 {
+    left: 11.8421%;
+    top: 69.3548%;
+    width: 0.6579%;
+    background: rgb(236 194 124 / 0.26);
+    animation-duration: 5.2s;
+    animation-delay: 1.6s;
+  }
+  @keyframes ftFloat {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-14px);
+    }
+  }
+
+  .ft-dog {
+    position: absolute;
+    left: var(--dogL);
+    top: var(--dogT);
+    width: var(--dogW);
+    height: var(--dogH);
+    z-index: 3;
+    will-change: transform;
+    /* FINISHED state = the proud lift, held. Must match update(1) exactly, or JS-off and
+       reduced-motion render a dog 6px lower than the animation's own end state. */
+    transform: translateY(-6px);
+  }
+  .ft-dog-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* FINISHED state: the muted layer is gone and the after-layer is fully revealed. */
+  .ft-dog-before {
+    opacity: 0;
+    /* The handoff's saturate(.4) brightness(.94) was tuned against a WHITE page, where merely
+       draining the colour is enough to read as dull. On a dark band a desaturated warm dog
+       still reads as lit and healthy, so the brightness drop is deepened until she genuinely
+       looks unkempt — but kept warm rather than grey: a scruffy dog is dusty, not monochrome. */
+    filter: saturate(0.34) brightness(0.72) contrast(0.94);
+  }
+  .ft-after {
+    position: absolute;
+    inset: 0;
+  }
+  .ft-sheen-clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    /* Hand-prefixed: this repo has no autoprefixer (postcss.config.mjs loads only
+       @tailwindcss/postcss), matching global.css's .paw-bullet. */
+    -webkit-mask-image: var(--ft-dog-mask);
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-image: var(--ft-dog-mask);
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+  }
+  .ft-sheen {
+    position: absolute;
+    left: 0;
+    top: -20%;
+    width: 30%;
+    height: 140%;
+    opacity: 0;
+    transform: translateX(-120%);
+    background: linear-gradient(
+      102deg,
+      rgb(251 247 237 / 0) 0%,
+      rgb(251 247 237 / 0.32) 50%,
+      rgb(251 247 237 / 0) 100%
+    );
+  }
+
+  .ft-bow {
+    position: absolute;
+    left: var(--bowL);
+    top: var(--bowT);
+    width: var(--bowW);
+    height: var(--bowH);
+    transform-origin: 50% 50%;
+    z-index: 4;
+  }
+
+  .ft-fairy {
+    position: absolute;
+    left: var(--fairyL);
+    top: var(--fairyT);
+    width: var(--fairyW);
+    height: var(--fairyH);
+    z-index: 6;
+    transform-origin: 50% 60%;
+    /* On a dark band a drop shadow only muddies her; she is the light SOURCE the scene is lit
+       by, so she glows instead. Must live here, not on .ft-fairy-art — see the markup note. */
+    filter: drop-shadow(0 0 16px rgb(236 194 124 / 0.3));
+  }
+  .ft-fairy-art {
+    position: absolute;
+    inset: 0;
+    -webkit-mask: var(--ft-fairy-mask) 0 0 / 100% 100% no-repeat;
+    mask: var(--ft-fairy-mask) 0 0 / 100% 100% no-repeat;
+    /* Her colour, in one line. Runs light-at-head → gold-at-hem: it keeps the artwork's
+       light-from-above reading, but compressed so the darkest stop still holds 4.5:1 against
+       the band instead of the original's 2.12. */
+    background: linear-gradient(180deg, #f3dcae 0%, #ecc27c 38%, #dfa854 72%, #cf9038 100%);
+  }
+  .ft-wand-star {
+    position: absolute;
+    /* Centred on the wand tip = stage (583,158) = fairy-relative (11, 94), so the shower's
+       emission origin and the visible star are the same point and the stars read as coming out
+       of the wand. (The handoff parks this star at wrapper (18,126) — mid-skirt, nowhere near
+       her wand — which reads as a stray dot. Moved deliberately.) */
+    left: 6.1111%;
+    top: 39.8305%;
+    width: 12.2222%;
+    height: auto;
+    transform: translate(-50%, -50%);
+  }
+
+  .ft-fx {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 760px;
+    height: 620px;
+    z-index: 5;
+    transform-origin: top left;
+    /* scale(0) until JS measures: particles must never flash at 1:1 on a small stage. */
+    transform: scale(var(--ft-s, 0));
+  }
+
+  /* ── The p=0 "before" state ───────────────────────────────────────────────────────────────
+     Imposed only when JS has armed the stage AND the visitor accepts motion. Everything the
+     animation drives must have its start value here, or it will pop on the first frame. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-ft-armed] {
+      --ft-warm: 0;
+    }
+    [data-ft-armed] .ft-dog-before {
+      opacity: 1;
+    }
+    [data-ft-armed] .ft-dog {
+      transform: none; /* she has not earned the lift yet */
+    }
+    [data-ft-armed] .ft-after {
+      -webkit-mask-image: linear-gradient(90deg, transparent 100%, #000 118%);
+      mask-image: linear-gradient(90deg, transparent 100%, #000 118%);
+    }
+    [data-ft-armed] .ft-bow {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    [data-ft-armed] .ft-fairy {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ft-mote {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Drives the stage. One pure update(p); only the PRODUCER of p forks by viewport.
+  //
+  // ⚠️ Astro dedupes component scripts: this module runs at most ONCE per session, even across
+  // client-side navigations (ClientRouter). Two consequences shape everything below:
+  //   · Document-scoped listeners are registered HERE, at module scope — never inside init(),
+  //     where they would accumulate one per navigation (the stage element is recreated on every
+  //     swap; nothing in src/ uses transition:persist).
+  //   · init() must re-run per page via astro:page-load, or navigating back to / would leave a
+  //     fresh, never-initialised stage: permanently dull, unscrubbed, un-armed. The failure mode
+  //     of getting this wrong is NOT double-init — the dedupe makes that impossible — it is
+  //     nothing running at all.
+  const STAR =
+    'M0 -5 C0.9 -1.6 1.6 -0.9 5 0 C1.6 0.9 0.9 1.6 0 5 C-0.9 1.6 -1.6 0.9 -5 0 C-1.6 -0.9 -0.9 -1.6 0 -5 Z';
+
+  // ── Tuning knobs (the handoff names track length and dust count as the intended two; the
+  // mobile playthrough's duration is the third, and is ours). ────────────────────────────────
+  const N_DUST = 34;
+  const PLAY_MS = 3400;
+
+  // The honey remap of the handoff's blue palette — see divergence 1 in the frontmatter.
+  const DUST_COLORS = ['#ecc27c', '#f3dcae', '#dfa854', '#fbf7ed'];
+
+  // Stage constants (760×620 space) — verbatim from the handoff.
+  const TIP = [583, 158];
+  const DOG_L = 202;
+  const DOG_W = 376;
+  const CONTOUR: [number, number][] = [
+    [548, 335],
+    [503, 247],
+    [450, 194],
+    [398, 163],
+    [352, 190],
+    [307, 238],
+    [262, 326],
+    [240, 423],
+  ];
+
+  const S = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+  const eio = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const eo = (t: number) => 1 - Math.pow(1 - t, 3);
+  const eioInv = (v: number) =>
+    v <= 0 ? 0 : v >= 1 ? 1 : v < 0.5 ? Math.cbrt(v / 4) : 1 - Math.cbrt(2 * (1 - v)) / 2;
+  const front = (p: number) => 640 - 535 * eio(S(p, 0.14, 0.7));
+
+  function contourY(x: number) {
+    if (x >= CONTOUR[0][0]) return CONTOUR[0][1];
+    for (let i = 0; i < CONTOUR.length - 1; i++) {
+      const a = CONTOUR[i];
+      const b = CONTOUR[i + 1];
+      if (x <= a[0] && x >= b[0]) return a[1] + ((b[1] - a[1]) * (a[0] - x)) / (a[0] - b[0] || 1);
+    }
+    return CONTOUR[CONTOUR.length - 1][1];
+  }
+
+  let teardown: (() => void) | null = null;
+
+  function initHeroStage() {
+    const stage = document.querySelector<HTMLElement>('[data-hero-stage]');
+    const track = document.querySelector<HTMLElement>('[data-hero-track]');
+    if (!stage || !track || stage.dataset.ftInit) return;
+    stage.dataset.ftInit = '1';
+
+    const q = <T extends Element>(s: string) => stage.querySelector<T>(s);
+    const fx = q<HTMLElement>('[data-fx]')!;
+    const elDog = q<HTMLElement>('[data-dog]')!;
+    const elBefore = q<HTMLElement>('[data-before]')!;
+    const elAfter = q<HTMLElement>('[data-after]')!;
+    const elSheen = q<HTMLElement>('[data-sheen]')!;
+    const elBow = q<HTMLElement>('[data-bow]')!;
+    const elFairy = q<HTMLElement>('[data-fairy]')!;
+    const elCue = document.querySelector<HTMLElement>('[data-hero-cue]');
+
+    // ── Particles. One fragment, one reflow. No will-change: 49 permanently-promoted
+    // compositor layers costs more in raster memory on a mid-range phone than it saves. ──────
+    const frag = document.createDocumentFragment();
+    const mkStar = (size: number, color: string, glow: boolean) => {
+      const d = document.createElement('div');
+      d.style.cssText = 'position:absolute;left:0;top:0;opacity:0';
+      d.innerHTML =
+        `<svg width="${size}" height="${size}" viewBox="-6 -6 12 12"` +
+        (glow ? ' style="filter:drop-shadow(0 0 4px rgba(243,220,174,.75))"' : '') +
+        `><path d="${STAR}" fill="${color}"></path></svg>`;
+      frag.appendChild(d);
+      return d;
+    };
+
+    const dust = Array.from({ length: N_DUST }, (_, i) => {
+      const s = (i * 0.618034) % 1;
+      const s2 = (i * 0.377) % 1;
+      return {
+        el: mkStar(10 + Math.round(s2 * 9), DUST_COLORS[i % 4], true),
+        t: 0.1 + (i / (N_DUST - 1)) * 0.52 + (s - 0.5) * 0.02,
+        dx: (s2 - 0.5) * 44,
+        dy: -10 + s * 26,
+        arc: s2 * 46,
+        rot: s * 360,
+      };
+    });
+
+    const glints = [...CONTOUR, [255, 511] as [number, number]].map((pt, i) => {
+      const v = Math.min(1, Math.max(0, (640 - pt[0]) / 535));
+      const el = mkStar(i % 2 ? 19 : 26, i % 3 === 2 ? '#fbf7ed' : '#f3dcae', false);
+      el.style.left = `${pt[0]}px`;
+      el.style.top = `${pt[1] - 14}px`;
+      return { el, t: 0.14 + 0.56 * eioInv(v) };
+    });
+
+    // The burst rides the bow, so it must carry the dog's proud lift itself: it lives in the fx
+    // layer (which does not lift) while the bow is inside .ft-dog (which does).
+    //
+    // Sized UP from the handoff's 13 units / 8→46px radius, and this is a port correction rather
+    // than a taste change. The handoff scales its stage to `min(innerWidth*.92, 760)/760`, i.e.
+    // it is authored for s=1 — a 760px stage. Inside this hero's two-column grid the stage is
+    // ~590px, so every value lands at ~78%: the burst measured 7px stars radiating 29px, which
+    // put them INSIDE her topknot fur rather than clear of it. Invisible, on the frame that is
+    // supposed to be the payoff. Bigger stars and a radius that clears the tuft restore the
+    // handoff's intent at this stage's actual size.
+    const burst = Array.from({ length: 6 }, (_, i) => {
+      const el = mkStar(18, i % 2 ? '#fbf7ed' : '#ecc27c', true);
+      el.style.left = `${DOG_L + 185}px`;
+      el.style.top = `${150 + 67}px`;
+      return { el, ang: (i / 6) * Math.PI * 2 - 0.5 };
+    });
+    fx.appendChild(frag);
+
+    // ── The whole animation: one pure function of p ───────────────────────────────────────
+    function update(p: number) {
+      const frontX = front(p);
+      const fo = S(p, 0.04, 0.1);
+      elFairy.style.opacity = String(fo);
+      elFairy.style.transform = `scale(${0.96 + 0.04 * eo(fo)})`;
+
+      const e = (frontX - DOG_L) / (DOG_W / 100);
+      const g = `linear-gradient(90deg, rgba(0,0,0,0) ${e - 9}%, #000 ${e + 9}%)`;
+      elAfter.style.setProperty('-webkit-mask-image', g);
+      elAfter.style.setProperty('mask-image', g);
+      elBefore.style.opacity = String(1 - S(p, 0.66, 0.73));
+
+      // The room warms as she is revealed.
+      stage.style.setProperty('--ft-warm', String(eio(S(p, 0.14, 0.7))));
+
+      const lift = -6 * eo(S(p, 0.74, 0.84));
+      elDog.style.transform = `translateY(${lift}px)`;
+
+      const sp = S(p, 0.78, 0.93);
+      elSheen.style.transform = `translateX(${-120 + 480 * eio(sp)}%)`;
+      elSheen.style.opacity = sp > 0 && sp < 1 ? '1' : '0';
+
+      const po = S(p, 0.735, 0.8);
+      const sc = po <= 0 ? 0.3 : po < 0.75 ? 0.3 + 0.76 * eo(po / 0.75) : 1.06 - 0.06 * ((po - 0.75) / 0.25);
+      elBow.style.transform = `scale(${sc}) rotate(${-6 + 6 * po}deg)`;
+      elBow.style.opacity = String(Math.min(1, po * 4));
+
+      const bp = S(p, 0.75, 0.86);
+      for (const b of burst) {
+        const d = 12 + 56 * eo(bp); // handoff 8→46: widened to clear the topknot — see the note above
+        b.el.style.transform = `translate(${Math.cos(b.ang) * d}px,${Math.sin(b.ang) * d + lift}px) scale(${0.45 + 0.55 * bp})`;
+        b.el.style.opacity = bp <= 0 || bp >= 1 ? '0' : String(Math.sin(bp * Math.PI) * 0.9);
+      }
+
+      for (const s of glints) {
+        const lo = S(p, s.t - 0.035, s.t + 0.05);
+        s.el.style.transform = `translate(-50%,-50%) scale(${0.4 + 0.8 * eo(lo)}) rotate(${lo * 90}deg)`;
+        s.el.style.opacity = lo <= 0 || lo >= 1 ? '0' : String(Math.sin(lo * Math.PI));
+      }
+
+      for (const d of dust) {
+        const a = (p - d.t) / 0.11;
+        if (a <= 0 || a >= 1) {
+          d.el.style.opacity = '0';
+          continue;
+        }
+        const lx = Math.min(566, front(d.t + 0.06)) + d.dx;
+        const ly = contourY(lx) + d.dy;
+        const cx = (TIP[0] + lx) / 2;
+        const cy = Math.min(TIP[1], ly) - 60 - d.arc;
+        const u = 1 - a;
+        const x = u * u * TIP[0] + 2 * u * a * cx + a * a * lx;
+        const y = u * u * TIP[1] + 2 * u * a * cy + a * a * ly;
+        d.el.style.transform = `translate(${x}px,${y}px) scale(${0.5 + 0.6 * a}) rotate(${d.rot + a * 60}deg)`;
+        d.el.style.opacity = String(Math.min(1, a * 5) * (a > 0.8 ? (1 - a) / 0.2 : 1) * 0.95);
+      }
+
+      if (elCue) elCue.style.opacity = String(1 - S(p, 0.02, 0.07));
+    }
+
+    // ── Scale the particle layer from the CONTAINER's width — never innerWidth. A stage that
+    // renders unscaled at 760px is the one way this component can overflow a phone. ──────────
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      if (!w) return; // zero-width (display:none ancestor) would set scale(0) and hide it silently
+      fx.style.setProperty('--ft-s', String(w / 760));
+    });
+    ro.observe(stage);
+
+    // ── Producers of p ────────────────────────────────────────────────────────────────────
+    const mqDesktop = matchMedia('(min-width: 64rem)'); // rem, to track Tailwind's lg exactly
+    const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+    let p = 0;
+    let rendered = -1;
+    let raf = 0;
+    let playT0 = 0;
+    let played = false;
+    let visible = false;
+    // Has the STAGE itself actually been seen? Distinct from `visible`, which tracks the TRACK
+    // (with a 200px head start) purely to decide whether the loop is worth running. Conflating
+    // the two is a real bug, not a theoretical one — see the armer below.
+    let playArmed = false;
+    let mode: 'scroll' | 'play' | 'static' = 'static';
+
+    const render = (v: number) => {
+      if (v === rendered) return; // parked at a stable p: skip the writes, keep the loop cheap
+      rendered = v;
+      update(v);
+    };
+
+    function scrollTarget() {
+      const r = track.getBoundingClientRect();
+      const span = r.height - innerHeight;
+      return span > 10 ? Math.min(1, Math.max(0, -r.top / span)) : r.top < 0 ? 1 : 0;
+    }
+
+    function frame(now: number) {
+      raf = 0;
+      if (mode === 'scroll') {
+        const t = scrollTarget();
+        const d = t - p;
+        p = Math.abs(d) < 0.0005 ? t : p + d * 0.16; // damped approach = the engineered scrub feel
+        render(p);
+        if (visible) raf = requestAnimationFrame(frame);
+      } else if (mode === 'play') {
+        p = Math.min(1, (now - playT0) / PLAY_MS);
+        render(p);
+        if (p >= 1) played = true;
+        else if (visible) raf = requestAnimationFrame(frame);
+      }
+    }
+
+    const start = () => {
+      if (raf || mode === 'static') return;
+      // In play mode the clock must not tick until the stage has actually been seen.
+      if (mode === 'play' && !playArmed && !played) return;
+      raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    function applyMode() {
+      stop();
+      if (mqReduce.matches) {
+        // Not "less motion" but a different render path: the finished state, no loop, no
+        // particles moving. The CSS arming is already inert under this media query, so the
+        // markup is correct on its own — update(1) only pins it against a live mode switch.
+        mode = 'static';
+        p = 1;
+        render(1);
+        return;
+      }
+      if (mqDesktop.matches) {
+        mode = 'scroll';
+        p = scrollTarget(); // snap, don't damp: new geometry, same tick, no lurch
+        render(p);
+      } else {
+        mode = 'play';
+        if (played || p >= 1) {
+          p = 1;
+          render(1);
+          return; // never replay on a rotation
+        }
+        // A scrub abandoned mid-way continues by time from exactly where it stopped — but only
+        // once the stage has been seen. Seeding the clock before that is what burns it unseen.
+        if (playArmed) playT0 = performance.now() - p * PLAY_MS;
+      }
+      if (visible) start();
+    }
+
+    // Off-screen the loop is pure battery burn. rootMargin gives it a head start so it is
+    // already settled by the time the stage is on screen.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) {
+          if (mode === 'play' && !played && playArmed) playT0 = performance.now() - p * PLAY_MS;
+          start();
+        } else {
+          stop();
+          // Snap to where the scroll says we are. Without this, flicking past the track leaves
+          // the hero frozen half-groomed for the rest of the session.
+          if (mode === 'scroll') {
+            p = scrollTarget();
+            render(p);
+          }
+        }
+      },
+      { rootMargin: '200px 0px' },
+    );
+    io.observe(track);
+
+    // Arms the play-once clock, and it MUST watch the stage rather than the track.
+    //
+    // Below lg the `lg:h-[240vh]` collapses, so the track IS the whole hero — it starts at the
+    // top of the document and is therefore already intersecting at scrollY=0, 200px head start
+    // or not. Seeding the clock from that observer meant the 3.4s playthrough ran to completion
+    // while the stage was ~5% visible below the fold, latched `played`, and left every phone
+    // visitor arriving at a static, already-finished dog. The animation never played at all —
+    // the exact opposite of the mobile design. (Widening the rootMargin or simply re-pointing
+    // the existing observer at the stage does NOT fix it: the stage sits ~653px down, inside
+    // vh+200 on every common phone. It needs its own observer with a real threshold.)
+    const ioPlay = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || playArmed) return;
+        playArmed = true;
+        ioPlay.disconnect(); // one-shot: it only ever needs to answer "has she been seen?"
+        if (mode === 'play' && !played) {
+          playT0 = performance.now() - p * PLAY_MS;
+          start();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    ioPlay.observe(stage);
+
+    // Live, not read-once: every other motion check in this repo responds to the OS setting
+    // changing, and this one flips a whole render path.
+    mqReduce.addEventListener('change', applyMode);
+    mqDesktop.addEventListener('change', applyMode);
+    applyMode();
+
+    teardown = () => {
+      stop();
+      io.disconnect();
+      ioPlay.disconnect();
+      ro.disconnect();
+      mqReduce.removeEventListener('change', applyMode);
+      mqDesktop.removeEventListener('change', applyMode);
+      delete stage.dataset.ftInit;
+    };
+  }
+
+  initHeroStage();
+  document.addEventListener('astro:page-load', initHeroStage);
+  document.addEventListener('astro:before-swap', (e) => {
+    teardown?.();
+    teardown = null;
+    // Arm the INCOMING document before it paints. The is:inline arming script above cannot help
+    // here: Astro runs scripts after the swap has already been painted, and it is deduped to
+    // once per session anyway — so on a client-side nav back to /, this is the only thing
+    // standing between the visitor and a finished-then-snap-backwards flash.
+    (e as any).newDocument?.querySelector('[data-hero-stage]')?.setAttribute('data-ft-armed', '');
+  });
+</script>

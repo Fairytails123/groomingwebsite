@@ -2,6 +2,86 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## 🎬 2026-07-16 (late) — HOMEPAGE HERO ANIMATION integrated (branch `hero-animation`, NOT merged)
+
+The scroll-scrubbed grooming transformation from `Luxury dog grooming animation/` is live in the
+homepage hero. **Branch `hero-animation` — needs the owner's eyes before merge.** Full design
+rationale is in `src/components/HeroStage.astro`'s frontmatter and `CLAUDE.md`'s new hero section.
+
+**Shape:** desktop ≥lg pins the hero for 240vh and scrubs the dog from scruffy → groomed (copy
+left, stage right, CTA on screen throughout). Below lg there is **no scroll-jack** — the stage
+plays once when scrolled into view. Owner's call from the brief; phone users are the majority.
+
+**All gates green:** mobile-check 15/15 · verify-urls 0 · verify-stage3 0 · price-list-e2e 0 ·
+CLS **0** · a11y/best-practices/SEO **100/100/100** · perf **87 = identical to `main`** (see the
+Lighthouse note below — 87 is the ceiling on this machine, on `main` too) · new:
+`hero-resilience` (reduced-motion, JS-off, back-nav) and `hero-mask-support` (WebKit) both pass.
+Eyeballed at 1920/1440/1280/1100/1024/1000/834/768/430 — no overflow at any width, and the
+`lg` mode flip (sticky-scrub ⇄ play-once) is clean at the 1024 boundary.
+
+### ⚠️ Two environment findings that will bite the next session
+
+1. **`node_modules` is NOT a junction on this machine** — `C:\dev\` did not exist; it is a real
+   directory inside OneDrive (i.e. deps ARE syncing, the exact thing CLAUDE.md's junction rule
+   exists to prevent). It was also installed for **win32-x64** while this machine's Node is
+   **arm64**, so `sharp` AND `rollup` both failed and **`npx astro build` was broken before any
+   of this work started**. Fixed additively: `npm install --no-save --include=optional
+   @rollup/rollup-win32-arm64-msvc@4.62.2 @img/sharp-win32-arm64@0.34.5` (package.json and the
+   lock are untouched; the other machine's x64 binaries still work). **Decide whether to restore
+   the junction properly** — that is an owner/Kam call, not something to silently change.
+2. **⚠️ Lighthouse ≥90 does NOT pass on this machine — and it does not pass on `main` either.**
+   Measured same-machine, median-of-3, `PUBLIC_INDEXABLE=true`, `main` via a clean `git worktree`:
+   **`main` = perf 87 (runs 86/87/87, LCP 4.0s)** · **`hero-animation` = perf 86–87 (runs
+   86/86/87, LCP 4.0–4.1s)**. Same distribution — the animation is **within measurement noise of
+   `main`**, i.e. it costs ~nothing. But note the ceiling is 87, not 90, on `main` too, so the
+   gap to the documented 97–100 is environmental and predates this work. Cause: **GTM ships
+   313KB** (gtm.js 151KB + gtag 162KB) from a live CDN — 6× the whole animation — and the LCP
+   element is the H1, which waits on the Fraunces webfont queued behind it. **Re-measure on the
+   machine where 97–100 was recorded before treating 86 as a regression.** If the number ever
+   needs to genuinely improve, the lever is preloading Fraunces (helps every page) — deliberately
+   NOT done here, as it is out of this change's scope.
+   *(Getting to parity took three things: one shared `getImage()` URL so the dog is a single
+   41KB fetch, `fetchpriority="low"` so decoration never outranks the headline's font, and
+   lazying the polaroid strip that this hero pushed below the fold.)*
+
+### One bug worth knowing about (found by review, fixed, now gated)
+
+**The mobile play-once was burning off-screen.** The play clock was armed by an
+IntersectionObserver on the *track* — but below `lg` the 240vh collapses, so the track IS the
+whole hero and is already intersecting at `scrollY=0`. The 3.4s playthrough therefore ran to
+completion while the stage was ~5% visible, latched `played`, and every phone visitor arrived at
+a static, already-finished dog: the animation never played at all. **The screenshots hid it** —
+`hero-shots` scrolls the stage into view immediately, so it caught the tail of an animation that
+had already been running since load. Fixed with a dedicated one-shot observer on the *stage*
+(threshold 0.35); `hero-resilience` now asserts "plays iff visible" on 390×844 / 375×667 /
+360×640, and that test was confirmed to fail against the old code before being accepted.
+
+*Known and deliberate:* with **JS off on desktop** the 240vh track remains (the hero is correct
+and finished, just with ~1.5 screens of extra scroll). Fixing it needs `:has()`, which combined
+with the 3s disarm net would collapse the track *while the visitor is scrolling* — worse than the
+scroll it saves. Reduced-motion, the far larger population, IS fixed (track drops to auto).
+
+### Judgement calls the owner may want to overrule
+
+- **The bow is MOSS, not honey.** Honey was measured against the topknot it lands on (#f8e1bb–
+  #eebc7b — honey-300 territory) and would be invisible; moss is the only palette hue separating
+  on both hue and lightness. Knot is honey-400.
+- **The artwork's red topknot band is now moss.** It was the only red in the composition, the bow
+  does not fully cover it, and green-bow-over-red-band read unmistakably as Christmas holly.
+- **The bow is REDRAWN, not just recoloured.** The handoff's loops sweep upward from the knot
+  with tails below and a big round knot: at the 33px it actually renders, that silhouette is a
+  moth, and the round knot made it read as a green flower. Real bow loops sit horizontal, level
+  with the knot. Rendered at 1:1 on the topknot's true colour to pick — the only honest way to
+  judge a 33px mark. Tails dropped (two dark specks at that size = the insect reading).
+- **The burst stars are bigger than the handoff's** (18 units, radius 12→56 vs 13 and 8→46). The
+  handoff is authored for a 760px stage; ours is ~590px in the two-column grid, so its values
+  landed at ~78% and put 7px stars *inside* her topknot fur — invisible, on the payoff frame.
+- **The wand star was moved onto the wand tip.** The handoff parks it mid-skirt, nowhere near her
+  wand, which reads as a stray dot; the shower's emission origin is the wand tip either way.
+- **The "Fresh off the table" polaroids are now `loading="lazy"`** (were `eager`). They sat under
+  a one-screen hero; they are now 2.4 screens down on desktop, so eager-loading ~85KB of them
+  ahead of the fonts was costing LCP. This is the one edit outside the hero itself.
+
 ## ✅ CURRENT STATE (2026-07-16 night) — THE BUILD IS COMPLETE: 15/15 PAGES
 
 **Stages 0–5 ALL DONE.** Preview:

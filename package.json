@@ -15,10 +15,14 @@
     "price-list-e2e": "node scripts/price-list-e2e.mjs",
     "mobile-check": "node scripts/mobile-check.mjs",
     "shots": "node scripts/shots.mjs",
+    "hero-shots": "node scripts/hero-shots.mjs",
+    "hero-resilience": "node scripts/hero-resilience.mjs",
+    "hero-mask-support": "node scripts/hero-mask-support.mjs",
     "harvest": "node scripts/harvest.mjs",
     "extract-prices": "node scripts/extract-prices.mjs",
     "video-poster": "node scripts/video-poster.mjs",
-    "gallery-crop": "node scripts/gallery-crop.mjs"
+    "gallery-crop": "node scripts/gallery-crop.mjs",
+    "hero-assets": "node scripts/hero-assets.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

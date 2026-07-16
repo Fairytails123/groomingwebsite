@@ -60,6 +60,42 @@ Read `HANDOVER.md` first every session (where we are), `WEBSITE-PLAN.md` for the
 - ⚠️ The Stripe subscription link is LIVE — never complete a test checkout. Always show
   "£25/month per dog, 2-month minimum term" next to the sign-up CTA.
 
+## The homepage hero animation (2026-07-16)
+
+`src/components/HeroStage.astro` — a scroll-scrubbed transformation: a scruffy puppy is groomed
+by the Fairy Tails fairy's wand. Ported from `Luxury dog grooming animation/` (gitignored, like
+the harvest: bulky SOURCE out, derived assets + generator script in). **Read HeroStage.astro's
+frontmatter before touching it** — it documents all five deliberate divergences from the handoff.
+The load-bearing ones:
+
+- ⚠️ **The handoff is designed in the OLD BRAND BLUE (#00AFF1) on a WHITE page.** This site is
+  moss/honey/cream on a dark hero band. Every blue is remapped to honey, and the remap re-anchors
+  LIGHTNESS, not just hue: the blue palette carried its sparkle on dark members that only work on
+  white. **Never use honey-500/600/700 for sparkle on the moss band — they read as mud.**
+- ⚠️ **The handoff's artwork had two defects that are invisible on white by construction**: a
+  white matte on every soft edge (all 5,871 semi-transparent px were near-white) and a cream
+  floor painted into the bottom. On moss: a halo round a fluffy dog, and a torn-paper slab.
+  `scripts/hero-assets.mjs` fixes both, plus recolours the topknot's crimson band — the only red
+  in the palette, and next to the moss bow it read as Christmas holly. All constants in that
+  script are MEASURED off the artwork; its header shows the workings.
+- **Authored FINISHED, armed backwards.** The markup renders the final state; CSS imposes p=0
+  only under `[data-ft-armed]` inside `@media (prefers-reduced-motion: no-preference)`. That is
+  what makes JS-off and reduced-motion correct for free. An `is:inline` script arms it pre-paint
+  and **disarms after 3s if the module never initialises**. Don't "simplify" this to p=0 markup.
+- **Astro runs a component script at most ONCE PER SESSION**, even across ClientRouter navs. So
+  the back-nav failure mode is *nothing re-initialising* (never double-init). `astro:page-load`
+  re-init + module-scope teardown listeners are mandatory. `npm run hero-resilience` guards it.
+- **The stage is percentages of an `aspect-ratio: 760/620` box, never JS-sized.** The handoff
+  measures and writes px (safe there — its script is inline/sync; here Astro defers it, so that
+  port would shift layout every load). CLS is 0 and must stay 0.
+- **Desktop ≥lg scrubs a sticky 240vh track; below lg there is NO scroll-jack** — the stage plays
+  once on entering view. Owner rule: most customers are on a phone.
+- Perf: the whole animation is **50KB** (dog 41KB webp + fairy 8.4KB mask), ONE fetch for the dog
+  (the two stacked copies and the sheen mask share one deterministic `getImage()` URL — never add
+  `widths`/`densities` there or the mask desyncs and double-downloads). Both assets are at NATIVE
+  width because downscaling makes them BIGGER (measured). Nothing in the hero may outrank the
+  fonts: the LCP element is the H1, and it waits on Fraunces.
+
 ## Harvest archive (content source of record)
 
 `grooming-image-archive/` (gitignored) = verbatim harvest of the old WordPress site
@@ -94,6 +130,10 @@ single migration re-save on the harvest date — see WEBSITE-PLAN's copy log).
 | `harvest` | Re-harvests the old site (idempotent). |
 | `video-poster` | Poster frame for the Bruno video. No ffmpeg here — decodes in real Chrome. |
 | `gallery-crop` | Recovers the 10 gallery photos from the old before/after composites. Read its header before touching a crop. |
+| `hero-shots` | Hero-animation eyeball check: screenshots the scrub at p = 0/.25/.5/.72/.85/1 plus the mobile play-through. **`shots` cannot do this** — it captures fullPage, which renders a sticky hero once at p=0 followed by ~1,300px of empty moss. |
+| `hero-resilience` | The hero's three untestable-elsewhere failure modes: reduced-motion, JS off, and view-transition back-nav. Needs `astro preview`. |
+| `hero-mask-support` | Proves the hero's WebP-alpha CSS masks decode in **WebKit** (= Safari/iOS, which we can't open on Windows). Needs `astro preview`. |
+| `hero-assets` | Regenerates the hero artwork from the design handoff. One-off; output is committed. Edit the SCRIPT. |
 
 ## 📱 THE MOBILE GATE — no page ships without it (owner rule, 2026-07-16)
 
