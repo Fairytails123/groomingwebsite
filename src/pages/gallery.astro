@@ -1,0 +1,198 @@
+---
+// Legacy URL preserved: /gallery/ .
+// Source: grooming-image-archive/gallery/copy.md.
+//
+// TWO DELIBERATE CHANGES from the old page (logged in WEBSITE-PLAN.md):
+//
+// 1. The old gallery was a Smart Slider CAROUSEL of 5 before/after slides. This is
+//    a GRID. A carousel hides 4 of 5 slides from anything that doesn't click —
+//    crawlers included — and the whole point of these photos is to be seen. Every
+//    image here is in the HTML at t=0. (Same reasoning as the reveal contract in
+//    the user's global CLAUDE.md.)
+//
+// 2. The 5 before/after images were 1200x600 composites with the OLD brand baked
+//    into the pixels: cyan background, soap bubbles, tilted white frames. Owner
+//    ruling 2026-07-16: crop the photos out and reframe them here. The 10 crops are
+//    produced by `npm run gallery-crop` — never hand-edit them, and read that
+//    script's notes before adjusting a crop.
+//
+// ⚠️ RESOLUTION CEILING: the crops are only 242-309px (they never existed larger —
+// each was a ~400px photo inside a composite) and the grid photos are 480x480
+// originals. Display slots are kept deliberately small so they stay sharp. Do not
+// blow these up into hero images; `npm run mobile-check` will warn if you do.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HillDivider from '../components/HillDivider.astro';
+import { business } from '../data/business';
+
+import p1b from '../assets/pages/gallery/pair-1-before.jpg';
+import p1a from '../assets/pages/gallery/pair-1-after.jpg';
+import p2b from '../assets/pages/gallery/pair-2-before.jpg';
+import p2a from '../assets/pages/gallery/pair-2-after.jpg';
+import p3b from '../assets/pages/gallery/pair-3-before.jpg';
+import p3a from '../assets/pages/gallery/pair-3-after.jpg';
+import p4b from '../assets/pages/gallery/pair-4-before.jpg';
+import p4a from '../assets/pages/gallery/pair-4-after.jpg';
+import p5b from '../assets/pages/gallery/pair-5-before.jpg';
+import p5a from '../assets/pages/gallery/pair-5-after.jpg';
+
+// Breeds are named ONLY where they are unmistakable from the photo (owner ruling
+// 2026-07-16: breeds, no names). Where the breed is a judgement call the alt text
+// describes the coat instead of guessing — a wrong breed on a groomer's own site
+// is worse than a plain description. The full list is in WEBSITE-PLAN for the
+// owner to correct.
+const pairs = [
+  { before: p1b, after: p1a, alt: 'a Cockapoo with a shaggy apricot coat', groom: 'Full groom' },
+  { before: p2b, after: p2a, alt: 'a wire-coated white terrier', groom: 'Bath, brush and tidy' },
+  { before: p3b, after: p3a, alt: 'an apricot Poodle', groom: 'Full groom' },
+  { before: p4b, after: p4a, alt: 'a long-coated black and white collie', groom: 'Full groom and de-shed' },
+  { before: p5b, after: p5a, alt: 'an Afghan Hound with a long matted coat', groom: 'Full groom' },
+];
+
+// The 20 grid photos, in file order (dog-01 … dog-20).
+const dogs = [
+  { n: 1, alt: 'A chocolate Labradoodle standing on the grooming table after a full groom' },
+  { n: 2, alt: 'A wire-coated white terrier being bathed in the salon bath' },
+  { n: 3, alt: 'A cream Cockapoo wearing an orange bandana after its groom' },
+  { n: 4, alt: 'A small white dog with a soft, freshly scissored coat' },
+  { n: 5, alt: 'An apricot Poodle sitting on the grooming table after a full groom' },
+  { n: 6, alt: 'A Shih Tzu in an orange bandana after a full groom' },
+  { n: 7, alt: 'A Cocker Spaniel with long feathered ears, freshly groomed' },
+  { n: 8, alt: 'A smooth-coated Dachshund standing on the grooming table' },
+  { n: 9, alt: 'A white curly-coated Poodle after a full groom' },
+  { n: 10, alt: 'A French Bulldog enjoying a bath in the salon' },
+  { n: 11, alt: 'An apricot Cockapoo with a freshly scissored face' },
+  { n: 12, alt: 'A wire-coated Jack Russell terrier being bathed' },
+  { n: 13, alt: 'A long-coated tan and black collie after a de-shed' },
+  { n: 14, alt: 'A black and white short-coated dog after a bath and brush' },
+  { n: 15, alt: 'Two Chihuahuas in bandanas on the grooming table' },
+  { n: 16, alt: 'A white Bichon Frise with a rounded scissored coat' },
+  { n: 17, alt: 'An Afghan Hound with a bow in its topknot after a full groom' },
+  { n: 18, alt: 'A cream Cockapoo sitting after a full groom' },
+  { n: 19, alt: 'A brown Cockapoo with its tongue out after a full groom' },
+  { n: 20, alt: 'A grey and white Shih Tzu after a full groom' },
+];
+
+// Astro needs a static glob for the grid — import.meta.glob is resolved at build.
+const dogImages = import.meta.glob<{ default: ImageMetadata }>('../assets/pages/gallery/dog-*.jpg', { eager: true });
+const dogSrc = (n: number) =>
+  dogImages[`../assets/pages/gallery/dog-${String(n).padStart(2, '0')}.jpg`].default;
+---
+
+<Base
+  title="Gallery - The Fairy Tails Dog Grooming"
+  description="A selection of images of our lovely doggy clients and their grooms."
+  path="/gallery/"
+>
+  <article data-page="gallery">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">Our doggy clients</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Gallery
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-cream-200">
+          A few photos of some of our lovely doggy clients and their grooms. As you can see, we're
+          pleased to groom dogs of all shapes, sizes and breeds.
+        </p>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <!-- Before & after -->
+    <section class="mx-auto max-w-6xl px-4 pt-10 sm:pt-14">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow text-honey-700">The good bit</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">Before &amp; after</h2>
+        <p class="mt-4 leading-relaxed text-bark-700">
+          Same dog, same day. This is what a few hours on our table looks like.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          pairs.map((p, i) => (
+            <figure class="rounded-3xl bg-cream-100 p-4">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <Image
+                    src={p.before}
+                    alt={`Before: ${p.alt}`}
+                    class="aspect-square w-full rounded-xl object-cover"
+                    widths={[160, 300]}
+                    sizes="(min-width: 1024px) 170px, (min-width: 640px) 22vw, 42vw"
+                    loading={i < 2 ? 'eager' : 'lazy'}
+                  />
+                  <p class="eyebrow mt-2 text-center text-bark-500">Before</p>
+                </div>
+                <div>
+                  <Image
+                    src={p.after}
+                    alt={`After: ${p.alt}, freshly groomed`}
+                    class="aspect-square w-full rounded-xl object-cover"
+                    widths={[160, 300]}
+                    sizes="(min-width: 1024px) 170px, (min-width: 640px) 22vw, 42vw"
+                    loading={i < 2 ? 'eager' : 'lazy'}
+                  />
+                  <p class="eyebrow mt-2 text-center text-moss-700">After</p>
+                </div>
+              </div>
+              <figcaption class="mt-3 border-t border-cream-200 pt-3 text-center text-sm text-bark-600">
+                {p.groom}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- The grid -->
+    <section class="mx-auto max-w-6xl px-4 pt-16">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow text-honey-700">All shapes and sizes</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">Freshly groomed</h2>
+      </div>
+
+      <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {
+          dogs.map((d, i) => (
+            <figure class="polaroid" style={`rotate: ${(i % 4) - 1.5}deg`}>
+              <Image
+                src={dogSrc(d.n)}
+                alt={d.alt}
+                class="aspect-square w-full object-cover"
+                widths={[240, 480]}
+                sizes="(min-width: 1024px) 260px, (min-width: 640px) 30vw, 44vw"
+                loading={i < 4 ? 'eager' : 'lazy'}
+              />
+            </figure>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-16 text-center">
+      <div class="rounded-3xl bg-cream-100 px-6 py-12">
+        <h2 class="font-display text-3xl font-bold text-moss-900">Fancy your dog on here?</h2>
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-bark-700">
+          Book them in and we'll do the rest. Full grooms start at £25 — priced by breed, so you
+          know what you're paying before you arrive.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+          <a href="/services/full-groom-price-list/" class="btn btn-moss">See the price list</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  /* The polaroid tilt is decorative; straighten it for anyone who asked for less
+     motion, and on phones where the grid is tight and tilted cards collide. */
+  @media (prefers-reduced-motion: reduce) {
+    .polaroid {
+      rotate: 0deg !important;
+    }
+  }
+</style>

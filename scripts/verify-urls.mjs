@@ -30,7 +30,7 @@ const MANIFEST = [
   { path: '/services/doggy-massage/', type: 'page', status: 'built' }, // built 2026-07-16
   { path: '/services/homeless-dogs/', type: 'page', status: 'built' }, // built 2026-07-16
   { path: '/services/frequently-asked-questions/', type: 'page', status: 'built' }, // built 2026-07-16
-  { path: '/gallery/', type: 'page', status: 'planned' },
+  { path: '/gallery/', type: 'page', status: 'built' }, // built 2026-07-16
   { path: '/contact/', type: 'page', status: 'built' }, // built 2026-07-12
   { path: '/terms-and-conditions/', type: 'page', status: 'built' }, // built 2026-07-12
   { path: '/blog/', type: 'page', status: 'planned' },

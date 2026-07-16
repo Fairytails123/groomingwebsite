@@ -36,6 +36,7 @@ const PAGES = process.argv.slice(2).length
       '/services/doggy-massage/',
       '/services/homeless-dogs/',
       '/services/frequently-asked-questions/',
+      '/gallery/',
     ];
 
 const problems = [];

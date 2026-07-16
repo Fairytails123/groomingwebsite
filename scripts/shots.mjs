@@ -26,6 +26,8 @@ const paths = process.argv.slice(2).length
       '/services/doggy-massage/',
       '/services/homeless-dogs/',
       '/services/frequently-asked-questions/',
+      // Stage 4
+      '/gallery/',
     ];
 
 const browser = await chromium.launch();

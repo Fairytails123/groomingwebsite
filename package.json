@@ -17,7 +17,8 @@
     "shots": "node scripts/shots.mjs",
     "harvest": "node scripts/harvest.mjs",
     "extract-prices": "node scripts/extract-prices.mjs",
-    "video-poster": "node scripts/video-poster.mjs"
+    "video-poster": "node scripts/video-poster.mjs",
+    "gallery-crop": "node scripts/gallery-crop.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

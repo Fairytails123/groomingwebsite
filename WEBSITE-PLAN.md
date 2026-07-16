@@ -33,7 +33,7 @@ and mirror the date here).
 | `/services/doggy-massage/` | **built** 2026-07-16 | Stage 3 — 4 oils |
 | `/services/homeless-dogs/` | **built** 2026-07-16 | Stage 3 |
 | `/services/frequently-asked-questions/` | **built** 2026-07-16 | Stage 3 — 15 FAQs, `<details>` |
-| `/gallery/` | planned | Stage 4 — before/after polaroid grid |
+| `/gallery/` | **built** 2026-07-16 | Stage 4 — 5 before/after pairs (cropped out of the old composites) + 20-photo polaroid grid |
 | `/blog/` | planned | Stage 4 |
 | `/why-dog-grooming-is-important/` | planned | Stage 4 — ROOT-level slug, orig date 17 Apr 2020 |
 | `/services-2/` → `/services/` | **stub built** 2026-07-12 | public/ meta-refresh+canonical+noindex |
@@ -51,7 +51,7 @@ and mirror the date here).
   95–100 perf / 100 a11y / 100 SEO across the cluster. Gated by `npm run verify-stage3` (static
   facts) + `npm run price-list-e2e` (browser: drives the filter, then re-loads with JS OFF and
   asserts all 105 rows are visible by computed style).
-- **Stage 4 — Gallery + blog**: gallery grid → blog index + post.
+- **Stage 4 — Gallery + blog**: gallery ✅ 2026-07-16 → blog index + the root-level post (next).
 - **Stage 5 — Homepage + whole-site pass**: hero/teasers/reviews/subscription band; dist-wide
   link crawl, sitemap sanity, both-viewport sweep, full verify-urls.
 
@@ -64,7 +64,9 @@ Per-page definition of done = the 6 quality gates in CLAUDE.md.
 - [ ] Per-page fact diff vs harvest signed off (prices, phones, hours, T&Cs verbatim)
 - [x] Breed table rows == 105 (47+10+48) vs harvest; 10-breed spot check re-run; add-ons correct
       — automated in `npm run verify-stage3`, which asserts it against the RENDERED table
-- [x] 15 FAQs · 6 clip lengths present — [ ] ~25 gallery pairs (Stage 4)
+- [x] 15 FAQs · 6 clip lengths · gallery = **5 before/after pairs + 20 photos** (the old
+      "~25 gallery pairs" estimate in this doc was wrong — the real page was a 5-slide carousel
+      plus a 20-photo tiled grid)
 - [ ] **`npm run verify-stage3` + `npm run price-list-e2e` green** (the second needs
       `npx astro preview` running) — these encode the 2026-07-16 owner rulings and the
       no-JS/crawler contract on the price list; a regression here is a silent revenue bug
@@ -103,8 +105,21 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - [ ] **/who-we-are/ drops the K9 Centre's "online shop"** and says "day school" where the harvest
       says "day care". The shop was Adventure Dog, which is dead (see copy log), so dropping it is
       probably right — but confirm "day school" vs "day care" is the real service name.
-- [ ] **`/gallery/` and `/blog/` 404 from the header nav and footer** until Stage 4. Expected during
-      the inside-out build; must not survive to switchover (verify-urls tracks both).
+- [ ] **`/blog/` 404s from the footer** until Stage 4 completes. Expected during the inside-out
+      build; must not survive to switchover (verify-urls tracks it). `/gallery/` is now built.
+- [ ] **BREEDS ON /gallery/ NEED THE OWNER'S EYE.** Owner ruling 2026-07-16 was "use breeds, no
+      names", accepting the risk that a guess could be wrong. Breeds are asserted in alt text ONLY
+      where unmistakable; where it was a judgement call the alt text describes the coat instead.
+      Asserted: Labradoodle (01), Cockapoo (03, 11, 18, 19), Poodle (05, 09), Shih Tzu (06, 20),
+      Cocker Spaniel (07), Dachshund (08), French Bulldog (10), Jack Russell (12), Chihuahua ×2 (15),
+      Bichon Frise (16), Afghan Hound (17). Deliberately NOT named: 02 ("wire-coated white terrier"),
+      04 ("small white dog"), 13 ("long-coated tan and black collie"), 14 ("black and white
+      short-coated dog"). Pairs: Cockapoo, wire-coated terrier, Poodle, collie, Afghan Hound.
+      A wrong breed on a groomer's own site is embarrassing — please correct any.
+- [ ] **Gallery photo resolution is capped by the source and cannot be improved.** The 5 before/after
+      crops are only 242–309px (each was a ~400px photo inside a 1200×600 composite) and the grid
+      photos are 480×480 originals. Display slots are deliberately small to stay sharp; `mobile-check`
+      warns on 4 of them. Only new photography fixes this.
 - [ ] GitHub **account-level verified domain** for fairytailsdoggrooming.co.uk (Settings →
       Pages → Add a domain; TXT `_github-pages-challenge-Fairytails123`) — anti-takeover;
       needs the GitHub web UI (no REST API). Do before flip day.
@@ -129,6 +144,24 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 - 2026-07-12 /who-we-are/: copy tightened per locked spec (all facts kept); old title
   "The Fairy Tails Dog Grooming - The Fairy Tails Dog Grooming" kept as-is for now — candidate
   for improvement at polish (it's a doubled site-name, weak SEO).
+
+### 2026-07-16 — /gallery/ (Stage 4)
+
+1. **Carousel → grid.** The old page was a Smart Slider carousel of 5 before/after slides. A
+   carousel shows 1 of 5 to anything that doesn't click, crawlers included, and these photos are the
+   most persuasive content the business has. All 25 images now render in the HTML at t=0.
+2. **The 5 before/after composites were cropped apart** (owner ruling): each was 1200×600 with the
+   OLD brand baked into the pixels — cyan/blue background, soap bubbles, tilted white polaroid
+   frames. `npm run gallery-crop` recovers the 10 bare photos and the page reframes them as
+   Before | After pairs in the countryside system. Read that script's header before touching a crop:
+   the bubbles are drawn OVER the photos, so some crops are deliberately asymmetric.
+3. **Alt text names breeds only where unmistakable** — see the open item above for the full list and
+   the four deliberately left unnamed.
+4. ⚠️ **The harvest had MISSED all 5 before/after images.** They are referenced with
+   protocol-relative URLs (`src="//host/…"`) and a CSS `background-image`, and `extractImageUrls`
+   only matched `https?://` (protocol-relative was handled for `srcset` only). The harvest reported
+   "failed: 0" while silently skipping them. Rescued at 1200×600 on 2026-07-16 and
+   `scripts/harvest.mjs` fixed. Same near-miss class as the Bruno video.
 
 ### 2026-07-16 — Stage 3 owner rulings (the old site contradicted itself; these settle it)
 

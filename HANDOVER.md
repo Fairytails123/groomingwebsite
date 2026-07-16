@@ -4,10 +4,10 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
 
 ## ⏸️ CURRENT STATE (2026-07-16)
 
-**Stages 0–3 are DONE.** Preview: **https://preview.fairytailsdoggrooming.co.uk** (HTTPS
-enforced, noindexed; old WordPress untouched). **11 of 15 pages built.** Remaining: `/`
-(homepage, ships last), `/gallery/`, `/blog/`, `/why-dog-grooming-is-important/`.
-verify-urls: 0 failures. Lighthouse across the Stage 3 cluster: 95–100 perf / 100 a11y / 100 SEO.
+**Stages 0–3 DONE; Stage 4 half done (gallery shipped).** Preview:
+**https://preview.fairytailsdoggrooming.co.uk** (HTTPS enforced, noindexed; old WordPress
+untouched). **12 of 15 pages built.** Remaining: `/` (homepage, ships last), `/blog/`,
+`/why-dog-grooming-is-important/`. verify-urls: 0 failures. Lighthouse 95–100 across the board.
 
 **Waiting on the OWNER:**
 1. **Eyeball the preview — phone AND desktop.** Now 10 real pages, not 3.
@@ -29,6 +29,41 @@ verification and baseline export; GitHub account-level verified domain
 
 **Housekeeping:** 2 TEST rows in the `grooming_enquiries` data table + 2 TEST emails at
 info@ — safe to delete.
+
+## 2026-07-16 (later still) — Stage 4a: /gallery/ shipped
+
+5 before/after pairs + a 20-photo polaroid grid. Lighthouse 99/100/100/100, mobile gate green.
+**The plan's "~25 gallery pairs" was wrong** — the real page was a 5-slide carousel plus a
+20-photo tiled grid. Corrected in WEBSITE-PLAN.
+
+**⚠️ THE HARVEST HAD MISSED ALL 5 BEFORE/AFTER IMAGES — and reported "failed: 0".** They use
+protocol-relative URLs (`src="//host/…"`) plus a CSS `background-image`, and `extractImageUrls`
+only matched `https?://` (protocol-relative was handled for `srcset` alone). Rescued at 1200×600
+and `scripts/harvest.mjs` fixed. **Second time the "source of record" has had a hole in it** (the
+Bruno video was the first). If anything else is ever missing, suspect the scanner before assuming
+the old site didn't have it.
+
+**The 5 before/afters were the OLD brand in pixels** — 1200×600 composites on cyan with soap
+bubbles and tilted white frames. Owner ruling: crop the photos out and reframe. `npm run
+gallery-crop` does it. Three things that cost real time and are documented in the script:
+1. **The frame is a ~20px BORDER, not a filled rectangle** — a white-pixel histogram ("frame spans
+   >25% of the row") found nothing on 6 of 10 photos. A first/last-white-pixel scan along the
+   middle row finds the edges exactly.
+2. **You cannot classify the background by its blue cast** — slide 2's background is dark navy
+   (40,77,104) and slide 5's dark dog fur is (28,34,48). No threshold separates them.
+3. **The bubbles are drawn ON TOP of the photos**, so some crops are deliberately ASYMMETRIC —
+   a uniform inset can only clear a corner bubble by eating the dog.
+Corner sampling is a hint, never a gate: it flagged a turquoise towel and the light salon wall,
+and missed real bubbles in two photos. **The contact sheet + eyes decided every value.**
+
+**⚠️ ONE LIGHTHOUSE RUN IS NOT EVIDENCE.** The gallery scored **88** (a gate failure) on the first
+run and **99, 99, 99** on three more — the first run was competing with the build/preview startup.
+Every individual metric had scored 95–100, which is what exposed it. Re-run before believing a
+Lighthouse regression.
+
+**Resolution ceiling, unfixable without new photography:** the before/after crops are 242–309px
+(each was a ~400px photo inside a composite) and the grid photos are 480×480 originals. Display
+slots are deliberately small to stay sharp; `mobile-check` warns on 4. Do not enlarge them.
 
 ## 2026-07-16 (later) — 📱 THE MOBILE GATE is now a hard rule
 

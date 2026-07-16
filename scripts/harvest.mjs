@@ -84,6 +84,19 @@ function extractImageUrls(html) {
         if (IMAGE_HOSTS.has(host) && (!innerHost || IMAGE_HOSTS.has(innerHost) || host === innerHost)) urls.add(m[0]);
       } catch { /* skip malformed */ }
     }
+    // PROTOCOL-RELATIVE urls: src="//host/x.jpg", CSS url("//host/x.jpg").
+    // The https?:// scan above cannot see these, and srcset-only handling missed
+    // them too — which is how all 5 of the gallery's before/after slider images
+    // (Smart Slider emits protocol-relative src AND a CSS --n2bgimage url())
+    // were absent from the 2026-07-12 harvest while it still reported "failed: 0".
+    // Found and back-filled 2026-07-16. The (?<!:) stops it re-matching https://.
+    for (const m of t.matchAll(/(?<!:)\/\/[^"'\s\\<>)+]+?\.(?:jpe?g|png|gif|webp|svg|avif|ico)(?:\?[^"'\s\\<>)]*)?/gi)) {
+      const abs = 'https:' + m[0];
+      try {
+        const u = new URL(abs);
+        if (IMAGE_HOSTS.has(u.hostname) && IMG_EXT.test(u.pathname)) urls.add(abs);
+      } catch { /* skip malformed */ }
+    }
     // srcset entries (relative or protocol-relative)
     for (const m of t.matchAll(/srcset\s*=\s*["']([^"']+)["']/gi)) {
       for (const part of m[1].split(',')) {
