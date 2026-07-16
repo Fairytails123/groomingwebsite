@@ -12,34 +12,30 @@ All gates green: `verify-urls` 0 failures · `verify-stage3` 0 · `price-list-e2
 `mobile-check` 15/15 · Lighthouse 97–100 perf / 100 a11y / 100 SEO on every page · dist-wide
 link crawl 82 internal URLs 0 broken · sitemap = the 14 canonical URLs · reduced-motion clean.
 
+**The homepage's Google-review excerpts self-refresh weekly** via the n8n "Grooming Reviews
+Rotator" (live + end-to-end verified 2026-07-16 — see that entry below). Never hand-edit
+`src/data/reviews-snapshot.json`; the workflow owns it.
+
 **What remains is NOT build work — it's the switchover checklist** (WEBSITE-PLAN "Ready for
 switchover" + docs/SWITCHOVER-RUNBOOK.md): owner walkthrough + sign-off, the ⚑ items below,
 GSC/Ahrefs baselines, GitHub verified domain, then the DNS flip. **Do not flip DNS without the
 owner.**
 
-### 🔴 Blocking the switchover (owner decisions)
+### Waiting on the owner (all non-blocking for build, all pre-switchover)
 
-1. ~~**The live booking form sells a service the site says we don't offer.**~~ **RESOLVED
-   2026-07-16 evening — owner ruled the FORM was right**: bath & brush pick-ups ARE offered,
-   same £2/journey. Site updated in all three places + gate hardened (see WEBSITE-PLAN copy log).
-2. **Eyeball the preview — phone AND desktop.** 14 real pages now.
-3. **Check the gallery breeds** — alt text names breeds where they were unmistakable and
+1. **Eyeball the preview — phone AND desktop.** All 15 pages are real now.
+2. **Check the gallery breeds** — alt text names breeds where they were unmistakable and
    deliberately doesn't where they weren't. Full list in WEBSITE-PLAN's open items.
-4. **Who-we-are photo** — the old image looks like the K9 Centre BARN, not the town salon.
-5. **"From £25"** only holds via de-shed breeds (cheapest clipped groom £30, crossbreed £35);
-   **£25 puppy groom** exists only in the FAQ; **"day school" vs "day care"** on who-we-are.
+3. **Who-we-are photo** — the old image looks like the K9 Centre BARN, not the town salon.
+4. **The ⚑ homepage choices** made while the owner was away (WEBSITE-PLAN open items).
+5. **Browser session for baselines:** GSC Domain property + DNS-TXT verification and baseline
+   export; GitHub account-level verified domain (github.com/settings/pages → Add a domain →
+   TXT via Hostinger MCP); Ahrefs baseline exports → `docs/seo-baseline/` (API is plan-blocked
+   — web UI only).
 
-### Next build work
-
-**Stage 5 — homepage + whole-site pass** (hero/teasers/reviews/subscription band; dist-wide
-link crawl, sitemap sanity, both-viewport sweep, full verify-urls). When the homepage is built,
-do NOT carry over its harvested "free door to door service" claims (see the copy log —
-pick-ups are £2/journey).
-
-**Also pending (needs a browser session with the owner):** GSC Domain property + DNS-TXT
-verification and baseline export; GitHub account-level verified domain
-(github.com/settings/pages → Add a domain → TXT via Hostinger MCP); Ahrefs baseline exports
-→ `docs/seo-baseline/` (API is plan-blocked — web UI only).
+*(Resolved 2026-07-16 by owner rulings: bath & brush pick-ups ARE offered at £2/journey — the
+form was right; "From £25" kept as is; the FAQ's £25 puppy groom removed as stale; who-we-are
+says "training, day school and daycare". Details in WEBSITE-PLAN's copy log.)*
 
 **Housekeeping:** 2 TEST rows in the `grooming_enquiries` data table + 2 TEST emails at
 info@ — safe to delete.
