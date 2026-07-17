@@ -32,6 +32,10 @@ Three more owner requests, each shipped and verified on the live preview:
    `astro:page-load` (the HeroStage dedupe lesson); More buttons carry a 44×44 hit area via
    padding + negative margin because the mobile gate exempts only inline `<a>`, never buttons.
 
+**Owner confirmed (same day): the footer's two rows are fine as they are** — "Salon line:
+01424 300668" (tel:) above "WhatsApp: 01424 300668" (wa.me). Same number twice is DELIBERATE
+(one taps to call, one opens WhatsApp) — do not "deduplicate" it.
+
 **Gates after all three:** build green · dist sweep 0 hits for the retired number ·
 mobile-check 15/15 · hero-resilience 6/6 · expander + form-string Playwright checks green ·
 reviews band eyeballed at 390 AND 1440 (crops, not just fullpage) · Lighthouse home
