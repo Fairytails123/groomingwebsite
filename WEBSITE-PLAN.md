@@ -92,7 +92,7 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 | Subscription | Stripe `buy.stripe.com/8x27sM5K57BR1IL94W9MY00` — £25/mo/dog, 2-mo min |
 | Enquiry form | n8n `grooming-enquiry` (wf `TpQFGJy87KIKGflV`, table `mbWR9tHS4u95s605`) — E2E verified 2026-07-12 |
 | Reviews | Google place `ChIJV3P8-VAb30cRHoBgRmxCYIM` — 4.9★/63 (snapshot 2026-07-12) |
-| WhatsApp | wa.me/447842116216 |
+| WhatsApp | wa.me/441424300668 — the salon line (owner ruling 2026-07-17; mobile 07842 116216 retired site-wide) |
 | Analytics | GTM `GTM-W93L9XK5`, Consent Mode v2 default-denied |
 
 ## Open items

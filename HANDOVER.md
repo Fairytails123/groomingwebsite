@@ -2,6 +2,42 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## 🖊 2026-07-17 (afternoon) — owner feedback rounds 2–4, all applied + live (`…29cf71b`)
+
+Three more owner requests, each shipped and verified on the live preview:
+
+1. **Hero: reviews badge removed** (`4.9 out of 5 / From 63+ Google reviews`) — the hero is
+   copy + CTAs only now. The badge still renders in the footer on every page, and the review
+   proof on the homepage moved to item 3's band. Structural check on dist: hero block contains
+   neither string; footer keeps its.
+2. **Phones: WhatsApp runs on the SALON line; the mobile is retired site-wide.** Interviewed
+   to lock it down (the message was ambiguous — the site already showed the mobile as the
+   WhatsApp): owner confirmed WhatsApp is attached to **01424 300668** and ruled the old
+   mobile **07842 116216 off the site entirely**. All wa.me links → `wa.me/441424300668`;
+   FAQ cancellation + catch-all numbers → salon line; EnquiryForm status strings now
+   interpolate from business.ts (were hardcoded prose — exercised the changed failure string
+   against a BLOCKED webhook: reads the salon number only, no real enquiry sent). dist +
+   live-preview sweeps: **0 occurrences of 07842/447842 anywhere.** ⚠ The harvest still
+   carries the mobile — never copy it back.
+3. **Google-reviews band restyled to the OLD SITE's widget look** (owner supplied a
+   screenshot): full-width WHITE band, business name + address + big `4.9 ★★★★★ 63 reviews`
+   header, per-review cards with a coloured avatar initial + name + gold stars and the text in
+   a bordered white bubble **clamped to 4 lines with a More/Less expander**, G-logo "See all
+   our reviews on Google" link + "verbatim excerpts, refreshed weekly" provenance note.
+   Content still renders VERBATIM from `reviews-snapshot.json` (the n8n rotator's contract is
+   untouched — it keeps overwriting the same file weekly). Engineering notes: the clamp is
+   JS-APPLIED (JS off = full text, no dead control — the price-list-filter precedent); a
+   review short enough to fit gets no More at all (proven live: Sarah's card at 390 shows
+   full text, the reference widget's own behaviour); the expander re-inits via
+   `astro:page-load` (the HeroStage dedupe lesson); More buttons carry a 44×44 hit area via
+   padding + negative margin because the mobile gate exempts only inline `<a>`, never buttons.
+
+**Gates after all three:** build green · dist sweep 0 hits for the retired number ·
+mobile-check 15/15 · hero-resilience 6/6 · expander + form-string Playwright checks green ·
+reviews band eyeballed at 390 AND 1440 (crops, not just fullpage) · Lighthouse home
+94–99 → median **99**, a11y/bp/seo 100/100/100 · live preview curl-verified (phones, band,
+noindex all correct).
+
 ## 🖊 2026-07-17 (later) — owner feedback round 1 on the hero, applied + live (`efb9122`)
 
 Two rulings from Kam after seeing the preview, both applied, deployed, and verified live:
