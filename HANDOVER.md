@@ -2,6 +2,24 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## ✅ CURRENT STATE (2026-07-17, session close) — build + hero DONE, owner actively reviewing
+
+**Everything is on `main` and live on the noindexed preview
+(https://preview.fairytailsdoggrooming.co.uk).** The hero animation is merged
+(Lighthouse-parity proven on x64: median 99 vs 99), and the owner reviewed the preview the
+same day and gave **five rulings, all applied + live + verified** (details in the two entries
+below): scroll cue removed · the dog's floor light-pool removed (must blend into the band;
+dark contact core stays) · reviews badge out of the hero · the Google-reviews band restyled
+to the old widget's white look with More/Less expanders · **WhatsApp runs on the salon line
+01424 300668 and the mobile 07842 116216 is retired site-wide** (footer deliberately keeps
+two rows — call + WhatsApp, same number; owner confirmed twice).
+
+**What remains is the switchover checklist only** (WEBSITE-PLAN "Ready for switchover" +
+`docs/SWITCHOVER-RUNBOOK.md`): the owner's full walkthrough/sign-off (the six hero judgement
+calls in WEBSITE-PLAN Open items stand unless overruled — the owner has been eyeballing and
+only flagging changes), GSC/Ahrefs baselines + GitHub verified domain (browser session), the
+`node_modules` junction decision (Kam call), then the DNS flip — **never without the owner.**
+
 ## 🖊 2026-07-17 (afternoon) — owner feedback rounds 2–4, all applied + live (`…29cf71b`)
 
 Three more owner requests, each shipped and verified on the live preview:

@@ -97,6 +97,16 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 
 ## Open items
 
+- [x] ~~**WhatsApp number**~~ — RESOLVED 2026-07-17, owner interviewed: WhatsApp is attached
+      to the **salon line 01424 300668** (wa.me/441424300668 everywhere) and the old mobile
+      **07842 116216 is retired from the site entirely** (FAQ cancellation + catch-all numbers
+      now the salon line; enquiry-form strings interpolate from business.ts). Footer keeps two
+      rows (call + WhatsApp, same number) — owner confirmed, deliberate. ⚠ The harvest still
+      carries the mobile; never copy it back.
+- [x] ~~**Homepage Google-reviews block style**~~ — RESOLVED 2026-07-17, owner supplied the
+      old widget's screenshot as the target: white band, avatar/name/gold-star cards, text
+      clamped with More/Less expanders, G-logo link. Shipped same day; content contract with
+      the n8n rotator unchanged (`reviews-snapshot.json`, verbatim excerpts).
 - [ ] **HERO ANIMATION JUDGEMENT CALLS NEED THE OWNER'S EYE** (live on the preview homepage
       since 2026-07-17 — phone AND desktop). **Feedback round 1 applied 2026-07-17 (`efb9122`):
       the "Scroll to see the transformation" caption and the warm floor light-pool behind the
