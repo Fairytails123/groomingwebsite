@@ -146,6 +146,8 @@ const labelClass = 'field-label';
 </form>
 
 <script>
+  import { business } from '../data/business';
+
   const form = document.getElementById('enquiry-form') as HTMLFormElement | null;
   if (form) {
     const startedAt = Date.now();
@@ -157,8 +159,7 @@ const labelClass = 'field-label';
         (el as HTMLInputElement).disabled = true;
       });
       status.className = 'text-sm font-medium text-moss-700';
-      status.textContent =
-        "Thank you — we've got your enquiry and we'll be in touch soon. If it's urgent, call the salon on 01424 300668 or WhatsApp 07842 116216.";
+      status.textContent = `Thank you — we've got your enquiry and we'll be in touch soon. If it's urgent, call or WhatsApp the salon on ${business.phones.main.display}.`;
     };
 
     form.addEventListener('submit', async (e) => {
@@ -210,8 +211,7 @@ const labelClass = 'field-label';
         button.disabled = false;
         button.innerHTML = buttonHtml;
         status.className = 'text-sm font-medium text-red-700';
-        status.textContent =
-          "Sorry — that didn't send. Please try again, or call the salon on 01424 300668 / WhatsApp 07842 116216.";
+        status.textContent = `Sorry — that didn't send. Please try again, or call or WhatsApp the salon on ${business.phones.main.display}.`;
       }
     });
   }

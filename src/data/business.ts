@@ -26,15 +26,17 @@ export const business = {
     jsonLd: { opens: '08:00', closes: '17:30', days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] },
   },
 
-  // TWO public numbers (from the old site, verified 2026-07-12): the salon
-  // landline, and the mobile used for cancellations + WhatsApp.
+  // ONE public number (owner ruling 2026-07-17): the salon line, which also runs
+  // the business WhatsApp. The old mobile 07842 116216 is RETIRED from the site
+  // entirely — the harvest's pages still carry it; never copy it back over.
   phones: {
-    main: { label: 'Salon line', display: '01424 300668', tel: 'tel:+441424300668' },
-    mobile: {
-      label: 'Mobile — cancellations & WhatsApp',
-      display: '07842 116216',
-      tel: 'tel:+447842116216',
-      whatsapp: 'https://wa.me/447842116216',
+    main: {
+      // Rendered next to a separate "WhatsApp:" row in the footer — keep it
+      // short or the pair reads twice over.
+      label: 'Salon line',
+      display: '01424 300668',
+      tel: 'tel:+441424300668',
+      whatsapp: 'https://wa.me/441424300668',
     },
   },
 
