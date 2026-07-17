@@ -55,6 +55,11 @@ and mirror the date here).
 - **Stage 5 — Homepage + whole-site pass** ✅ 2026-07-16: hero/teasers/reviews/subscription band
   shipped; whole-site pass run — dist-wide link crawl (82 internal URLs, 0 broken), sitemap
   sanity (14 canonical trailing-slash entries), full mobile-check 15/15, full verify-urls.
+- **Homepage hero animation** ✅ 2026-07-17: the scroll-scrubbed grooming transformation
+  (desktop scrubs a 240vh sticky track; phone plays once when seen) merged to `main` after a
+  full gate re-run on BOTH machines and a same-machine Lighthouse parity proof on x64
+  (`main` median 99 vs `hero-animation` median 99, LCP 2.0→2.1s — the animation costs
+  ~nothing). Judgement calls queued for the owner in Open items below.
 
 Per-page definition of done = the 6 quality gates in CLAUDE.md.
 
@@ -92,6 +97,15 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 
 ## Open items
 
+- [ ] **HERO ANIMATION JUDGEMENT CALLS NEED THE OWNER'S EYE** (live on the preview homepage
+      since 2026-07-17 — phone AND desktop). Six deliberate deviations from the design handoff,
+      full rationale in HANDOVER's 2026-07-16/17 entry: the bow is MOSS not honey (honey is
+      invisible against the honey-400 topknot); the topknot's red band retoned moss (green bow
+      over red band read as Christmas holly); the bow is REDRAWN (the handoff silhouette reads
+      as a moth at the 33px it renders); burst stars enlarged (handoff sizes land invisible at
+      our smaller stage); the wand star moved onto the wand tip; desktop scrubs a 240vh sticky
+      track while phones play once with no scroll-jack. Overrule any freely — each is a
+      small, isolated edit in `HeroStage.astro`.
 - [x] ~~🔴 **THE LIVE BOOKING FORM SELLS A SERVICE THE SITE SAYS WE DON'T OFFER.**~~ —
       **RESOLVED 2026-07-16 (evening), owner ruling: the FORM was right.** Bath & Brush pick-ups
       **are offered, at the same £2 per journey**. All three site claims of the old restriction

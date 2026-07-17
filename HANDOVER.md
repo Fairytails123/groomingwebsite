@@ -2,6 +2,41 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## ✅ 2026-07-17 — HERO ANIMATION VERIFIED ON x64, MERGED TO `main`, LIVE ON THE PREVIEW
+
+Picked up `origin/hero-animation` on the **x64 machine** per the entry below. Everything the
+arm64 laptop could not settle is now settled.
+
+**All gates green on this machine too** (after the documented x64 `npm install`; the lock churn
+it caused was reverted, not committed): verify-urls 18 URLs/0 failures · hero-resilience 6/6 ·
+hero-mask-support (WebKit + Chromium) · verify-stage3 0 · mobile-check 15/15 (only the accepted
+low-res warns) · price-list-e2e 0 · hero-shots regenerated and **eyeballed** (p0 scruffy dog,
+no halo, no torn-paper floor; p50 fairy + warming coat; p85 wipe mid-sweep reads clearly;
+p100 groomed + moss bow; phone top/done states both correct).
+
+**⚖️ The Lighthouse question is ANSWERED — the animation costs ~nothing, and the ≥90 gate
+passes on the machine that set the 97–100 baseline** (`PUBLIC_INDEXABLE=true` build,
+`npx lighthouse` mobile default, warm-up + settle before measuring, 3 runs each):
+- `main`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: perf **94/99/99 → median 99** · LCP 2.0s · a11y/bp/seo 100/100/100
+- `hero-animation`: perf **99/99/98 → median 99** · LCP 2.1s · a11y/bp/seo 100/100/100 · CLS 0.0001
+So the arm64 laptop's 86–87 ceiling is **confirmed environmental** (it measured the same on
+`main`), the lone 94 was the documented first-run settling artifact, and ~0.1s of LCP is the
+entire measurable cost of the animation.
+
+**Merged fast-forward to `main` (`10eb9f8..bf45e7d`) and pushed** — deploy run 29574217231
+green. Live preview verified by curl: hero markup present (`data-ft-armed` ×2, the scroll cue,
+both fingerprinted hero assets) and **noindex intact** — the old WordPress site remains the only
+indexed one. **The owner can now eyeball the animation directly at
+https://preview.fairytailsdoggrooming.co.uk — phone AND desktop, no local server needed.**
+
+**Still open (all owner-side now):**
+1. Owner eyeball of the hero on the preview URL + confirm/overrule the judgement calls listed
+   in the entry below (moss bow, retoned red band, redrawn bow, bigger burst, wand-star move,
+   240vh desktop track, lazy polaroids) — also queued in WEBSITE-PLAN Open items.
+2. The `node_modules` junction decision (environment finding 1 below) — a Kam call, unchanged.
+3. Then the switchover checklist (WEBSITE-PLAN "Ready for switchover" +
+   `docs/SWITCHOVER-RUNBOOK.md`). **Do not flip DNS without the owner.**
+
 ## 🎬 2026-07-16/17 — HOMEPAGE HERO ANIMATION built (branch `hero-animation`, PUSHED, not merged)
 
 The scroll-scrubbed grooming transformation from `Luxury dog grooming animation/` is integrated
