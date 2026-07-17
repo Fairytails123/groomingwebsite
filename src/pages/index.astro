@@ -25,7 +25,6 @@ import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import HillDivider from '../components/HillDivider.astro';
 import HeroStage from '../components/HeroStage.astro';
-import ReviewsBadge from '../components/ReviewsBadge.astro';
 import { business } from '../data/business';
 import pricing from '../data/pricing.json';
 import reviewsSnapshot from '../data/reviews-snapshot.json';
@@ -174,12 +173,9 @@ const testimonials = [
                   See the price list
                 </a>
               </div>
-              {/* text-cream-100: the badge's "4.9 out of 5" span inherits text colour —
-                  in the footer it inherits cream, here it must be set or it renders
-                  dark-on-dark (caught by Lighthouse a11y contrast). */}
-              <div class="mt-8 text-cream-100">
-                <ReviewsBadge />
-              </div>
+              {/* No ReviewsBadge here by owner ruling (2026-07-17): the hero carries copy and
+                  CTAs only. The badge still renders in the footer on every page, and the
+                  "Fresh from Google" section below carries the review proof on this one. */}
             </div>
 
             <div>
