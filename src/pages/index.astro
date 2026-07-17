@@ -13,11 +13,13 @@
 // 3. The old page embedded a live Google-reviews widget (4 review excerpts).
 //    Static rebuild: the three site-authored testimonials are kept verbatim with
 //    their real photos (Reg & Ter = Sarah's, Boo = Kadi's, Hugo = Laura's — the
-//    named dogs in the quotes), plus (owner ruling 2026-07-16 evening) a
-//    "Fresh from Google" excerpt block rendered from
+//    named dogs in the quotes), plus a Google-reviews band rendered from
 //    src/data/reviews-snapshot.json — the contract file the n8n
 //    "Grooming Reviews Rotator" workflow overwrites weekly with fresh 5-star
-//    excerpts. Never hardcode review text here.
+//    excerpts. Never hardcode review text here. Owner ruling 2026-07-17: the
+//    band is styled like the OLD SITE's widget — white background, avatar +
+//    name + gold stars per card, clamped text with a More/Less expander — so
+//    the reviews read as genuine Google reviews, not site copy.
 // 4. Old-brand imagery (bubble composites, 200px bubble service thumbs, the
 //    stock "dog on iPad" photo) is NOT carried over; cards reuse the rescued
 //    real photos already shipped on the services cluster and gallery.
@@ -28,6 +30,12 @@ import HeroStage from '../components/HeroStage.astro';
 import { business } from '../data/business';
 import pricing from '../data/pricing.json';
 import reviewsSnapshot from '../data/reviews-snapshot.json';
+
+// Google-style avatar colours for the review cards — deterministic per author so
+// the weekly rotation can't repaint a returning reviewer a different colour.
+const AVATAR_COLORS = ['#d81b60', '#43a047', '#fb8c00', '#00897b', '#3949ab', '#8e24aa'];
+const avatarColor = (name: string) =>
+  AVATAR_COLORS[[...name].reduce((s, c) => s + c.charCodeAt(0), 0) % AVATAR_COLORS.length];
 
 import teeth from '../assets/pages/services/teeth.jpg';
 import massage from '../assets/pages/services/massage.jpg';
@@ -381,35 +389,92 @@ const testimonials = [
         }
       </div>
 
-      <!-- Fresh from Google — rendered from reviews-snapshot.json (rotated weekly) -->
-      <div class="mt-12">
-        <h3 class="text-center font-display text-xl font-bold text-moss-900">Fresh from Google</h3>
-        <div class="mt-6 grid gap-5 sm:grid-cols-2">
+    </section>
+
+    <!-- Google reviews — owner ruling 2026-07-17: styled like the OLD SITE's embedded widget
+         (white band, avatar + name + gold stars, clamped text with More) so the reviews read as
+         genuine Google reviews. Content still comes verbatim from reviews-snapshot.json (the
+         n8n rotator's contract file — never hardcode review text). The More/Less expander is
+         JS-applied: with JS off the full text is simply visible and no dead control renders
+         (same progressive-enhancement rule as the price-list filter). -->
+    <section class="mt-16 bg-white py-14 sm:py-16" aria-labelledby="greviews-title">
+      <div class="mx-auto max-w-6xl px-4">
+        <p class="eyebrow text-honey-700">Reviews from Google</p>
+        <h2 id="greviews-title" class="mt-3 font-display text-3xl font-bold text-neutral-900">
+          {business.name}
+        </h2>
+        <p class="mt-1 text-sm text-neutral-600">
+          {business.address.line1}, {business.address.town}
+        </p>
+        <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span class="text-4xl font-bold leading-none text-neutral-900">{business.reviews.rating}</span>
+          <span class="text-2xl leading-none text-[#fbbc05]" aria-hidden="true">★★★★★</span>
+          <span class="sr-only">Rated {business.reviews.rating} out of 5</span>
+          <span class="text-neutral-600">{business.reviews.count} reviews</span>
+        </p>
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {
-            reviewsSnapshot.reviews.map((r) => (
-              <figure class="rounded-2xl border-2 border-cream-200 p-5">
-                <span class="text-honey-500" aria-hidden="true">
-                  {'★'.repeat(r.rating)}
-                </span>
-                <span class="sr-only">{r.rating} out of 5 stars</span>
-                <blockquote class="mt-2 text-sm leading-relaxed text-bark-700">{r.text}</blockquote>
-                <figcaption class="mt-3 text-sm font-bold text-moss-900">
-                  {r.author} <span class="font-normal text-bark-600">· Google review</span>
+            reviewsSnapshot.reviews.map((r, i) => (
+              <figure class="flex flex-col">
+                <figcaption class="flex items-center gap-3">
+                  <span
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base font-bold text-white"
+                    style={`background:${avatarColor(r.author)}`}
+                    aria-hidden="true"
+                  >
+                    {r.author.trim().charAt(0).toUpperCase()}
+                  </span>
+                  <span class="min-w-0">
+                    <span class="block truncate font-bold text-neutral-900">{r.author}</span>
+                    <span class="text-sm tracking-wide text-[#fbbc05]" aria-hidden="true">
+                      {'★'.repeat(r.rating)}
+                    </span>
+                    <span class="sr-only">{r.rating} out of 5 stars</span>
+                  </span>
                 </figcaption>
+                <blockquote class="mt-3 flex-1 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+                  <p id={`rev-text-${i}`} data-rev-text class="text-sm leading-relaxed text-neutral-700">
+                    {r.text}
+                  </p>
+                  {/* min-h/w-11 = the 44px tap target (mobile gate measures BUTTONS with no
+                      inline-text exemption); the negative margins hand the padding back so the
+                      card keeps its rhythm. Hidden until the clamp JS proves there is more to
+                      show — a short review never gets a dead More. */}
+                  <button
+                    type="button"
+                    data-rev-more
+                    aria-expanded="false"
+                    aria-controls={`rev-text-${i}`}
+                    hidden
+                    class="-mb-3 -ml-2 inline-flex min-h-11 min-w-11 items-center px-2 text-sm font-bold text-[#1a73e8] hover:underline"
+                  >
+                    More
+                  </button>
+                </blockquote>
               </figure>
             ))
           }
         </div>
-      </div>
 
-      <p class="mt-8 text-center">
-        <a
-          href={business.reviews.readUrl}
-          class="inline-flex min-h-11 items-center font-bold text-moss-700 underline decoration-honey-500 decoration-2 underline-offset-4 hover:text-moss-800"
-        >
-          {business.reviews.rating} out of 5 from {business.reviews.count}+ Google reviews — read them here
-        </a>
-      </p>
+        <div class="mt-8 flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
+          <a
+            href={business.reviews.readUrl}
+            class="inline-flex min-h-11 items-center gap-2.5 font-bold text-[#1a73e8] hover:underline"
+          >
+            <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#ffc107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.3 6.1 29.4 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
+              <path fill="#ff3d00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.3 6.1 29.4 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+              <path fill="#4caf50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
+              <path fill="#1976d2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C41.4 35.2 44 30 44 24c0-1.3-.1-2.6-.4-3.9z"/>
+            </svg>
+            See all our reviews on Google
+          </a>
+          <p class="text-xs text-neutral-500">
+            Verbatim excerpts from our Google Business Profile — refreshed weekly.
+          </p>
+        </div>
+      </div>
     </section>
 
     <!-- Final CTA -->
@@ -437,6 +502,16 @@ const testimonials = [
     }
   }
 
+  /* Review-card clamp — applied by JS only, so with JS off the full text is simply visible
+     and no dead More button renders. Hand-prefixed: this repo has no autoprefixer. */
+  [data-rev-text].rev-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden;
+  }
+
   /* Reduced motion: there is no scrub, so the 240vh track is pure dead scroll — 1.5 screens of
      a pinned, static hero before any content, which reads as a stuck page. The track's whole
      justification is giving the animation room to play; when the visitor's OS has switched the
@@ -447,3 +522,33 @@ const testimonials = [
     }
   }
 </style>
+
+<script>
+  // Google-review More/Less expanders. ⚠ Astro dedupes this module to at most ONE run per
+  // session, even across ClientRouter navigations (the same trap HeroStage.astro documents) —
+  // so init re-runs per page via astro:page-load and is idempotent per element.
+  function initReviewExpanders() {
+    document.querySelectorAll<HTMLParagraphElement>('[data-rev-text]').forEach((txt) => {
+      if (txt.dataset.revInit) return;
+      txt.dataset.revInit = '1';
+      const btn = txt.parentElement?.querySelector<HTMLButtonElement>('[data-rev-more]');
+      if (!btn) return;
+      txt.classList.add('rev-clamp');
+      // Offer More only when the clamp actually hides something — a short review (like the
+      // reference widget's second card) gets no dead control.
+      if (txt.scrollHeight <= txt.clientHeight + 1) {
+        txt.classList.remove('rev-clamp');
+        return;
+      }
+      btn.hidden = false;
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        txt.classList.toggle('rev-clamp', expanded);
+        btn.textContent = expanded ? 'More' : 'Less';
+      });
+    });
+  }
+  initReviewExpanders();
+  document.addEventListener('astro:page-load', initReviewExpanders);
+</script>
