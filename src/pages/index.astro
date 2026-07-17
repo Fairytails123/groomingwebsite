@@ -184,16 +184,8 @@ const testimonials = [
 
             <div>
               <HeroStage />
-              {/* A <div>/<span>, never a <p>: mobile-check fails any h1/h2/h3/p/td/li whose
-                  computed opacity is under 0.05 at t=0, and this fades out on scroll. Desktop
-                  only — it is an affordance for the scrub, and there is no scrub below lg.
-                  Authored at opacity 0 and armed to 1 by the CSS below, for the same reason the
-                  stage is (see HeroStage.astro divergence 4): its FINISHED value is 0, so if the
-                  module never runs, a cue authored at 1 would sit there promising a
-                  transformation next to a dog that is already transformed. */}
-              <div class="mt-2 hidden text-center lg:block" data-hero-cue aria-hidden="true">
-                <span class="eyebrow text-honey-300/75">Scroll to see the transformation</span>
-              </div>
+              {/* No scroll cue here by owner ruling (2026-07-17): the transformation announces
+                  itself; a caption under the stage was one more thing popping out of the band. */}
             </div>
           </div>
         </div>
@@ -446,22 +438,6 @@ const testimonials = [
   @media (prefers-reduced-motion: reduce) {
     .polaroid {
       rotate: 0deg !important;
-    }
-  }
-
-  /* The scroll cue follows the stage's "authored finished, armed backwards" rule (see the
-     markup note and HeroStage.astro divergence 4). Its finished value is 0, so 0 is the
-     default; it only appears once JS has armed the stage AND motion is welcome — i.e. exactly
-     when there is a scrub to cue. :global() is required on the stage half: it is rendered by
-     HeroStage and carries THAT component's scope id, so an unqualified selector here would be
-     scoped to this page's id and silently never match. The cue is a following SIBLING of the
-     stage, not a descendant — `[data-ft-armed] [data-hero-cue]` would never match either. */
-  [data-hero-cue] {
-    opacity: 0;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    :global([data-hero-stage][data-ft-armed]) ~ [data-hero-cue] {
-      opacity: 1;
     }
   }
 

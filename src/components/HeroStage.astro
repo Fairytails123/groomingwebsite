@@ -85,11 +85,11 @@ const pct = (n: number, of: number) => `${((n / of) * 100).toFixed(4)}%`;
 
 <div class="ft-stage" data-hero-stage aria-hidden="true">
   {/* Grounding. The handoff uses rgba(28,28,30,.05) — on moss-900 that composites to under
-      1.5/255 per channel, i.e. mathematically invisible, and she would float. Replaced by the
-      pair a dark band actually needs: a warm pool (the fairy's light falling on the floor) and
-      a contact core DARKER than the band, which is the only thing that reads as contact here.
-      Both warm up as the groom completes. */}
-  <div class="ft-ground-pool"></div>
+      1.5/255 per channel, i.e. mathematically invisible, and she would float. On a dark band
+      the thing that reads as contact is a core DARKER than the band. That is ALL the grounding
+      there is by owner ruling (2026-07-17): the warm light-pool that used to sit behind her
+      paws read as a background highlight lifting the dog off the page, and the dog must blend
+      seamlessly into the band — nothing lighter than the moss may sit behind her. */}
   <div class="ft-ground-core"></div>
 
   {/* Ambient motes — the only time-based (non-scroll) motion in the piece. Alphas are lifted
@@ -230,31 +230,16 @@ const pct = (n: number, of: number) => `${((n / of) * 100).toFixed(4)}%`;
     pointer-events: none;
   }
 
-  /* Both grounds sit at the paws' contact line (stage y≈572) — 8px above the handoff's ellipse,
+  /* The ground sits at the paws' contact line (stage y≈572) — 8px above the handoff's ellipse,
      because hero-assets.mjs cut the artwork's painted floor away at source y≈714, and the
      handoff's y580 was aligned to that floor rather than to her paws. */
-  .ft-ground-pool,
   .ft-ground-core {
     position: absolute;
     left: 50%;
     translate: -50% 0;
     border-radius: 50%;
-    /* The room warms as she is groomed. Default 1 = finished; armed resets it to 0. */
+    /* The shadow settles in as she is groomed. Default 1 = finished; armed resets it to 0. */
     opacity: calc(0.5 + 0.5 * var(--ft-warm, 1));
-  }
-  .ft-ground-pool {
-    top: 88.7097%;
-    width: 54%;
-    height: 7.0968%;
-    background: radial-gradient(
-      ellipse at center,
-      rgb(236 194 124 / 0.26) 0%,
-      rgb(236 194 124 / 0.09) 54%,
-      rgb(236 194 124 / 0) 78%
-    );
-    filter: blur(6px);
-  }
-  .ft-ground-core {
     top: 91.6129%;
     width: 38%;
     height: 2.9032%;
@@ -522,7 +507,6 @@ const pct = (n: number, of: number) => `${((n / of) * 100).toFixed(4)}%`;
     const elSheen = q<HTMLElement>('[data-sheen]')!;
     const elBow = q<HTMLElement>('[data-bow]')!;
     const elFairy = q<HTMLElement>('[data-fairy]')!;
-    const elCue = document.querySelector<HTMLElement>('[data-hero-cue]');
 
     // ── Particles. One fragment, one reflow. No will-change: 49 permanently-promoted
     // compositor layers costs more in raster memory on a mid-range phone than it saves. ──────
@@ -634,8 +618,6 @@ const pct = (n: number, of: number) => `${((n / of) * 100).toFixed(4)}%`;
         d.el.style.transform = `translate(${x}px,${y}px) scale(${0.5 + 0.6 * a}) rotate(${d.rot + a * 60}deg)`;
         d.el.style.opacity = String(Math.min(1, a * 5) * (a > 0.8 ? (1 - a) / 0.2 : 1) * 0.95);
       }
-
-      if (elCue) elCue.style.opacity = String(1 - S(p, 0.02, 0.07));
     }
 
     // ── Scale the particle layer from the CONTAINER's width — never innerWidth. A stage that
