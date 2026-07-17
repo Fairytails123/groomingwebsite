@@ -98,7 +98,10 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 ## Open items
 
 - [ ] **HERO ANIMATION JUDGEMENT CALLS NEED THE OWNER'S EYE** (live on the preview homepage
-      since 2026-07-17 — phone AND desktop). Six deliberate deviations from the design handoff,
+      since 2026-07-17 — phone AND desktop). **Feedback round 1 applied 2026-07-17 (`efb9122`):
+      the "Scroll to see the transformation" caption and the warm floor light-pool behind the
+      dog are removed — owner ruled the dog must blend seamlessly into the band, nothing may
+      highlight it off the page.** Six deliberate deviations from the design handoff,
       full rationale in HANDOVER's 2026-07-16/17 entry: the bow is MOSS not honey (honey is
       invisible against the honey-400 topknot); the topknot's red band retoned moss (green bow
       over red band read as Christmas holly); the bow is REDRAWN (the handoff silhouette reads

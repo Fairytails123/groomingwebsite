@@ -2,6 +2,27 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## 🖊 2026-07-17 (later) — owner feedback round 1 on the hero, applied + live (`efb9122`)
+
+Two rulings from Kam after seeing the preview, both applied, deployed, and verified live:
+1. **The "Scroll to see the transformation" caption is REMOVED** (markup, its armed-CSS block,
+   and the fade line in `update()` — it was a desktop-only affordance and is now judged noise).
+2. **The dog must blend seamlessly into the moss band — the warm floor light-pool is REMOVED.**
+   `.ft-ground-pool` (the honey ellipse behind her paws) was the page's one real painted
+   highlight and read as a spotlight lifting the dog off the page. The dark `.ft-ground-core`
+   contact shadow STAYS — darker than the band, it seats her in it rather than popping her out.
+
+**Investigated before cutting, so the right thing was removed:** the dog artwork and the fairy
+stencil were both alpha-histogrammed — no baked-in glow in either (the two known "invisible on
+white" defect classes are still fully fixed). And the suspected halo around the FAIRY does not
+exist in rendered pixels: the moss measures byte-uniform (44,56,35) to within a few px of her
+silhouette in both desktop and phone captures — it is simultaneous-contrast illusion, so her
+subtle drop-shadow glow was left alone. Gates re-run green after the change: hero-resilience
+6/6 · hero-mask-support · mobile-check 15/15 · hero-shots re-eyeballed (desktop p0/p100 +
+phone) · Lighthouse home 94/94/99/99/99 → median **99** (the 94s were post-gate-suite machine
+contention; identical distribution to pre-change). Live preview curl: 0 hits for the cue text,
+0 for `ft-ground-pool`, contact core present.
+
 ## ✅ 2026-07-17 — HERO ANIMATION VERIFIED ON x64, MERGED TO `main`, LIVE ON THE PREVIEW
 
 Picked up `origin/hero-animation` on the **x64 machine** per the entry below. Everything the
