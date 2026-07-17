@@ -2,33 +2,90 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
-## 🎬 2026-07-16 (late) — HOMEPAGE HERO ANIMATION integrated (branch `hero-animation`, NOT merged)
+## 🎬 2026-07-16/17 — HOMEPAGE HERO ANIMATION built (branch `hero-animation`, PUSHED, not merged)
 
-The scroll-scrubbed grooming transformation from `Luxury dog grooming animation/` is live in the
-homepage hero. **Branch `hero-animation` — needs the owner's eyes before merge.** Full design
-rationale is in `src/components/HeroStage.astro`'s frontmatter and `CLAUDE.md`'s new hero section.
+The scroll-scrubbed grooming transformation from `Luxury dog grooming animation/` is integrated
+into the homepage hero. The build is **complete and green**; what is left is the owner's eyes and
+the merge. Full design rationale lives in `src/components/HeroStage.astro`'s frontmatter and
+`CLAUDE.md`'s hero section — **read those before changing anything in the hero.**
+
+> ### ▶︎ PICKING THIS UP ON THE OTHER MACHINE (Kam, 2026-07-17)
+>
+> The work is on **`origin/hero-animation`** — two commits on top of `main`: `d5b59f4` (the hero
+> itself) and the docs commit on top of it. It is pushed, so use git — do NOT wait on OneDrive to
+> sync `.git`, and do not trust a stale local copy of the branch:
+>
+> ```
+> git fetch origin
+> git checkout hero-animation      # or: git reset --hard origin/hero-animation if it looks odd
+> npm install                      # that machine is x64 — it needs its own native binaries
+> npm run build && npx astro preview
+> npm run hero-resilience && npm run hero-mask-support && npm run mobile-check
+> ```
+>
+> Pushing the branch does **not** deploy — `.github/workflows/deploy.yml` fires on `main` only.
+> The preview URL therefore still shows `main`; the owner cannot eyeball this branch there yet.
+>
+> Verified by cloning `origin/hero-animation` fresh: all seven hero files arrive, and the
+> `Luxury dog grooming animation/` handoff source is correctly **absent** (it is gitignored —
+> bulky source stays out of the public repo). That folder reaches the other machine via
+> **OneDrive, not git**, and you only need it if you re-run `npm run hero-assets`; the artwork it
+> generates is already committed, so a normal build/preview does not touch it.
+>
+> **The single most useful thing that machine can do:** re-run Lighthouse on the homepage. This
+> machine tops out at **87 on `main` itself**, so it cannot test the ≥90 gate either way — see
+> environment finding 2. If the other machine reproduces the documented 97–100 on `main`, then
+> measure `hero-animation` the same way and we finally know the animation's true cost. Use a
+> `PUBLIC_INDEXABLE=true` build, `npx lighthouse`, median of 3, and **let the machine settle
+> after the build first** — CLAUDE.md's own warning; a run competing with a starting preview
+> reads low, and that is exactly how the first (misleading) numbers here were produced.
+>
+> **What's left, in order:**
+> 1. Owner eyeballs it — phone AND desktop. Needs a local `astro preview`, or a decision to point
+>    the Pages preview at this branch, or a merge to `main` (which deploys only to the noindexed
+>    preview URL — safe; the old WordPress site is still the indexed one).
+> 2. Confirm or overrule the judgement calls listed below (moss bow, retoned red band, the 240vh
+>    desktop track, the wand-star move, the bigger burst).
+> 3. Re-measure Lighthouse (above). Then merge.
+> 4. Decide the `node_modules` junction question (environment finding 1) — a Kam call, not mine.
 
 **Shape:** desktop ≥lg pins the hero for 240vh and scrubs the dog from scruffy → groomed (copy
 left, stage right, CTA on screen throughout). Below lg there is **no scroll-jack** — the stage
 plays once when scrolled into view. Owner's call from the brief; phone users are the majority.
 
-**All gates green:** mobile-check 15/15 · verify-urls 0 · verify-stage3 0 · price-list-e2e 0 ·
-CLS **0** · a11y/best-practices/SEO **100/100/100** · perf **87 = identical to `main`** (see the
-Lighthouse note below — 87 is the ceiling on this machine, on `main` too) · new:
-`hero-resilience` (reduced-motion, JS-off, back-nav) and `hero-mask-support` (WebKit) both pass.
-Eyeballed at 1920/1440/1280/1100/1024/1000/834/768/430 — no overflow at any width, and the
-`lg` mode flip (sticky-scrub ⇄ play-once) is clean at the 1024 boundary.
+**All gates green** (this machine, 2026-07-17): mobile-check 15/15 · verify-urls 0 ·
+verify-stage3 0 · price-list-e2e 0 · CLS **0** · a11y/best-practices/SEO **100/100/100** · perf
+**86–87, statistically identical to `main`** (see finding 2 — 87 is this machine's ceiling on
+`main` too) · new: `hero-resilience` (reduced-motion, JS-off, back-nav, play-once-when-seen) and
+`hero-mask-support` (WebKit) both pass. Eyeballed at 1920/1440/1280/1100/1024/1000/834/768/430 —
+no overflow at any width, and the `lg` mode flip (sticky-scrub ⇄ play-once) is clean at 1024.
+
+**What shipped** (12 files, +1410 lines): `src/components/HeroStage.astro` (the animation,
+heavily commented), `scripts/hero-assets.mjs` (regenerates the artwork; output committed),
+`scripts/hero-{shots,resilience,mask-support}.mjs` (new gates, wired into package.json),
+`src/assets/pages/home/hero-{dog,fairy-stencil}.png`, plus the hero markup in `index.astro`,
+`.gitignore` (ignores the handoff folder), `CLAUDE.md` and this file.
 
 ### ⚠️ Two environment findings that will bite the next session
 
-1. **`node_modules` is NOT a junction on this machine** — `C:\dev\` did not exist; it is a real
-   directory inside OneDrive (i.e. deps ARE syncing, the exact thing CLAUDE.md's junction rule
-   exists to prevent). It was also installed for **win32-x64** while this machine's Node is
-   **arm64**, so `sharp` AND `rollup` both failed and **`npx astro build` was broken before any
-   of this work started**. Fixed additively: `npm install --no-save --include=optional
-   @rollup/rollup-win32-arm64-msvc@4.62.2 @img/sharp-win32-arm64@0.34.5` (package.json and the
-   lock are untouched; the other machine's x64 binaries still work). **Decide whether to restore
-   the junction properly** — that is an owner/Kam call, not something to silently change.
+1. **`node_modules` is NOT a junction, and it is syncing between the two machines.** CLAUDE.md
+   says it is junctioned to `C:\dev\grooming-website-node_modules` — **that is stale**: `C:\dev\`
+   did not exist, and `node_modules` is a real directory living inside OneDrive. So deps ARE
+   syncing between machines, which is the exact thing the junction rule exists to prevent, and
+   it has a consequence: the two machines have **different CPU architectures**.
+   - This laptop's Node is **win32-arm64**; the synced `node_modules` had only **x64** natives,
+     so `sharp` and `rollup` both failed to load and **`npx astro build` was broken before any of
+     this work started** — nothing to do with the hero.
+   - Fixed additively so both machines work: `npm install --no-save --include=optional
+     @rollup/rollup-win32-arm64-msvc@4.62.2 @img/sharp-win32-arm64@0.34.5`. **`package.json` and
+     `package-lock.json` are untouched** (verified) — the x64 binaries are still there.
+   - ⚠️ `node_modules` was later fully reinstalled here (`npm install`) and now carries **both**
+     architectures. Because it syncs, **the other machine may inherit an arm64-flavoured tree —
+     just run `npm install` there** and it will re-resolve its own natives. (A stray `npm install`
+     also rewrote the lock, stripping 111 lines of `libc`/`musl`/`glibc` constraints that gate
+     which `sharp` Linux CI picks. That was reverted — do not commit that churn if it reappears.)
+   - **Decide whether to restore the junction properly** — a Kam call, not something to change
+     silently, and it needs doing on BOTH machines or not at all.
 2. **⚠️ Lighthouse ≥90 does NOT pass on this machine — and it does not pass on `main` either.**
    Measured same-machine, median-of-3, `PUBLIC_INDEXABLE=true`, `main` via a clean `git worktree`:
    **`main` = perf 87 (runs 86/87/87, LCP 4.0s)** · **`hero-animation` = perf 86–87 (runs

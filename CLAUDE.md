@@ -131,7 +131,7 @@ single migration re-save on the harvest date — see WEBSITE-PLAN's copy log).
 | `video-poster` | Poster frame for the Bruno video. No ffmpeg here — decodes in real Chrome. |
 | `gallery-crop` | Recovers the 10 gallery photos from the old before/after composites. Read its header before touching a crop. |
 | `hero-shots` | Hero-animation eyeball check: screenshots the scrub at p = 0/.25/.5/.72/.85/1 plus the mobile play-through. **`shots` cannot do this** — it captures fullPage, which renders a sticky hero once at p=0 followed by ~1,300px of empty moss. |
-| `hero-resilience` | The hero's three untestable-elsewhere failure modes: reduced-motion, JS off, and view-transition back-nav. Needs `astro preview`. |
+| `hero-resilience` | The hero's four untestable-elsewhere failure modes: reduced-motion, JS off, view-transition back-nav, and play-once-only-when-seen. Needs `astro preview`. |
 | `hero-mask-support` | Proves the hero's WebP-alpha CSS masks decode in **WebKit** (= Safari/iOS, which we can't open on Windows). Needs `astro preview`. |
 | `hero-assets` | Regenerates the hero artwork from the design handoff. One-off; output is committed. Edit the SCRIPT. |
 
@@ -179,16 +179,34 @@ below the fold, or an image cropped to nonsense. Take the screenshot AND look at
    For the services cluster also: `npm run verify-stage3` + `npm run price-list-e2e`.
 6. HANDOVER.md updated; push; owner eyeballs the preview URL.
 
-## Local dev on this machine (Windows + OneDrive)
+## Local dev (Windows + OneDrive) — ⚠️ TWO MACHINES, TWO ARCHITECTURES
 
-- `node_modules` is a **junction** to `C:\dev\grooming-website-node_modules` (OneDrive must
-  not sync deps). If it breaks:
-  `New-Item -ItemType Junction -Path node_modules -Target C:\dev\grooming-website-node_modules`
+- ⚠️ **`node_modules` is NOT currently a junction** (checked 2026-07-16). The intent below still
+  stands, but the reality is that `C:\dev\` does not exist on the arm64 laptop and `node_modules`
+  is a real directory **inside OneDrive — i.e. deps are syncing between the two machines.**
+  *Intended:* `New-Item -ItemType Junction -Path node_modules -Target C:\dev\grooming-website-node_modules`
+  Restoring it is a Kam call and must be done on BOTH machines or neither. See HANDOVER 2026-07-17.
+- ⚠️ **The two machines are different CPU architectures** (one **win32-arm64**, one **x64**), and
+  because `node_modules` syncs, whichever machine last ran `npm install` leaves its own natives
+  behind. Symptom on the other one: `Cannot find module '@rollup/rollup-win32-*'` or
+  `Could not load the "sharp" module using the win32-* runtime` — i.e. **`astro build` is simply
+  broken, before you have changed anything.** Fix: **`npm install`** (re-resolves this machine's
+  optional natives). It is not a code problem; do not go looking for one.
+  - ⚠️ A plain `npm install` may rewrite `package-lock.json`, stripping `libc`/`musl`/`glibc`
+    fields that gate which `sharp` **Linux CI** picks. **Never commit that churn** —
+    `git checkout -- package-lock.json` after installing.
+  - ⚠️ Never `Remove-Item -Recurse` a directory that contains a junction to `node_modules` —
+    PowerShell follows the junction and deletes the TARGET's contents. (Learned the hard way.)
 - Tailwind v4 loads via `@tailwindcss/postcss` (NOT the Vite plugin — Astro 6 bug,
   withastro/astro#16542).
 - Node ≥ 22.12. `npm run dev` → localhost:4321.
 - The gh CLI token lacks `workflow` scope — pushes that touch `.github/workflows/` must go
   through plain `git push` (Git Credential Manager holds a working credential).
+- ⚠️ **Lighthouse's absolute score is machine-dependent here.** The homepage measures **86–87 on
+  the arm64 laptop even on a clean `main`**, against the 97–100 recorded elsewhere — GTM alone
+  ships 313KB from a live CDN and the LCP element is the H1 waiting on Fraunces. Before treating
+  a sub-90 score as a regression, **measure the same commit on `main` on the same machine** and
+  compare; a bare number from one machine proves nothing.
 
 ## Integrations
 
