@@ -57,6 +57,16 @@ baseline exports (`docs/seo-baseline/` still holds ONLY dns-pre-flip.json) · Ho
 mailbox send/receive test on flip morning · then `docs/SWITCHOVER-RUNBOOK.md`.
 **Do not flip DNS without the owner.**
 
+**Session close (2026-07-18):** paused here at the owner's request. Recheck commit `18097cd`
+plus this close-out pushed (both are docs/gate-script only — site output byte-identical, so
+the deploy is a content no-op). Working tree clean, preview server stopped, local dist
+rebuilt back to the noindex state, nothing in flight. Also fixed in the close-out:
+`docs/SWITCHOVER-RUNBOOK.md`'s CAA check now uses DNS-over-HTTPS — Windows `Resolve-DnsName`
+cannot query CAA and the runbook's original command simply errors (verified live today).
+**Next session starts at the owner-side list above; the only optional engineering micro-task
+queued is a settled-machine Lighthouse re-run of /services/ (bimodal 88–95 under load today,
+font-swap on a text LCP, no content change since it gated 95).**
+
 ## ✅ CURRENT STATE (2026-07-17, session close) — build + hero DONE, owner actively reviewing
 
 **Everything is on `main` and live on the noindexed preview

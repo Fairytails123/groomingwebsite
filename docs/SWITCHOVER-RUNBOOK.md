@@ -13,7 +13,10 @@ monitor with support desks awake). Operator needs ~3 uninterrupted hours + brows
 - [ ] All 18 manifest URLs green on the preview (`npm run verify-urls -- --preview`)
 - [ ] GSC Domain property verified (DNS TXT — survives the flip); baseline exported
 - [ ] GitHub account-level verified domain for the apex (Settings → Pages → verified domains)
-- [ ] No CAA record in the zone (`Resolve-DnsName fairytailsdoggrooming.co.uk -Type CAA`)
+- [ ] No CAA record in the zone — ⚠ Windows `Resolve-DnsName` CANNOT query CAA (not in its
+      RecordType enum; the command errors — verified live 2026-07-18). Use DNS-over-HTTPS:
+      `curl -s "https://cloudflare-dns.com/dns-query?name=fairytailsdoggrooming.co.uk&type=CAA" -H "accept: application/dns-json"`
+      — no `"Answer"` array in the JSON = no CAA record (absent as of 2026-07-18).
 - [ ] `docs/seo-baseline/` committed (dns-pre-flip.json, yoast-meta, Ahrefs exports)
 - [ ] Hostinger mailbox send+receive test passed TODAY (pre-flip baseline)
 - [ ] Harvest archive re-verified (insurance before any WP decommission later)
