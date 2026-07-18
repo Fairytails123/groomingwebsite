@@ -22,6 +22,14 @@ const browser = await chromium.launch();
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  // The dog imgs are loading="lazy" + fetchpriority="low" (deliberate — decoration must not
+  // outrank the H1's font), so headless Chromium's lazy flush can land AFTER networkidle and
+  // the p00 frame captures an empty stage that a real visitor never dwells on. Wait for the
+  // artwork to decode before shooting: these captures exist to judge ART states, not loading.
+  await page.waitForFunction(() => {
+    const d = document.querySelector('.ft-dog-before');
+    return d && d.complete && d.naturalWidth > 0;
+  });
   for (const p of [0, 0.25, 0.5, 0.72, 0.85, 1]) {
     await page.evaluate((target) => {
       const t = document.querySelector('[data-hero-track]');
@@ -43,6 +51,10 @@ const browser = await chromium.launch();
   const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
   const page = await ctx.newPage();
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => {
+    const d = document.querySelector('.ft-dog-before');
+    return d && d.complete && d.naturalWidth > 0;
+  });
   await page.screenshot({ path: `${OUT}/hero-390-top.png` });
   await page.evaluate(() => document.querySelector('[data-hero-stage]').scrollIntoView({ block: 'center', behavior: 'instant' }));
   await page.waitForTimeout(1500);

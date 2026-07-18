@@ -2,6 +2,61 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## ✅ 2026-07-18 — FULL GO-LIVE RECHECK (x64): every machine-checkable gate re-run GREEN
+
+Owner asked "is it all built and good to go live?" — re-proved it end to end instead of
+trusting the log. **Build: complete. Deployed preview: correct. What blocks the flip is
+unchanged — the owner-side checklist below, not engineering.**
+
+**Local gates (all re-run today):** build 15 pages · verify-urls 18/18 on dist AND
+`--preview` over HTTP (the runbook GO/NO-GO line) · verify-stage3 0 · price-list-e2e 0 ·
+mobile-check 15/15 (only the 11 accepted low-res warns) · hero-resilience 6/6 ·
+hero-mask-support WebKit+Chromium · shots + hero-shots regenerated and EYEBALLED
+(home 390+1440 · contact/price-list/gallery/services 390 · hero p00/p85/p100 + phone-done).
+**INDEXABLE mechanism proven both ways:** flagged build → 0 noindex, robots allow + sitemap
+line; plain rebuild → noindex + `Disallow: /` restored.
+
+**Lighthouse (INDEXABLE build, mobile default, this x64 baseline machine):** home
+**94/100/100/100 ×3** (CLS 0.000) · contact 98 · price-list 97 · gallery 99 ·
+**/services/ 88–95 over 6 runs, bimodal** — its LCP is a TEXT paragraph waiting on Karla
+(TTFB 4ms; render-blocking = only the 9.6KB base CSS): under today's post-gate-suite
+contention the font swap lands ~1s late on roughly alternate runs. No content change on that
+page since it gated at 95 — treat as environment; re-measure settled before reading it as a
+regression (the improvement lever remains font preload, deliberately queued for polish).
+
+**Deployed preview (curl/API):** noindex meta + robots `Disallow: /` + canonicals→apex +
+sitemap-index 200 · **0 hits for the retired mobile** · wa.me/441424300668 · deploy green at
+HEAD `846f75c` · Pages https_enforced, cname=preview · repo Actions var INDEXABLE **unset**
+(correct pre-flip) · DNS: preview CNAME→fairytails123.github.io · apex still Hostinger
+(195.200.9.43 / 91.108.103.58) · **no CAA record** — checked via DNS-over-HTTPS; Windows
+`Resolve-DnsName` cannot ask for CAA (runbook's command errors — use DoH on flip day).
+
+**Integrations:** JotForm 200 · Stripe 200 (checkout NOT completed) · Google
+reviews/writereview/maps 200 **with a browser UA — they 404 to bare curl; don't misread that
+on flip day** · n8n "Grooming Website Enquiry" ACTIVE and probed via its own spam gate:
+`{ok:true}`, exec 126297 ran 11ms = the silent-drop path, **no row, no email** (last real
+E2E stays 07-12 exec 56956) · "Grooming Reviews Rotator" ACTIVE, first scheduled run
+Mon 07-20 06:30 · n8n MCP verified → VPS · reviews-snapshot.json valid, 4 excerpts,
+rotator contract untouched.
+
+**Harvest re-verified (the runbook's insurance line):** images-index **143/143 present on
+disk** · manifest failed:0 · Bruno video 20.6MB in place.
+
+**One change, tooling only — `scripts/hero-shots.mjs` now waits for the dog artwork to
+decode before the first frame.** The dog imgs are `loading="lazy"` + `fetchpriority="low"`
+(deliberate: decoration must never outrank the H1's font), and headless Chromium's lazy
+flush (~2.2s) lands AFTER networkidle+900ms — so p00 deterministically captured an **empty
+stage** on this machine. It looks exactly like a broken hero; the live-DOM probe cleared the
+site (all layers correctly styled, imgs `complete:false` was the tell, and the CSS
+sheen-mask fetch of the same URL at 16ms proved the asset serves instantly). Site untouched.
+
+**Still between here and DNS (all owner/browser-side, unchanged):** owner walkthrough +
+explicit OK recorded here · the hero judgement calls + gallery breeds + who-we-are photo ·
+GSC Domain property + baseline export · GitHub account-level verified domain · Ahrefs
+baseline exports (`docs/seo-baseline/` still holds ONLY dns-pre-flip.json) · Hostinger
+mailbox send/receive test on flip morning · then `docs/SWITCHOVER-RUNBOOK.md`.
+**Do not flip DNS without the owner.**
+
 ## ✅ CURRENT STATE (2026-07-17, session close) — build + hero DONE, owner actively reviewing
 
 **Everything is on `main` and live on the noindexed preview

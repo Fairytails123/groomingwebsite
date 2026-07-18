@@ -72,14 +72,24 @@ Per-page definition of done = the 6 quality gates in CLAUDE.md.
 - [x] 15 FAQs · 6 clip lengths · gallery = **5 before/after pairs + 20 photos** (the old
       "~25 gallery pairs" estimate in this doc was wrong — the real page was a 5-slide carousel
       plus a 20-photo tiled grid)
-- [ ] **`npm run verify-stage3` + `npm run price-list-e2e` green** (the second needs
+- [x] **`npm run verify-stage3` + `npm run price-list-e2e` green** (the second needs
       `npx astro preview` running) — these encode the 2026-07-16 owner rulings and the
-      no-JS/crawler contract on the price list; a regression here is a silent revenue bug
+      no-JS/crawler contract on the price list; a regression here is a silent revenue bug.
+      Re-verified 2026-07-18 (full go-live recheck, x64): both 0 failures.
 - [ ] Yoast titles/descriptions carried or deliberately improved (logged below)
 - [ ] Integrations clicked through ON the preview: JotForm opens · Stripe loads (NEVER complete)
       · EnquiryForm→n8n→email E2E · WhatsApp/tel/reviews links · GTM only after consent
+      *(2026-07-18 probe pass: JotForm 200 · Stripe 200 · Google reviews/maps links 200
+      (browser UA — they 404 to bare curl, don't misread) · webhook live, spam gate proven
+      (exec 126297: 11ms silent drop, no row/email) · consent-default precedes gtm.js in the
+      HTML · wa.me/441424300668 site-wide. Human click-through on the preview still wanted.)*
 - [ ] Lighthouse ≥90 ×3 on every page · 1440/390 sweeps · reduced-motion sweep
-- [ ] Sitemap = apex trailing-slash URLs; canonicals → apex; preview still noindex (curl)
+      *(2026-07-18 x64 recheck: home 94/100/100/100 ×3 CLS 0 · contact 98 · price-list 97 ·
+      gallery 99 · /services/ 88–95 bimodal over 6 runs — text-LCP font-swap race under
+      post-gate-suite load, no content change since it gated 95; re-measure settled.)*
+- [x] Sitemap = apex trailing-slash URLs; canonicals → apex; preview still noindex (curl)
+      ✅ 2026-07-18: sitemap = the 14 apex URLs · canonical sweep all-apex (stub doubles are
+      their targets, by design) · preview noindex meta + robots `Disallow: /` curl-verified.
 - [ ] **Owner walkthrough of the preview URL + explicit OK recorded in HANDOVER.md**
 
 Then execute `docs/SWITCHOVER-RUNBOOK.md`.
