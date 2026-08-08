@@ -180,6 +180,46 @@ The runbook's remaining live sections are **post-flip monitoring** and **WordPre
 
 ## Open items
 
+> **Carried forward from the 2026-08-08 go-live session at the owner's instruction.** None of
+> these blocked the launch; all still need a ruling. The same list, with more context, is in
+> HANDOVER.md's "NEXT SESSION STARTS HERE" block.
+
+- [ ] 🔧 **HARDEN THE ENQUIRY FORM'S SILENT-LOSS PATH — top candidate.** The n8n workflow
+      "Grooming Website Enquiry" (`TpQFGJy87KIKGflV`) responds `{"ok":true}` to the browser
+      **before** it writes the `grooming_enquiries` row and **before** it sends the email, and it
+      has no `errorWorkflow`. So an SMTP or data-table failure shows a real customer "Thanks,
+      we'll be in touch" while the enquiry vanishes with no trace and no alert. Proven working
+      end-to-end on 2026-08-08 (exec 396075, owner confirmed the email arrived) — but that proves
+      the happy path only. Fix = move "Respond OK" after the write+email, and/or attach an error
+      workflow. **Needs the owner's go-ahead because it changes live customer-facing behaviour.**
+- [ ] **Blog-post canonical, now due.** `why-dog-grooming-is-important` exists on BOTH this domain
+      and the Main Website (`thefairytails.co.uk`), currently self-canonical on each. The owner's
+      ruling was "decide at polish" — the switchover is done, so we ARE in polish. Pick which URL
+      is canonical.
+- [ ] **The dead `preview` CNAME.** `preview.fairytailsdoggrooming.co.uk` → `fairytails123.github.io`
+      is still in the DNS zone, but Pages serves the apex now so nothing answers it (404). Leave it
+      (harmless, points at an account we control, cheap to reinstate a preview later) or delete it?
+- [ ] **The vestigial mail records on this zone.** MX ×2 / SPF / DKIM ×3 / DMARC / autodiscover /
+      autoconfig exist but **nothing consumes them** — there are zero mailboxes on this domain and
+      the owner has ruled none is wanted. Leave indefinitely, or clean up?
+      ⚠️ **If cleaning:** the `@` TXT set holds TWO strings and one is the
+      **google-site-verification token** — deleting it un-verifies the GSC Domain property. SPF is
+      also worth keeping purely to stop anyone spoofing mail as this domain.
+- [ ] **Bluehost: confirm auto-renew, then transfer.** The domain is REGISTERED at Bluehost (only
+      its nameservers point at Hostinger, which serves the zone) — so **that account lapsing takes
+      the whole site down**, and auto-renew is unconfirmed. The owner intends to transfer the
+      domain to Hostinger once the transfer lock clears; that is safe, because DNS already lives
+      at Hostinger and a registrar transfer changes nothing so long as the nameservers stay on
+      `*.dns-parking.com`. ⚠️ **Bluehost's DNS tab is a decoy — never edit records there.**
+- [ ] **T+30 WordPress decommission — earliest 2026-09-07.** The old site is the rollback until
+      then. ⚠️ When it does go: **delete the WordPress website only — do NOT cancel the Hostinger
+      "Business Web Hosting" plan.** This domain is the plan's MAIN vhost and the Main Website
+      `thefairytails.co.uk` is an ADDON on the same order (1009494758), so cancelling the plan
+      would take the Main Website down too. Procedure: the runbook's decommission section.
+- [ ] **`node_modules` junction** — unchanged Kam call. It is still a real directory inside
+      OneDrive, so deps sync between two machines of different CPU architectures. Restoring the
+      junction must be done on BOTH machines or neither.
+
 - [x] ~~**WhatsApp number**~~ — RESOLVED 2026-07-17, owner interviewed: WhatsApp is attached
       to the **salon line 01424 300668** (wa.me/441424300668 everywhere) and the old mobile
       **07842 116216 is retired from the site entirely** (FAQ cancellation + catch-all numbers

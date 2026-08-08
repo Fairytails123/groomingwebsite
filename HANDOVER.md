@@ -2,6 +2,73 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## ▶︎ NEXT SESSION STARTS HERE (session closed 2026-08-08, ~21:15 UTC)
+
+**The site is LIVE and healthy. Nothing is in flight, nothing is half-done, the working tree is
+clean and everything is pushed (`a03dfb7`).** The build phase and the switchover phase are both
+over; this project is now in **post-launch monitoring + polish**.
+
+### 1. The deferred checks — do these FIRST (owner deferred them from flip night)
+
+The flip was 2026-08-08 19:02 UTC. The +1h check was done and was clean; **+24h and +48h were
+deliberately deferred to this session.** Run them now, in this order:
+
+```bash
+npm run verify-urls -- --live          # expect: 18 URLs, 0 failures
+curl -sI https://fairytailsdoggrooming.co.uk/ | head -3        # expect 200, Server: GitHub.com
+curl -s  https://fairytailsdoggrooming.co.uk/robots.txt        # MUST still allow + name the sitemap
+echo | openssl s_client -connect fairytailsdoggrooming.co.uk:443 -servername fairytailsdoggrooming.co.uk 2>/dev/null | openssl x509 -noout -subject -dates
+```
+- **GSC**: the sitemap read **"Couldn't fetch"** when submitted ~25 min after the flip — that was
+  Google's stale crawl state, and it retries by itself. **Check it has since succeeded**; if it is
+  still failing 24h+ later, that IS a real problem (the sitemap is provably fetchable, including
+  as Googlebot). Then check Coverage for crawl errors and watch `/services-2/` drop out while
+  `/services/` is retained.
+- **Rankings baseline to compare against**: `docs/seo-baseline/ahrefs-pre-flip-2026-08-08.json`.
+  The one commercially valuable term is **"dog groomers hastings" (was position 2, ~22 visits/mo)**.
+  Do not read a low DR as cutover damage — DR was already 1.3 before the flip.
+- **Housekeeping still outstanding:** delete the "TEST - go-live check" email in
+  info@thefairytails.co.uk, and `grooming_enquiries` (`mbWR9tHS4u95s605`) rows **1, 2 and 3** —
+  all three are test rows.
+
+### 2. Owner decisions waiting on a ruling (none blocking)
+
+1. **The enquiry form's silent-loss path.** "Grooming Website Enquiry" (`TpQFGJy87KIKGflV`) answers
+   the customer `{"ok":true}` **before** it writes the data-table row and sends the email, and has
+   no `errorWorkflow`. An SMTP failure therefore shows a real customer "thanks" and loses the
+   enquiry with no trace. **This is the top hardening candidate.** Owner asked about it 2026-08-08;
+   not yet ruled on.
+2. **Blog-post canonical.** `why-dog-grooming-is-important` exists on BOTH this domain and the Main
+   Website, currently self-canonical on each. The owner's earlier ruling was "decide at polish" —
+   we are now in polish.
+3. **The dead `preview` CNAME** (→ fairytails123.github.io, nothing serves it) — leave it (harmless,
+   cheap to reinstate a preview later) or delete it?
+4. **The vestigial mail records** on this zone (MX ×2 / SPF / DKIM ×3 / DMARC / autodiscover /
+   autoconfig — nothing consumes them) — leave or clean up? ⚠️ If cleaning: the `@` TXT set holds
+   TWO strings and one of them is the **Google site-verification token** — removing it un-verifies
+   the GSC property.
+5. **Bluehost.** The domain is registered there and **auto-renew is unconfirmed** — that account
+   lapsing takes the whole site down. The owner intends to transfer the domain to Hostinger once
+   the transfer lock clears (safe: DNS already lives at Hostinger, so a registrar transfer changes
+   nothing as long as the nameservers stay on `*.dns-parking.com`).
+6. **`node_modules` junction** — still a real directory inside OneDrive, syncing between two
+   machines of different CPU architectures. Unchanged Kam call; must be done on both machines or
+   neither.
+7. **The six hero judgement calls, the gallery breed alt text, and the who-we-are photo** remain
+   open in WEBSITE-PLAN — the owner has been eyeballing and only flagging changes.
+
+### 3. What NOT to do (the traps that now have teeth)
+
+- **Do not unset `INDEXABLE` or add a noindex to a real page** — it de-indexes the live business
+  site via a GREEN deploy. A noindexed *local* build is correct, not a bug.
+- **Do not run `npm run harvest`** — disarmed on purpose; it would overwrite the irreplaceable
+  archive of the old site. Read its header.
+- **Do not call `DNS_deleteDNSRecordsV1` / `DNS_resetDNSRecordsV1`** on this zone — no name/type
+  filter; one call can wipe it.
+- **Do not cancel the Hostinger "Business Web Hosting" plan** — it holds the rollback AND the Main
+  Website as an addon. Earliest WordPress decommission: **T+30 = 2026-09-07**.
+- **There is no preview URL.** Don't send the owner one; check locally.
+
 ## 🎉 2026-08-08 — **THE SWITCHOVER IS DONE. fairytailsdoggrooming.co.uk NOW SERVES THE NEW SITE.**
 
 **Flipped 19:02 UTC, fully secure and verified by 19:17 UTC.** The old WordPress site is no longer
