@@ -44,6 +44,28 @@ failing to start provisioning.
 **Lesson: `cert_state: null` for more than ~10 minutes is STUCK, not slow. Don't wait it out —
 remove and re-add.** Cost here: ~14 min of scary browser warnings on a live business site.
 
+### ✅ The enquiry path is PROVEN END-TO-END on the live domain (first time ever)
+
+Submitted one marked test through the live webhook at 19:27:55Z. **Execution `396075`, success,
+4,252 ms, all 6 of 6 nodes green** — note the duration: the silent spam-drop path runs in ~11 ms,
+so this was demonstrably the real path. `Log Enquiry` wrote **row id 3** to `grooming_enquiries`
+(`mbWR9tHS4u95s605`) with every field intact, and `Email info@` returned a genuine SMTP
+acceptance: `accepted: ["info@thefairytails.co.uk"]`, `rejected: []`,
+`response: "250 865eca58-fd96-40fb-8d0b-30b79f25c570"`,
+messageId `<33ee0484-e334-dd8d-4ccb-ecb24e3a8f0c@thefairytails.co.uk>`.
+
+⚠️ **Limit of that proof, stated honestly:** SMTP `250` proves the server ACCEPTED the message,
+not that it is visible in the mailbox. Hostinger's inbound/outbound relay logs do **not** record
+info@ → info@ internal deliveries (checked both; latest inbound to info@ was 14:13Z, hours before
+the test), so the last hop is unverifiable from here. **Owner to confirm the "TEST - go-live
+check" email in `info@thefairytails.co.uk`** — and it is safe to delete, along with data-table
+rows 1–3 which are all test rows.
+
+⚠️ **Known silent-loss path, unchanged and still worth fixing:** the workflow answers the browser
+`{"ok":true}` BEFORE it writes the row and BEFORE it sends the email, and has no `errorWorkflow`.
+So an SMTP failure after the flip means the customer sees "thanks" while the enquiry evaporates.
+Not a go-live blocker; it is the top candidate for the next hardening pass.
+
 ### Two other things worth knowing next time
 
 1. **Pushing `public/CNAME` does NOT move the Pages custom domain** (this deploy uses
