@@ -4,9 +4,11 @@ name: Deploy to GitHub Pages
 # deploys to Hostinger and keeps Pages as a manual preview). Every push to
 # main deploys.
 #
-# Indexability: the INDEXABLE repo Actions variable is UNSET during the build
-# stage (→ noindex meta + robots Disallow, safe-by-default while the old
-# WordPress site is still live). The switchover runbook sets INDEXABLE=true.
+# Indexability: the INDEXABLE repo Actions variable is `true` (set at go-live
+# 2026-08-08) and MUST stay that way — this workflow deploys the live, indexed
+# customer site. Unsetting or renaming it ships noindex + robots Disallow across
+# production on the very next push, silently, via a green run.
+# Check before you touch it: gh variable list -R Fairytails123/groomingwebsite
 on:
   push:
     branches: [main]

@@ -1,8 +1,16 @@
 # WEBSITE-PLAN — fairytailsdoggrooming.co.uk rebuild
 
-Master plan. Strategy: **build the whole site on the noindexed preview → DNS switchover
-when roughly finished → polish indefinitely.** Old WordPress stays on Hostinger as instant
-rollback until ≥30 days after a clean cutover.
+Master plan. Strategy was: **build the whole site on the noindexed preview → DNS switchover
+when roughly finished → polish indefinitely.**
+
+✅ **THE SWITCHOVER IS DONE — 2026-08-08, 19:02 UTC.** `https://fairytailsdoggrooming.co.uk` is
+PRODUCTION and serves this Astro site from GitHub Pages, HTTPS-enforced and **indexable**
+(`INDEXABLE=true`). It is no longer WordPress and it is no longer a noindexed preview. We are now
+in the "polish indefinitely" phase. Old WordPress stays up and untouched on Hostinger as instant
+rollback until ≥30 days after the cutover (earliest 2026-09-07) — ⚠️ but do **not** cancel the
+Hostinger "Business Web Hosting" plan to achieve that: fairytailsdoggrooming.co.uk is the MAIN
+vhost on it and the Main Website `thefairytails.co.uk` is an ADDON on the SAME plan, so cancelling
+it kills the Main Website. See `docs/SWITCHOVER-RUNBOOK.md` and HANDOVER.md 2026-08-08.
 
 ## Locked spec (owner interview, 2026-07-12)
 
@@ -12,8 +20,12 @@ rollback until ≥30 days after a clean cutover.
 3. **Prices**: the breed-by-breed Full Groom list + `/services/` add-on prices are canonical.
    `/services-2/` was stale → retired with a redirect stub.
 4. **Content**: improved/rewritten copy; every fact, price, FAQ, T&C preserved accurately;
-   URLs identical to WordPress; owner signs off page by page on the preview.
-5. Contact form → n8n webhook (WPForms replaced). 6. Preview noindexed until cutover.
+   URLs identical to WordPress; owner signed off page by page on the preview (that preview is
+   retired — see the switchover note at the top).
+5. Contact form → n8n webhook (WPForms replaced). 6. Preview noindexed until cutover
+   — ✅ satisfied and now SPENT: the cutover ran 2026-08-08 and production is INDEXABLE
+   (`INDEXABLE=true`). **Never re-apply `noindex` or `Disallow: /` to the live site's real
+   pages** (the three legacy redirect stubs keep theirs by design).
 
 ## URL manifest & build tracker
 
@@ -24,7 +36,7 @@ and mirror the date here).
 |---|---|---|
 | `/` | **built** 2026-07-16 | Stage 5 — shipped LAST per the inside-out order |
 | `/who-we-are/` | **built** 2026-07-12 | Stage 2 |
-| `/contact/` | **built** 2026-07-12 | Stage 2 — form E2E verified via curl; on-page test pending |
+| `/contact/` | **built** 2026-07-12 | Stage 2 — form re-proven E2E on the LIVE domain 2026-08-08 (exec `396075`, row id 3, SMTP 250, owner confirmed the inbox) |
 | `/terms-and-conditions/` | **built** 2026-07-12 | Stage 2 — legal copy verbatim |
 | `/services/` | **built** 2026-07-16 | Stage 3 hub — add-ons/extras from pricing.json; Bruno video self-hosted |
 | `/services/full-groom-price-list/` | **built** 2026-07-16 | Stage 3 — 105 rows + breed filter (progressive enhancement) |
@@ -39,7 +51,7 @@ and mirror the date here).
 | `/services-2/` → `/services/` | **stub built** 2026-07-12 | public/ meta-refresh+canonical+noindex |
 | `/category/blog/` → `/blog/` | **stub built** 2026-07-12 | " |
 | `/author/grace/` → `/who-we-are/` | **stub built** 2026-07-12 | " |
-| `/feed/` | intentional 404 | revisit after Ahrefs backlink audit |
+| `/feed/` | intentional 404 | Ahrefs backlink baseline captured 2026-08-08 (`docs/seo-baseline/`) — the keep-or-redirect decision is STILL OPEN |
 
 ## Build order (inside-out, homepage last — main-site-proven)
 
@@ -60,13 +72,26 @@ and mirror the date here).
   full gate re-run on BOTH machines and a same-machine Lighthouse parity proof on x64
   (`main` median 99 vs `hero-animation` median 99, LCP 2.0→2.1s — the animation costs
   ~nothing). Judgement calls queued for the owner in Open items below.
+- **Switchover — DNS cutover to production** ✅ 2026-08-08: `fairytailsdoggrooming.co.uk` moved
+  from WordPress to GitHub Pages at 19:02 UTC and was fully secure and verified by 19:17 UTC —
+  cert `CN=fairytailsdoggrooming.co.uk` approved (apex AND www), `https_enforced`,
+  http→301→https, www→301→apex, `protected_domain_state: verified`, `INDEXABLE=true`,
+  `npm run verify-urls -- --live` 18 URLs / 0 failures, 0 noindex on real pages, canonicals→apex,
+  all 3 legacy stubs 200. Zone = 13 record-sets; every mail record survived (verified from public
+  DNS). Full account + the three runbook corrections learned by doing: HANDOVER.md 2026-08-08.
 
 Per-page definition of done = the 6 quality gates in CLAUDE.md.
 
-## "Ready for switchover" gate
+## "Ready for switchover" gate — ✅ **PASSED 2026-08-08 (kept as the historical record)**
+
+**Outcome: the owner signed off ("Yes — signed off, ship it", 2026-08-08) and the flip ran the
+same evening.** The boxes below are frozen as they stood at flip time; anything still `[ ]` did
+not block the flip and has moved to the Polish backlog at the end of this file.
 
 - [x] 15/15 pages `built` ✅ 2026-07-16 — the build is COMPLETE; `npm run verify-urls` 0 failures
-- [ ] Per-page fact diff vs harvest signed off (prices, phones, hours, T&Cs verbatim)
+- [x] Per-page fact diff vs harvest signed off (prices, phones, hours, T&Cs verbatim)
+      ✅ closed 2026-08-08 by the owner's walkthrough sign-off, NOT by a line-by-line re-diff;
+      `npm run verify-stage3` + `npm run price-list-e2e` remain the standing automated guard.
 - [x] Breed table rows == 105 (47+10+48) vs harvest; 10-breed spot check re-run; add-ons correct
       — automated in `npm run verify-stage3`, which asserts it against the RENDERED table
 - [x] 15 FAQs · 6 clip lengths · gallery = **5 before/after pairs + 20 photos** (the old
@@ -77,22 +102,68 @@ Per-page definition of done = the 6 quality gates in CLAUDE.md.
       no-JS/crawler contract on the price list; a regression here is a silent revenue bug.
       Re-verified 2026-07-18 (full go-live recheck, x64): both 0 failures.
 - [ ] Yoast titles/descriptions carried or deliberately improved (logged below)
-- [ ] Integrations clicked through ON the preview: JotForm opens · Stripe loads (NEVER complete)
+      ⏳ Did not block the flip — **carried to the Polish backlog**. Known outstanding case: the
+      /who-we-are/ doubled site-name title (see the 2026-07-12 copy-log entry).
+- [x] Integrations clicked through: JotForm opens · Stripe loads (NEVER complete)
       · EnquiryForm→n8n→email E2E · WhatsApp/tel/reviews links · GTM only after consent
       *(2026-07-18 probe pass: JotForm 200 · Stripe 200 · Google reviews/maps links 200
       (browser UA — they 404 to bare curl, don't misread) · webhook live, spam gate proven
       (exec 126297: 11ms silent drop, no row/email) · consent-default precedes gtm.js in the
-      HTML · wa.me/441424300668 site-wide. Human click-through on the preview still wanted.)*
+      HTML · wa.me/441424300668 site-wide.)*
+      ✅ **Closed 2026-08-08 on the LIVE apex.** The human click-through is the owner's own
+      walkthrough + sign-off ("Yes — signed off, ship it", HANDOVER.md); the preview URL is no
+      longer served by Pages (404 — its DNS CNAME survives in the zone, but never test against
+      it). The enquiry path is proven on every hop: n8n execution `396075`, success, 6/6 nodes,
+      `grooming_enquiries` row id 3, SMTP `250` to info@thefairytails.co.uk, and the **owner
+      confirmed the email arrived in the inbox**.
+      ⚠️ Still-open hardening (was not a blocker): the workflow answers `{"ok":true}` BEFORE it
+      writes the row and sends the email, and has no `errorWorkflow` — an SMTP failure would show
+      the customer "thanks" while the enquiry evaporates. Top candidate for the next pass.
 - [ ] Lighthouse ≥90 ×3 on every page · 1440/390 sweeps · reduced-motion sweep
       *(2026-07-18 x64 recheck: home 94/100/100/100 ×3 CLS 0 · contact 98 · price-list 97 ·
       gallery 99 · /services/ 88–95 bimodal over 6 runs — text-LCP font-swap race under
       post-gate-suite load, no content change since it gated 95; re-measure settled.)*
+      ⏳ Not fully settled at flip time and deliberately not a blocker — **carried to the Polish
+      backlog**, and now measurable against the LIVE apex rather than a local
+      `PUBLIC_INDEXABLE=true` build, since production is indexable.
 - [x] Sitemap = apex trailing-slash URLs; canonicals → apex; preview still noindex (curl)
       ✅ 2026-07-18: sitemap = the 14 apex URLs · canonical sweep all-apex (stub doubles are
       their targets, by design) · preview noindex meta + robots `Disallow: /` curl-verified.
-- [ ] **Owner walkthrough of the preview URL + explicit OK recorded in HANDOVER.md**
+      🔴 **The noindex half of this item INVERTED at go-live (2026-08-08) — never re-run it
+      against production.** The live apex is INDEXABLE (repo Actions var `INDEXABLE=true`):
+      robots.txt serves `User-agent: *` / `Disallow:` (empty) plus
+      `Sitemap: https://fairytailsdoggrooming.co.uk/sitemap-index.xml`, and none of the 14
+      sitemap pages carries a robots meta. Finding no noindex there is CORRECT, not a
+      regression — re-introducing one would deindex the business.
+      ⚠️ The three redirect stubs (`/services-2/`, `/category/blog/`, `/author/grace/`) DO
+      still serve `<meta name="robots" content="noindex">`, deliberately, per the table above
+      — that is not a leftover; never strip it. The sitemap/canonical half of this item is
+      unchanged and still true.
+- [x] **Owner walkthrough of the preview URL + explicit OK recorded in HANDOVER.md**
+      ✅ 2026-08-08 — Kam: *"Yes — signed off, ship it."* Recorded in HANDOVER.md. He also ruled
+      the flip happen that night rather than the runbook's Tuesday-07:00 slot.
 
-Then execute `docs/SWITCHOVER-RUNBOOK.md`.
+~~Then execute `docs/SWITCHOVER-RUNBOOK.md`.~~ ✅ **EXECUTED 2026-08-08.**
+
+**Live state since 19:02 UTC that day:** `https://fairytailsdoggrooming.co.uk` serves this site
+from GitHub Pages — cert `CN=fairytailsdoggrooming.co.uk` approved (apex **and** www),
+`https_enforced`, http→301→https, www→301→apex, `protected_domain_state: verified`,
+`INDEXABLE=true`, `public/CNAME` = the apex, `npm run verify-urls -- --live` 18 URLs / 0 failures,
+GSC `sc-domain` property verified with the sitemap submitted.
+
+⚠️ **`preview.fairytailsdoggrooming.co.uk` is NO LONGER a preview.** Its CNAME still sits in the
+DNS zone but Pages does not serve it (404) — the apex is the only live URL, and every push to
+`main` deploys straight to production. (`npx astro preview`, the LOCAL dev server the gates run
+against, is a completely different thing and is unaffected.)
+
+🔴 **Never call `DNS_deleteDNSRecordsV1` or `DNS_resetDNSRecordsV1` on this zone.** The MCP
+schema exposes only `{domain}` — no name, no type, despite its description claiming filters — so
+it can delete the ENTIRE zone (MX×2, SPF + the GSC token, DKIM×3, DMARC, autodiscover,
+autoconfig, the GitHub challenge TXT). Delete individual records in the Hostinger hPanel UI.
+
+The runbook's remaining live sections are **post-flip monitoring** and **WordPress decommission
+(earliest T+30 = 2026-09-07)** — plus the three corrections learned by doing (the stuck TLS cert,
+`public/CNAME` NOT moving the Pages custom domain, the 600s per-path edge cache).
 
 ## Integration inventory
 
@@ -100,10 +171,12 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
 |---|---|
 | Booking (primary CTA) | JotForm `251190647924057` — pci.jotform.com (Acuity is DEAD) |
 | Subscription | Stripe `buy.stripe.com/8x27sM5K57BR1IL94W9MY00` — £25/mo/dog, 2-mo min |
-| Enquiry form | n8n `grooming-enquiry` (wf `TpQFGJy87KIKGflV`, table `mbWR9tHS4u95s605`) — E2E verified 2026-07-12 |
+| Enquiry form | n8n `grooming-enquiry` (wf `TpQFGJy87KIKGflV`, table `mbWR9tHS4u95s605`) — emails **info@thefairytails.co.uk**; proven E2E on the LIVE domain 2026-08-08 (exec `396075`, row id 3, SMTP 250, owner confirmed the inbox) |
 | Reviews | Google place `ChIJV3P8-VAb30cRHoBgRmxCYIM` — 4.9★/63 (snapshot 2026-07-12) |
 | WhatsApp | wa.me/441424300668 — the salon line (owner ruling 2026-07-17; mobile 07842 116216 retired site-wide) |
 | Analytics | GTM `GTM-W93L9XK5`, Consent Mode v2 default-denied |
+| Email | ⚠️ **ZERO mailboxes exist on fairytailsdoggrooming.co.uk.** All five Hostinger mailboxes (`dogtraining@`, `info@`, `jadeheselden@`, `kamalsingh@`, `manager@`) are on **`thefairytails.co.uk`**, a different zone; the site publishes `info@thefairytails.co.uk`. This zone's MX×2/SPF/DKIM×3/DMARC/autodiscover/autoconfig are **VESTIGIAL — nothing consumes them** (owner ruling 2026-08-08: no mailbox is wanted here). ⚠️ The `@` TXT set holds TWO separate strings — the SPF record **and** the Google site-verification token — so never overwrite one with the other. |
+| Live hosting | GitHub Pages on the apex `fairytailsdoggrooming.co.uk` (repo `Fairytails123/groomingwebsite`; every push to `main` deploys to PRODUCTION). ⚠️ The Pages custom domain moves only via `gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=…` (or GitHub Settings → Pages) — pushing `public/CNAME` does **not** move it. Domain registered at **Bluehost**, nameservers at **Hostinger**. |
 
 ## Open items
 
@@ -117,8 +190,9 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
       old widget's screenshot as the target: white band, avatar/name/gold-star cards, text
       clamped with More/Less expanders, G-logo link. Shipped same day; content contract with
       the n8n rotator unchanged (`reviews-snapshot.json`, verbatim excerpts).
-- [ ] **HERO ANIMATION JUDGEMENT CALLS NEED THE OWNER'S EYE** (live on the preview homepage
-      since 2026-07-17 — phone AND desktop). **Feedback round 1 applied 2026-07-17 (`efb9122`):
+- [ ] **HERO ANIMATION JUDGEMENT CALLS NEED THE OWNER'S EYE** (on the preview homepage from
+      2026-07-17 and on the LIVE homepage `https://fairytailsdoggrooming.co.uk/` since
+      2026-08-08 — phone AND desktop). **Feedback round 1 applied 2026-07-17 (`efb9122`):
       the "Scroll to see the transformation" caption and the warm floor light-pool behind the
       dog are removed — owner ruled the dog must blend seamlessly into the band, nothing may
       highlight it off the page.** Six deliberate deviations from the design handoff,
@@ -164,13 +238,34 @@ Then execute `docs/SWITCHOVER-RUNBOOK.md`.
       crops are only 242–309px (each was a ~400px photo inside a 1200×600 composite) and the grid
       photos are 480×480 originals. Display slots are deliberately small to stay sharp; `mobile-check`
       warns on 4 of them. Only new photography fixes this.
-- [ ] GitHub **account-level verified domain** for fairytailsdoggrooming.co.uk (Settings →
-      Pages → Add a domain; TXT `_github-pages-challenge-Fairytails123`) — anti-takeover;
-      needs the GitHub web UI (no REST API). Do before flip day.
-- [ ] **GSC Domain property** + DNS TXT verification, then export 16-month baseline.
-- [ ] **Ahrefs baseline** via web UI (API plan-blocked): organic keywords, top pages, backlinks →
-      `docs/seo-baseline/`; decide `/feed/` + wp-content stub questions from the backlink report.
-- [ ] Identify the external .co.uk registrar + confirm auto-renew (not blocking; DNS is at Hostinger).
+- [x] ~~GitHub **account-level verified domain**~~ — DONE 2026-08-08 via the GitHub web UI:
+      fairytailsdoggrooming.co.uk shows **Verified** under github.com/settings/pages
+      (TXT `_github-pages-challenge-Fairytails123` — still in the zone, never delete it), and the
+      repo reports `protected_domain_state: verified`. Closes the domain-takeover hole.
+- [x] ~~**GSC Domain property** + DNS TXT verification~~ — DONE 2026-08-08: the `sc-domain:`
+      property for fairytailsdoggrooming.co.uk is **verified** (its
+      `google-site-verification=…` TXT sits on `@` **alongside** SPF — SPF preserved
+      byte-identical; never overwrite one with the other) and
+      `https://fairytailsdoggrooming.co.uk/sitemap-index.xml` is **submitted**. ⚠️ A
+      "Couldn't fetch" reading right after submission is Google's stale crawl state, not a fault —
+      it retries. ⏳ Still open: ongoing performance baselining — note a freshly verified property
+      starts with NO history, so the pre-flip organic picture is the Ahrefs export below, not a
+      16-month GSC export.
+- [x] ~~**Ahrefs baseline**~~ — CAPTURED PRE-FLIP 2026-08-08 →
+      `docs/seo-baseline/ahrefs-pre-flip-2026-08-08.json`: DR 1.3, 183 live backlinks from 144
+      referring domains, 5 organic keywords, ~51 organic visits/mo. The entire organic footprint
+      was three URLs that all exist on the new site, so cutover risk was LOW; the backlink profile
+      is almost entirely SEO spam, the only genuine dofollow referrer being design-matters.co.uk.
+      ⚠️ **The old "API plan-blocked, web UI only" note was WRONG — the Ahrefs claude.ai MCP
+      connector WORKS.** Use it rather than the web UI. ⏳ Still open: decide the `/feed/` +
+      wp-content stub questions from that backlink report.
+- [x] ~~Identify the external .co.uk registrar~~ — IDENTIFIED 2026-08-08: the domain is
+      **registered at BLUEHOST** (renewal is billed there), but its **nameservers point to
+      HOSTINGER** (`aster`/`helios.dns-parking.com`), which serves the live zone.
+      🔴 **Bluehost's DNS tab is a DECOY — records edited there do nothing.** The only Bluehost
+      setting that matters is the nameservers; every record edit belongs in Hostinger hPanel.
+      ⏳ Still open: confirm auto-renew at Bluehost, and the owner's plan to transfer the domain
+      to Hostinger once the transfer lock clears.
 - [ ] The blog post exists on BOTH this domain and the Main Website — **owner confirmed
       2026-07-16: decide at polish.** Both copies ship self-canonical (exactly the old status
       quo). Note for the polish session: the Main Website's Base.astro computes canonicals
@@ -380,9 +475,25 @@ contact 2025-07) carry real signal.
     **Lesson: the harvest is the source of record for the OLD SITE, not for the BUSINESS.** "Not in
     the harvest" ≠ "not real". Check the booking form and the owner before calling a term foreign.
 
-## Polish backlog (post-switchover, indefinite)
+## Polish backlog (post-switchover, indefinite) — **ACTIVE since 2026-08-08**
 
 Copy/photo upgrades · FAQPage JSON-LD + LocalBusiness schema · gallery `<dialog>` lightbox ·
 subscription sign-up page (Stripe recurring product — separate project) · fresh blog posts ·
 duplicate-post canonical decision · GA4 property · Ahrefs-driven keyword pages · refresh
 reviews snapshot.
+
+**Carried in from the switchover (2026-08-08):**
+
+- **Harden the enquiry workflow** — it answers the browser `{"ok":true}` BEFORE it writes the
+  data-table row and BEFORE it sends the email, and has no `errorWorkflow`, so an SMTP failure
+  loses a real enquiry silently. Top candidate for the next pass.
+- **Re-measure Lighthouse ≥90 ×3 on every page against the LIVE apex** (the `/services/` 88–95
+  bimodal reading was never settled), plus the 1440/390 and reduced-motion sweeps.
+- **Yoast title improvement** for /who-we-are/ (doubled site name — see the copy log).
+- **Decide `/feed/` + the wp-content stub questions** from the captured Ahrefs backlink report.
+- **Post-flip monitoring** at the runbook's intervals, then **WordPress decommission (earliest
+  T+30 = 2026-09-07)** — re-verify the harvest archive first, because the images are gone
+  forever after deletion. 🔴 **Delete only the WordPress site; do NOT cancel the Hostinger
+  "Business Web Hosting" plan** — fairytailsdoggrooming.co.uk is the MAIN vhost on it and the
+  Main Website `thefairytails.co.uk` is an ADDON on the SAME plan, so cancelling it kills the
+  Main Website.

@@ -1,12 +1,54 @@
 // Harvest the live WordPress site into grooming-image-archive/ before anything can vanish.
 // No deps — Node 22+ (fetch, fs). Idempotent: existing image files are skipped; HTML/meta always refreshed.
 // Run: node scripts/harvest.mjs
+//
+// ═══════════════════════════════════════════════════════════════════════════════════════
+// 🔴 DISARMED 2026-08-08 — THIS SCRIPT IS NOW A DATA-DESTRUCTION HAZARD. READ BEFORE USE.
+// ═══════════════════════════════════════════════════════════════════════════════════════
+// On 2026-08-08 the DNS switchover completed: https://fairytailsdoggrooming.co.uk NO LONGER
+// serves the old WordPress site — it serves THIS project's new Astro site from GitHub Pages.
+//
+// This script points `SITE` at that domain, and (per the line above) it SKIPS existing images
+// but ALWAYS REWRITES page.html / copy.md / meta.json / links.json. So running it today would
+// overwrite the archive's verbatim record of the OLD site with a copy of the NEW site —
+// silently destroying the only surviving source of record for the legacy copy, and reporting
+// success while doing it.
+//
+// That archive is irreplaceable: it holds 70 images rescued from the temporary Bluehost origin
+// that no longer exists, and it is gitignored, so git CANNOT restore it.
+//
+// The old WordPress install still exists on the Hostinger hosting plan, but it is no longer
+// reachable at this domain, so a re-harvest is not possible via `SITE` as written. If you ever
+// genuinely need to re-harvest, point HARVEST_SOURCE at a real old-site origin (e.g. a Hostinger
+// preview/temporary URL for that vhost) — NEVER at fairytailsdoggrooming.co.uk — and back up
+// grooming-image-archive/ first.
+// ═══════════════════════════════════════════════════════════════════════════════════════
 import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 
-const SITE = 'https://fairytailsdoggrooming.co.uk';
+const LEGACY_DOMAIN = 'fairytailsdoggrooming.co.uk';
+const SITE = process.env.HARVEST_SOURCE ?? `https://${LEGACY_DOMAIN}`;
 const OUT = join(process.cwd(), 'grooming-image-archive');
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36 FairyTailsHarvest/1.0';
+
+// Hard guard: refuse to run against the live domain, which now serves the NEW site.
+if (new URL(SITE).hostname.replace(/^www\./, '') === LEGACY_DOMAIN) {
+  console.error(`
+🔴 REFUSING TO RUN — this would destroy the harvest archive.
+
+   SITE resolves to  ${SITE}
+   Since 2026-08-08 that domain serves the NEW Astro site, not the old WordPress site.
+   Harvesting it would overwrite every page.html / copy.md / meta.json / links.json in
+   ${OUT}
+   with the new site's content. That archive is gitignored — git cannot bring it back.
+
+   If you really mean to re-harvest, set HARVEST_SOURCE to an origin that still serves the
+   OLD site, and back up grooming-image-archive/ first:
+
+     HARVEST_SOURCE="https://<old-site-origin>" node scripts/harvest.mjs
+`);
+  process.exit(1);
+}
 
 const PAGES = [
   '/', '/who-we-are/', '/services/', '/services/full-groom-price-list/',

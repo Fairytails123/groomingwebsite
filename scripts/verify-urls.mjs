@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 // URL-manifest gate (WEBSITE-PLAN.md): every legacy WordPress URL must keep resolving.
 //   --dist  : checks the local dist/ output (gates every page sign-off)
-//   --live  : checks the live domain over HTTP (gates + confirms DNS cutover)
-//   --preview : checks the preview subdomain over HTTP
+//   --live  : checks PRODUCTION over HTTP — https://fairytailsdoggrooming.co.uk, live since
+//             the 2026-08-08 cutover. This is the post-deploy gate now.
+//   --preview : REMOVED 2026-08-08. Pages serves the apex, not the preview subdomain, so that
+//             host 404s on every path; the flag used to "fail" 18 URLs and look like a
+//             regression. It now aborts with an explanation instead. There is no preview URL —
+//             check locally with `npm run build && npx astro preview`.
+//
+// ⚠️ Note the double dash: `npm run verify-urls -- --live`. Without it npm swallows the flag
+// and you silently get dist mode while believing you checked production.
 //
 // Entry statuses: 'built' entries FAIL the run when missing; 'planned' entries
 // only warn. Flip planned -> built as each page ships.
@@ -15,7 +22,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const SITE = 'https://fairytailsdoggrooming.co.uk';
-const PREVIEW = 'https://preview.fairytailsdoggrooming.co.uk';
+// (There is deliberately no PREVIEW constant any more — see the --preview note in the header.)
 const DIST = join(import.meta.dirname, '..', 'dist');
 
 /** @type {{path: string, type: 'page'|'stub'|'gone', status: 'built'|'planned'}[]} */
@@ -43,7 +50,23 @@ const MANIFEST = [
   { path: '/feed/', type: 'gone', status: 'planned' }, // WP RSS — revisit if the Ahrefs backlink audit says otherwise
 ];
 
-const mode = process.argv.includes('--live') ? 'live' : process.argv.includes('--preview') ? 'preview' : 'dist';
+if (process.argv.includes('--preview')) {
+  console.error(`
+❌ --preview was REMOVED at the 2026-08-08 go-live.
+
+   GitHub Pages now serves the apex (https://fairytailsdoggrooming.co.uk), NOT
+   preview.fairytailsdoggrooming.co.uk — that host returns GitHub's "Site not found" 404 on
+   every path, so this flag would report 18 failures that mean nothing.
+
+   Use instead:
+     npm run verify-urls -- --live     # check PRODUCTION over HTTP
+     npm run verify-urls               # check the local dist/ output
+     npm run build && npx astro preview  # a real local preview
+`);
+  process.exit(2);
+}
+
+const mode = process.argv.includes('--live') ? 'live' : 'dist';
 
 function distFile(p) {
   if (p === '/') return join(DIST, 'index.html');
@@ -53,8 +76,8 @@ function distFile(p) {
 let fail = 0;
 let warn = 0;
 
-if (mode === 'live' || mode === 'preview') {
-  const base = mode === 'live' ? SITE : PREVIEW;
+if (mode === 'live') {
+  const base = SITE;
   for (const entry of MANIFEST) {
     const url = `${base}${entry.path}`;
     let status = 0;

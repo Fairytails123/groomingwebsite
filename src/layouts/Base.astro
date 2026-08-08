@@ -29,9 +29,11 @@ const { title, description, path, ogImage, ogImageWidth, ogImageHeight, ogImageT
 const canonical = `${business.domain}${path}`;
 const gtmId = business.tracking.gtm;
 
-// Indexability is env-driven (see CLAUDE.md "INDEXABLE handle"): unset locally and
-// on the preview deploy → noindex; the switchover sets the repo Actions variable
-// INDEXABLE=true. Never hardcode this.
+// Indexability is env-driven (see CLAUDE.md "INDEXABLE handle"): unset locally →
+// noindex; the repo Actions variable INDEXABLE has been true since go-live
+// 2026-08-08, so PRODUCTION IS INDEXED and must stay that way. A noindexed local
+// build is expected, not a bug. Never hardcode this, and never ship a change that
+// puts a noindex on a real page of the live site.
 const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
 ---
 

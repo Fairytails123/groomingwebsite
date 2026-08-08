@@ -3,7 +3,32 @@
 Static rebuild of **fairytailsdoggrooming.co.uk** (previously WordPress on Hostinger).
 Astro 6 + Tailwind v4, **hosted on GitHub Pages** (repo `Fairytails123/groomingwebsite`, public).
 Read `HANDOVER.md` first every session (where we are), `WEBSITE-PLAN.md` for the master plan,
-`docs/SWITCHOVER-RUNBOOK.md` for the DNS cutover.
+`docs/SWITCHOVER-RUNBOOK.md` for what the DNS cutover did and how to roll it back.
+
+## 🔴 THE SITE IS LIVE — read this before you change anything (go-live 2026-08-08, 19:02 UTC)
+
+**https://fairytailsdoggrooming.co.uk is PRODUCTION**, served from GitHub Pages, HTTPS enforced
+(cert covers apex AND www; http → 301 → https; www → 301 → apex). It is no longer WordPress.
+**Every push to `main` is in front of paying customers within ~2 minutes** — there is no staging
+step left between you and them.
+
+- **The site is INDEXED.** The repo Actions variable `INDEXABLE` is `true`; robots.txt allows and
+  names the sitemap; none of the 14 real pages carries a `noindex` (the three legacy redirect
+  stubs — `/services-2/`, `/category/blog/`, `/author/grace/` — keep theirs deliberately; never
+  strip those). **Never re-introduce a noindex on a real page, never unset `INDEXABLE`, never add
+  a static `public/robots.txt`.** Google Search Console
+  (`sc-domain:fairytailsdoggrooming.co.uk`) is verified and the sitemap is submitted.
+- **`preview.fairytailsdoggrooming.co.uk` is DEAD as a preview.** Pages serves the apex now, not
+  that host; its DNS CNAME still exists but nothing serves it (it 404s). Preview = `npm run build`
+  + `npx astro preview` locally. **Do not send the owner a preview URL — there isn't one.**
+- **The old WordPress site is still up and untouched at Hostinger — that IS the rollback.**
+  Do not decommission it before T+30 days (2026-09-07). ⚠️ And when it does go, **delete the
+  WordPress website only — do NOT cancel the Business Web Hosting plan**: this domain is the
+  main vhost on that plan and `thefairytails.co.uk` (the Main Website) is an addon on the SAME
+  plan (order 1009494758), so cancelling it takes the Main Website down too. Detail:
+  `HANDOVER.md` 2026-08-08; procedure: the runbook's "WordPress decommission" section.
+- Rollback values, the flip sequence and its post-mortem: `docs/SWITCHOVER-RUNBOOK.md` plus the
+  2026-08-08 entry at the top of `HANDOVER.md`.
 
 ## ⚠️ Divergences from the Main Website repo (do NOT "fix" these)
 
@@ -12,7 +37,8 @@ Read `HANDOVER.md` first every session (where we are), `WEBSITE-PLAN.md` for the
    The Main Website uses `format:'file'` + `trailingSlash:'never'` — never copy its config back in.
    `scripts/verify-urls.mjs` `distFile()` maps `/x/` → `dist/x/index.html` accordingly.
 2. **GitHub Pages IS production** (Main Website deploys to Hostinger; its Pages is preview-only).
-   Every push to `main` deploys via `.github/workflows/deploy.yml`.
+   Every push to `main` deploys via `.github/workflows/deploy.yml` — and since 2026-08-08 that
+   deploy is the live customer-facing site at the apex, not a preview.
 
 ## The INDEXABLE handle (indexability is env-driven — never hardcode)
 
@@ -20,21 +46,54 @@ Read `HANDOVER.md` first every session (where we are), `WEBSITE-PLAN.md` for the
   `import.meta.env.PUBLIC_INDEXABLE === 'true'`.
 - `src/pages/robots.txt.ts` reads the same env: unset → `Disallow: /`; true → allow + sitemap.
   There is deliberately NO static `public/robots.txt`.
-- The deploy workflow passes `PUBLIC_INDEXABLE: ${{ vars.INDEXABLE }}`. The repo Actions
-  variable `INDEXABLE` is **unset during the build stage** (the old WordPress site is still
-  live — the preview must stay out of the index). The switchover runbook sets it to `true`.
-- Lighthouse SEO scores must be measured against a local
-  `$env:PUBLIC_INDEXABLE='true'; npx astro build; npx astro preview` build — the deployed
-  preview's noindex caps the score by design.
+- The deploy workflow passes `PUBLIC_INDEXABLE: ${{ vars.INDEXABLE }}`. **The repo Actions
+  variable `INDEXABLE` is `true` — set at go-live 2026-08-08 — and must stay that way.**
+  Unsetting, renaming or "restoring" it de-indexes the live business site on the next deploy,
+  silently, via a GREEN run. Check, don't assume:
+  `gh variable list -R Fairytails123/groomingwebsite`.
+- ⚠️ A **local** build is still noindexed, because the env var is not set on this machine. That
+  is correct and expected — it is **NOT** evidence that production is noindexed, and it is not a
+  bug to fix. Confirm production directly:
+  `curl -s https://fairytailsdoggrooming.co.uk/robots.txt`.
+- Lighthouse SEO scores must therefore be measured against a local
+  `$env:PUBLIC_INDEXABLE='true'; npx astro build; npx astro preview` build — an unflagged local
+  build's noindex caps the score by design.
 
-## Hosting & preview
+## Hosting, domain & DNS
 
-- Preview URL (build stage): **https://preview.fairytailsdoggrooming.co.uk** — the Pages
-  custom domain, CNAME'd at Hostinger to `fairytails123.github.io`. Site is served at a
-  domain ROOT, so plain root-relative links work and builds are byte-identical to production.
-- `site` in `astro.config.mjs` is the production apex from day 1 — canonicals/sitemap are
-  production-correct even on the preview (which is noindexed anyway).
-- At switchover the Pages custom domain changes to `fairytailsdoggrooming.co.uk` — see the runbook.
+- **Production URL: https://fairytailsdoggrooming.co.uk** — the GitHub Pages custom domain since
+  2026-08-08. `public/CNAME` holds the apex; `protected_domain_state: verified` (account-level
+  domain verification done the same day). `site` in `astro.config.mjs` was always this apex, so
+  canonicals/sitemap needed no change at the flip.
+- ⚠️ **Pushing `public/CNAME` does NOT move the Pages custom domain** under
+  `actions/deploy-pages`. Only the API does:
+  `gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=…`. Keep the two in step.
+- ⚠️ **A stuck TLS cert is stuck, not slow.** If `https_certificate.state` sits at `null` for
+  more than ~10 minutes, visitors get a full-page `ERR_CERT_COMMON_NAME_INVALID`. Waiting does
+  not help and re-PUTting the same cname is a no-op — **remove the custom domain, then re-add
+  it** (approved in ~20s when this happened at go-live). Full write-up: HANDOVER 2026-08-08.
+- **`preview.fairytailsdoggrooming.co.uk` is DEAD as a preview.** Its CNAME is still in the zone
+  but Pages no longer serves it (404) — there is no preview URL any more. Check changes locally
+  (`npm run dev`, or `astro build` + `astro preview`); a push to `main` goes straight to
+  production.
+- **Registrar ≠ DNS host.** The domain is **registered at Bluehost**, but its nameservers point
+  at **Hostinger** (`aster`/`helios.dns-parking.com`), which serves the live zone (13 record-sets).
+  **Bluehost's DNS tab is a decoy — edits there do nothing.** Only its nameserver setting matters.
+- 🔴 **NEVER call `DNS_deleteDNSRecordsV1` or `DNS_resetDNSRecordsV1` on this zone.** The delete
+  tool's MCP schema takes **`{domain}` only** — no `name`, no `type`, whatever its description
+  claims — so a single call can wipe the ENTIRE zone (MX ×2, SPF+GSC token, DKIM ×3, DMARC,
+  autodiscover, autoconfig, the GitHub challenge TXT). Delete individual records in the Hostinger
+  hPanel DNS UI instead. Verified against the live schema 2026-08-08; red block in
+  `docs/SWITCHOVER-RUNBOOK.md` step 3.
+- **No email lives on this domain.** There are **zero** mailboxes on fairytailsdoggrooming.co.uk;
+  all five are on `thefairytails.co.uk` (a different zone), and the site publishes
+  `info@thefairytails.co.uk`. This zone's MX/SPF/DKIM/DMARC/autodiscover/autoconfig are
+  **vestigial — nothing consumes them.** Owner ruling 2026-08-08: no mailbox is wanted here.
+  (Don't delete them casually either: the `@` TXT set also carries the GSC verification token.)
+- 🔴 **Do NOT cancel the Hostinger "Business Web Hosting" plan.** The old WordPress site still
+  sits on it untouched as the **rollback** and must stay until T+30 days — and on that same
+  order `fairytailsdoggrooming.co.uk` is the **main** vhost with the Main Website
+  (`thefairytails.co.uk`) as an **addon**, so cancelling the plan would kill the Main Website too.
 
 ## Facts live in data files, never in page copy
 
@@ -124,7 +183,7 @@ single migration re-save on the harvest date — see WEBSITE-PLAN's copy log).
 
 | Script | What it does |
 |---|---|
-| `verify-urls` | URL manifest gate. `--preview` / `--live` check the deployed site over HTTP. |
+| `verify-urls` | URL manifest gate (18 URLs). No flag = local `dist/`. **`-- --live` checks PRODUCTION over HTTP — that is the post-deploy gate now** (note the double dash; `npm run verify-urls --live` is swallowed by npm and silently runs in dist mode). `--preview` still points at the dead preview subdomain and will fail every URL; don't use it. |
 | `mobile-check` | 📱 The mobile gate (above). Needs `astro preview` running. |
 | `shots` | Dual-viewport screenshots → `shots/<slug>-{1440,390}.png`. Needs `astro preview`. |
 | `verify-stage3` | Services-cluster facts: 105 rows render, 0 hidden at t=0, spot-check vs the rendered table, and no banned pick-up/policy wording anywhere. |
@@ -162,7 +221,9 @@ demands an image we cannot create just teaches us to ignore it.
 **2. Speed** — Lighthouse, run separately; `mobile-check` does NOT measure it. `npx lighthouse`
 already emulates a mid-range phone on throttled 4G **by default**, so a plain run IS the mobile
 number; if you ever pass `--preset=desktop` you have not run this gate. Must be ≥ 90, measured on
-a `PUBLIC_INDEXABLE=true` build (else SEO reads ~69 by design).
+a `PUBLIC_INDEXABLE=true` **local** build (else SEO reads ~69 by design — a plain local build is
+noindexed). Production is indexable, so a run against `https://fairytailsdoggrooming.co.uk/`
+needs no flag.
 ⚠️ **One Lighthouse run is not evidence.** The gallery scored 88 on its first run and 99/99/99 on
 three re-runs — the first was competing with the build/preview starting up. If a score fails,
 re-run before "fixing" anything; check whether the individual metrics agree with the total.
@@ -180,7 +241,12 @@ below the fold, or an image cropped to nonsense. Take the screenshot AND look at
 4. `prefers-reduced-motion` pass.
 5. `npm run build && npm run verify-urls` green; manifest entry flipped `planned` → `built`.
    For the services cluster also: `npm run verify-stage3` + `npm run price-list-e2e`.
-6. HANDOVER.md updated; push; owner eyeballs the preview URL.
+6. HANDOVER.md updated; push. ⚠️ **A push to `main` IS the deploy, and the deploy is LIVE to
+   customers** — there is no preview URL to hide behind any more (Pages no longer serves
+   `preview.fairytailsdoggrooming.co.uk`), so anything risky gets the owner's sign-off BEFORE
+   the push, not after. Once the Pages run is green, re-check production:
+   `npm run verify-urls -- --live` (18/18) and eyeball `https://fairytailsdoggrooming.co.uk/`
+   at a phone viewport.
 
 ## Local dev (Windows + OneDrive) — ⚠️ TWO MACHINES, TWO ARCHITECTURES
 
@@ -215,12 +281,20 @@ below the fold, or an image cropped to nonsense. Take the screenshot AND look at
 
 - **Enquiry form** → n8n webhook `https://auto.thefairytails.co.uk/webhook/grooming-enquiry`
   (workflow "Grooming Website Enquiry" `TpQFGJy87KIKGflV` on the self-hosted VPS; logs to
-  data table `grooming_enquiries` `mbWR9tHS4u95s605`, emails info@). Spam gate: honeypot
-  `website` field + `elapsedMs < 4000` → silent `{ok:true}`.
+  data table `grooming_enquiries` `mbWR9tHS4u95s605`, emails **info@thefairytails.co.uk** — that
+  mailbox is on the OTHER domain, see Hosting). Spam gate: honeypot `website` field +
+  `elapsedMs < 4000` → silent `{ok:true}`. **Proven end-to-end on the LIVE domain 2026-08-08**
+  (execution `396075`, 6/6 nodes, owner confirmed it reached the inbox); `grooming_enquiries`
+  rows 1–3 are test data. ⚠️ An SMTP `250` is **not** proof of delivery — Hostinger's relay logs
+  don't record info@ → info@ internal delivery, so a human has to look in the inbox.
+  ⚠️ Known weakness: the workflow answers `{ok:true}` BEFORE it writes the row and sends the
+  email, and has no `errorWorkflow` — an SMTP failure shows the customer "thanks" and loses the
+  enquiry. Hardening it is the top candidate for the next pass.
 - **Reviews rotation** → n8n "Grooming Reviews Rotator" `sXavTjxM4hzZ8bTo` (VPS, Mon 06:30
   London): Google Place Details (newest) → 4 five-star excerpts → commits
   `src/data/reviews-snapshot.json` via the GitHub contents API only when changed → Pages
-  deploys. Fail-closed (error ⇒ no commit). Live-verified end-to-end 2026-07-16.
+  deploys. Fail-closed (error ⇒ no commit). Live-verified end-to-end 2026-07-16. ⚠️ Since go-live
+  that weekly commit publishes **straight to the live site**, with no human in the loop.
 - **GTM** `GTM-W93L9XK5` (shared container), Consent Mode v2 defaulted denied before load;
   self-hosted ConsentBanner writes `localStorage.ft-consent`.
 - Public repo: no client data, no secrets, no harvest archive in git.

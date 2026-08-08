@@ -54,12 +54,16 @@ acceptance: `accepted: ["info@thefairytails.co.uk"]`, `rejected: []`,
 `response: "250 865eca58-fd96-40fb-8d0b-30b79f25c570"`,
 messageId `<33ee0484-e334-dd8d-4ccb-ecb24e3a8f0c@thefairytails.co.uk>`.
 
-⚠️ **Limit of that proof, stated honestly:** SMTP `250` proves the server ACCEPTED the message,
-not that it is visible in the mailbox. Hostinger's inbound/outbound relay logs do **not** record
-info@ → info@ internal deliveries (checked both; latest inbound to info@ was 14:13Z, hours before
-the test), so the last hop is unverifiable from here. **Owner to confirm the "TEST - go-live
-check" email in `info@thefairytails.co.uk`** — and it is safe to delete, along with data-table
-rows 1–3 which are all test rows.
+**✅ OWNER CONFIRMED (2026-08-08): the email arrived and the contact form works.** So the enquiry
+path is proven on every hop — browser → webhook → spam gate → data table → SMTP → **inbox**.
+Housekeeping: the "TEST - go-live check" email and `grooming_enquiries` rows 1–3 are all test
+data and are safe to delete.
+
+*Method note for next time:* SMTP `250` alone would NOT have been proof — it means the server
+accepted the message, not that it is visible in a mailbox. Hostinger's relay logs do **not**
+record info@ → info@ internal deliveries (checked both directions; latest logged inbound to info@
+was 14:13Z, hours before the test), so the last hop is **unverifiable from tooling** and needs a
+human to look in the inbox. Don't report that hop as proven from a 250 alone.
 
 ⚠️ **Known silent-loss path, unchanged and still worth fixing:** the workflow answers the browser
 `{"ok":true}` BEFORE it writes the row and BEFORE it sends the email, and has no `errorWorkflow`.

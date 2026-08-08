@@ -1,8 +1,17 @@
 # SWITCHOVER RUNBOOK — fairytailsdoggrooming.co.uk → GitHub Pages
 
-Executes only after the WEBSITE-PLAN "Ready for switchover" gate passes with owner sign-off.
-Old WordPress stays untouched on Hostinger = instant rollback. **Email lives on this domain
-(Hostinger MX/SPF/DKIM/DMARC/autodiscover) — only `@` and `www` records ever change.**
+✅ **EXECUTED 2026-08-08, 19:02 UTC — the flip is DONE and the apex is live production.** This is
+now the historical record plus two still-live sections: **post-flip monitoring** and **WordPress
+decommission (earliest T+30 = 2026-09-07)**. Everything above those is kept for the rollback
+values and the corrections learned by doing. (Originally: executes only after the WEBSITE-PLAN
+"Ready for switchover" gate passes with owner sign-off — it did, same day.)
+Old WordPress stays untouched on Hostinger = instant rollback. **⚠️ CORRECTED 2026-08-08: email
+does NOT live on this domain.** There are ZERO mailboxes on fairytailsdoggrooming.co.uk — all five
+Hostinger mailboxes are on `thefairytails.co.uk`, a different zone — and the site publishes
+info@thefairytails.co.uk. This zone's MX/SPF/DKIM/DMARC/autodiscover/autoconfig records are
+**vestigial; nothing consumes them** (owner ruling: no mailbox is wanted here). **Only `@` and
+`www` records ever change** — and the `@` TXT set holds TWO strings (SPF **and** the Google
+site-verification token), so never overwrite one with the other.
 
 **Timing:** Tuesday or Wednesday, 07:00–08:00 UK (booking-traffic trough; full business day to
 monitor with support desks awake). Operator needs ~3 uninterrupted hours + browser access.
