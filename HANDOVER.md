@@ -2,6 +2,59 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## 🚀 2026-08-08 — SWITCHOVER SESSION: owner sign-off given, pre-flip items being cleared
+
+**✅ OWNER SIGN-OFF (Kam, 2026-08-08): "Yes — signed off, ship it."** The owner confirmed he has
+walked the preview and is happy to go live. This satisfies GO/NO-GO item 1. He also ruled the
+flip happens **tonight (Sat 2026-08-08)** rather than the runbook's Tuesday-07:00 slot, having
+been shown the trade-off (weekend = lowest traffic + WordPress untouched for a ~10-min rollback,
+against thinner weekend support if the Pages cert stalls).
+
+**Pre-flip items completed this session:**
+- ✅ **GitHub account-level verified domain — DONE.** `fairytailsdoggrooming.co.uk` now shows
+  **Verified** under github.com/settings/pages. TXT `_github-pages-challenge-Fairytails123`
+  = `0c2d3332ce660ad000844c10754ace` (TTL 300). This closes the domain-takeover hole: the apex
+  can no longer be claimed by another GitHub account if the Pages custom domain is removed.
+- ✅ **GSC Domain-property TXT added**: `google-site-verification=4CdrQhCczMtDz9Tu_eOoWq7rBam2P2C0z8MljC__j_I`
+  on `@` (TTL 3600), added **alongside** the existing SPF — SPF preserved byte-identical.
+
+### ⚠️ Four corrections to the runbook found BEFORE touching anything
+
+1. **The runbook's email premise is WRONG — and the truth is safer.** It says "Email lives on
+   this domain". It does not. **Zero mailboxes exist on `fairytailsdoggrooming.co.uk`.** All five
+   Hostinger mailboxes (`dogtraining@`, `info@`, `jadeheselden@`, `kamalsingh@`, `manager@`) are
+   on **`thefairytails.co.uk`**, a different zone this flip never touches, and the grooming site
+   publishes `info@thefairytails.co.uk` as its contact address. The MX/SPF/DKIM×3/DMARC/
+   autodiscover/autoconfig records in the grooming zone are **vestigial — nothing consumes them**.
+   So the rollback trigger "ANY email failure" effectively cannot be caused by this flip. The
+   records are still preserved byte-for-byte (free to keep; leaves the door open to real mailboxes).
+   ⚠️ Side effect worth fixing separately: mail sent to `info@fairytailsdoggrooming.co.uk` today
+   goes to a black hole — MX resolves to Hostinger but no mailbox exists to receive it.
+2. **🔴 `DNS_deleteDNSRecordsV1` IS NOT SAFE AS THE RUNBOOK USES IT.** Step 3b says "delete ONLY
+   name `@`, type `ALIAS`" — but the MCP tool's schema exposes **only a `domain` parameter**;
+   there is no name/type filter, despite its description mentioning one. Calling it as written
+   risks **deleting the entire zone**, taking MX, SPF and all three DKIM records with it. DO NOT
+   CALL IT. Plan instead: apply the validated A/AAAA/www update, re-read the zone, and if the
+   `@` ALIAS survives, remove that ONE record in the hPanel UI where it can be seen.
+3. **The apex IP change since 07-18 is benign.** Public DNS now returns `2.57.91.149` /
+   `88.222.222.87` instead of the recorded `195.200.9.43` / `91.108.103.58`. The **zone record is
+   unchanged** — `@` is still `ALIAS → fairytailsdoggrooming.co.uk.cdn.hstgr.net.`; Hostinger's
+   CDN simply rotated the IPs behind it. **The documented rollback values are still correct.**
+4. **The blunt-rollback snapshot is characterised.** `ROLLBACK_SNAPSHOT_ID = 163366476`
+   (2026-07-12). It predates the `preview` CNAME, so a full restore returns `@` ALIAS and `www`
+   correctly and preserves every mail record, but **deletes the preview CNAME**. Surgical
+   rollback remains preferred. `@` and `www` are both **TTL 300**, so flip and rollback each
+   propagate in ~5–10 min.
+
+**Also confirmed pre-flip:** no CAA record (DoH, twice) · dry-run of the GitHub Pages apex
+payload returned `Request accepted` · old WordPress site serving 200 · local `main` == `origin/main`
+at `5fb2404` · repo Actions var `INDEXABLE` still unset (correct pre-flip).
+
+**⚠️ For the T+30 WordPress decommission — DO NOT cancel the Business Web Hosting plan.**
+`fairytailsdoggrooming.co.uk` is the **main** vhost on that plan and **`thefairytails.co.uk` (the
+Main Website) is an addon on the SAME plan** (order 1009494758). Cancelling it would take the Main
+Website down too. The runbook told us to check this before cancelling anything — now answered.
+
 ## ✅ 2026-07-18 — FULL GO-LIVE RECHECK (x64): every machine-checkable gate re-run GREEN
 
 Owner asked "is it all built and good to go live?" — re-proved it end to end instead of

@@ -1,0 +1,116 @@
+{
+  "_comment": "Ahrefs PRE-FLIP baseline for fairytailsdoggrooming.co.uk, captured immediately before the WordPress -> GitHub Pages DNS cutover. Compare against this after the flip to detect any real ranking/link loss. Captured via the claude.ai Ahrefs MCP connector (the older note that 'the Ahrefs API is plan-blocked, web UI only' is OUT OF DATE - the connector works).",
+  "captured_at": "2026-08-08",
+  "target": "fairytailsdoggrooming.co.uk",
+  "mode": "subdomains",
+  "country": "gb",
+
+  "domain_rating": {
+    "domain_rating": 1.3,
+    "ahrefs_rank": 51823012
+  },
+
+  "backlinks_stats": {
+    "live": 183,
+    "all_time": 295,
+    "live_refdomains": 144,
+    "all_time_refdomains": 199
+  },
+
+  "organic_metrics": {
+    "org_keywords": 5,
+    "org_keywords_1_3": 3,
+    "org_traffic": 51,
+    "org_cost_usd_cents": 130,
+    "paid_keywords": 0,
+    "paid_traffic": 0,
+    "paid_pages": 0
+  },
+
+  "organic_keywords": [
+    { "keyword": "fairy tails dog grooming", "volume": 70, "best_position": 2, "best_position_url": "https://fairytailsdoggrooming.co.uk/", "sum_traffic": 24, "keyword_difficulty": 10 },
+    { "keyword": "dog groomers hastings", "volume": 60, "best_position": 2, "best_position_url": "https://fairytailsdoggrooming.co.uk/", "sum_traffic": 22, "keyword_difficulty": 22 },
+    { "keyword": "dog grooming price list", "volume": 40, "best_position": 5, "best_position_url": "https://fairytailsdoggrooming.co.uk/services/full-groom-price-list/", "sum_traffic": 4, "keyword_difficulty": 0 },
+    { "keyword": "the fairy tails k9 centre", "volume": 0, "best_position": 3, "best_position_url": "https://fairytailsdoggrooming.co.uk/who-we-are/", "sum_traffic": 0, "keyword_difficulty": 0 },
+    { "keyword": "the groom room hastings", "volume": 10, "best_position": 8, "best_position_url": "https://fairytailsdoggrooming.co.uk/", "sum_traffic": 0, "keyword_difficulty": 22 }
+  ],
+
+  "top_pages": [
+    { "url": "https://fairytailsdoggrooming.co.uk/", "sum_traffic": 46, "top_keyword": "fairy tails dog grooming", "top_keyword_volume": 70, "top_keyword_best_position": 2 },
+    { "url": "https://fairytailsdoggrooming.co.uk/services/full-groom-price-list/", "sum_traffic": 4, "top_keyword": "dog grooming price list", "top_keyword_volume": 40, "top_keyword_best_position": 5 },
+    { "url": "https://fairytailsdoggrooming.co.uk/who-we-are/", "sum_traffic": 0, "top_keyword": "the fairy tails k9 centre", "top_keyword_volume": 0, "top_keyword_best_position": 3 }
+  ],
+
+  "analysis": {
+    "cutover_risk": "LOW",
+    "why": "The entire organic footprint is 5 keywords / ~51 monthly organic visits, concentrated in exactly THREE urls: /, /services/full-groom-price-list/, and /who-we-are/. All three exist on the new site at byte-identical trailing-slash paths, so there is very little that a URL-level mistake could cost.",
+    "single_most_valuable_ranking": "'dog groomers hastings' - position 2, volume 60, ~22 visits/mo. This is the only non-brand commercial term ranking. Watch it specifically after the flip.",
+    "backlink_profile_is_almost_entirely_spam": "Of 144 referring domains, the overwhelming majority are auto-generated SEO-spam domains - dozens of .shop domains first seen in July 2026 alone (domainrankprovider.shop, linkseoservice.shop, rankseocollective.shop, ...), plus rank-your.site, rankva.com, seoflox.io, backlinkshop.site etc. Nearly every one is nofollow (dofollow_links: 0). This looks like an automated backlink blast, not an earned profile.",
+    "only_genuine_dofollow_referrer": "design-matters.co.uk (DR 26, 2 dofollow links, first seen 2022-10-20) - almost certainly the original web designer's credit link. This is effectively the site's ONLY real backlink.",
+    "implication_for_the_flip": "There is essentially no link equity at risk. The domain stays the same, so even that is preserved. Do NOT let a low post-flip DR reading be mistaken for cutover damage - DR was already 1.3.",
+    "separate_followup_not_part_of_the_flip": "The spam backlink profile is worth a disavow review at some point. It is NOT a switchover task and must not delay the flip."
+  },
+
+  "referring_domains_top60_by_dr": [
+    { "domain": "pages.dev", "domain_rating": 93.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2024-10-02T08:51:41Z", "traffic_domain": 8468386 },
+    { "domain": "za.com", "domain_rating": 90.0, "links_to_target": 5, "dofollow_links": 0, "first_seen": "2024-07-05T12:03:34Z", "traffic_domain": 1274264 },
+    { "domain": "itxoft.com", "domain_rating": 80.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2024-08-07T12:58:24Z", "traffic_domain": 0 },
+    { "domain": "rank-your.site", "domain_rating": 72.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2025-04-19T20:39:11Z", "traffic_domain": 0 },
+    { "domain": "rankva.com", "domain_rating": 72.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2024-10-12T18:13:17Z", "traffic_domain": 0 },
+    { "domain": "itxoft-seo-for-higher-rankings.site", "domain_rating": 69.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-03-18T21:48:34Z", "traffic_domain": 0 },
+    { "domain": "fiverr-seo-for-small-businesses.site", "domain_rating": 68.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-03-23T06:32:36Z", "traffic_domain": 0 },
+    { "domain": "scam-detector.com", "domain_rating": 67.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2025-10-28T13:53:30Z", "traffic_domain": 36375 },
+    { "domain": "fiverr-affordable-seo-services.site", "domain_rating": 55.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-05-11T13:13:58Z", "traffic_domain": 0 },
+    { "domain": "sparltech.com", "domain_rating": 49.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2024-11-24T02:12:55Z", "traffic_domain": 0 },
+    { "domain": "seoflox.io", "domain_rating": 49.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2025-01-28T05:44:21Z", "traffic_domain": 0 },
+    { "domain": "backlinksplace.site", "domain_rating": 48.0, "links_to_target": 2, "dofollow_links": 0, "first_seen": "2026-07-31T05:16:38Z", "traffic_domain": 0 },
+    { "domain": "backlinkshop.site", "domain_rating": 48.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-30T11:17:42Z", "traffic_domain": 0 },
+    { "domain": "grow-fast.website", "domain_rating": 48.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-04-17T21:29:15Z", "traffic_domain": 0 },
+    { "domain": "bye.fyi", "domain_rating": 48.0, "links_to_target": 2, "dofollow_links": 0, "first_seen": "2025-12-05T09:51:01Z", "traffic_domain": 0 },
+    { "domain": "quero.party", "domain_rating": 47.0, "links_to_target": 2, "dofollow_links": 0, "first_seen": "2026-01-14T14:37:39Z", "traffic_domain": 0 },
+    { "domain": "anchorurl.cloud", "domain_rating": 45.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2025-01-03T10:51:20Z", "traffic_domain": 0 },
+    { "domain": "seokuni.com", "domain_rating": 44.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2025-05-28T23:20:52Z", "traffic_domain": 0 },
+    { "domain": "creativeposts.top", "domain_rating": 43.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-02-10T07:18:18Z", "traffic_domain": 0 },
+    { "domain": "linksjump.com", "domain_rating": 41.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2024-10-19T00:57:08Z", "traffic_domain": 0 },
+    { "domain": "byteshort.xyz", "domain_rating": 41.0, "links_to_target": 2, "dofollow_links": 0, "first_seen": "2026-01-07T05:01:26Z", "traffic_domain": 0 },
+    { "domain": "atomizelink.icu", "domain_rating": 41.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-01-09T02:15:37Z", "traffic_domain": 0 },
+    { "domain": "analyticshaven.top", "domain_rating": 40.0, "links_to_target": 2, "dofollow_links": 0, "first_seen": "2026-03-28T22:46:02Z", "traffic_domain": 0 },
+    { "domain": "metamagic.top", "domain_rating": 40.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-02-20T23:15:12Z", "traffic_domain": 0 },
+    { "domain": "crossover-p.com", "domain_rating": 38.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2024-10-14T14:06:30Z", "traffic_domain": 0 },
+    { "domain": "screenshots.wiki", "domain_rating": 38.0, "links_to_target": 2, "dofollow_links": 0, "first_seen": "2026-01-02T07:18:45Z", "traffic_domain": 0 },
+    { "domain": "optimizeflow.top", "domain_rating": 38.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-03-27T11:46:34Z", "traffic_domain": 0 },
+    { "domain": "dailymusings.top", "domain_rating": 37.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-02-16T08:56:27Z", "traffic_domain": 0 },
+    { "domain": "jake.eu", "domain_rating": 37.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-04-12T16:19:07Z", "traffic_domain": 0 },
+    { "domain": "prolinkbox.com", "domain_rating": 31.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2025-05-20T05:10:55Z", "traffic_domain": 0 },
+    { "domain": "rank-fast.agency", "domain_rating": 30.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2025-06-05T14:40:39Z", "traffic_domain": 0 },
+    { "domain": "linkbox.agency", "domain_rating": 28.0, "links_to_target": 4, "dofollow_links": 0, "first_seen": "2024-08-27T19:21:08Z", "traffic_domain": 0 },
+    { "domain": "seoprobox.click", "domain_rating": 27.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2024-12-07T04:47:21Z", "traffic_domain": 0 },
+    { "domain": "design-matters.co.uk", "domain_rating": 26.0, "links_to_target": 2, "dofollow_links": 2, "first_seen": "2022-10-20T22:32:53Z", "traffic_domain": 2, "_note": "THE ONLY GENUINE DOFOLLOW REFERRER - almost certainly the original web designer's credit link" },
+    { "domain": "domainrankprovider.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T05:50:49Z", "traffic_domain": 0 },
+    { "domain": "linkseoservice.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-23T17:25:20Z", "traffic_domain": 0 },
+    { "domain": "rankseocollective.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T21:44:06Z", "traffic_domain": 0 },
+    { "domain": "domainrankteam.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T01:06:32Z", "traffic_domain": 0 },
+    { "domain": "domainrankresults.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-23T20:57:59Z", "traffic_domain": 0 },
+    { "domain": "domainrankacademy.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-23T06:47:32Z", "traffic_domain": 0 },
+    { "domain": "pageseotoolkit.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-19T13:51:08Z", "traffic_domain": 0 },
+    { "domain": "linkseoalliance.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-19T16:35:52Z", "traffic_domain": 0 },
+    { "domain": "siterankbuilders.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-26T00:35:01Z", "traffic_domain": 0 },
+    { "domain": "webrankinsights.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-22T00:13:52Z", "traffic_domain": 0 },
+    { "domain": "toprankacademy.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-29T15:04:03Z", "traffic_domain": 0 },
+    { "domain": "rankseomasters.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-23T15:46:31Z", "traffic_domain": 0 },
+    { "domain": "pageseopartners.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T20:23:28Z", "traffic_domain": 0 },
+    { "domain": "backlinkinsights.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T05:49:51Z", "traffic_domain": 0 },
+    { "domain": "seolinkcentral.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T17:09:31Z", "traffic_domain": 0 },
+    { "domain": "backlinkbuilders.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-23T21:27:55Z", "traffic_domain": 0 },
+    { "domain": "seogrowthpipeline.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-19T19:59:34Z", "traffic_domain": 0 },
+    { "domain": "linkgrowthsource.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-25T09:29:31Z", "traffic_domain": 0 },
+    { "domain": "linkgrowthinsights.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-23T09:31:06Z", "traffic_domain": 0 },
+    { "domain": "organicrankdirect.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-22T05:13:31Z", "traffic_domain": 0 },
+    { "domain": "seolinktoolkit.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-19T13:10:15Z", "traffic_domain": 0 },
+    { "domain": "organicranksystems.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T11:45:11Z", "traffic_domain": 0 },
+    { "domain": "linkcollective.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-26T06:15:37Z", "traffic_domain": 0 },
+    { "domain": "rankgrowthgroup.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-23T14:01:23Z", "traffic_domain": 0 },
+    { "domain": "linkgrowthstudio.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-19T17:46:48Z", "traffic_domain": 0 },
+    { "domain": "siteranksolutions.shop", "domain_rating": 26.0, "links_to_target": 1, "dofollow_links": 0, "first_seen": "2026-07-24T13:28:10Z", "traffic_domain": 0 }
+  ]
+}
