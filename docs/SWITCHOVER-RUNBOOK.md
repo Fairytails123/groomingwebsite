@@ -79,13 +79,51 @@ monitor with support desks awake). Operator needs ~3 uninterrupted hours + brows
       autoconfig, preview CNAME, `_github-pages-challenge-fairytails123` TXT — ALL byte-identical.
       Only `@` (ALIAS gone, A×4 + AAAA×4 added) and `www` differ. **Count the record-sets: 13
       expected** (12 before, minus the ALIAS, plus A and AAAA).
-4. **Pages custom domain** → apex:
+4. **Pages custom domain** → apex. ⚠️ **AMENDED 2026-08-08 — DO THIS *BEFORE* STEP 3, NOT AFTER.**
+
    `gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=fairytailsdoggrooming.co.uk`
-   (www auto-301s to apex — same direction as the old WordPress). Cert: 5–30 min, allow 24 h.
-   Poll `gh api repos/Fairytails123/groomingwebsite/pages --jq '.https_enforced,.status'`;
-   when issued: `-X PUT -F https_enforced=true`.
-   ⚠️ Expect transient 404s ≤10 min (Pages edge cache `max-age=600`) — do NOT panic-rollback
-   on 404-only symptoms in the first 10 minutes.
+
+   > **Pushing `public/CNAME` does NOT move the custom domain.** This repo deploys via
+   > `actions/deploy-pages`; the CNAME file was pushed and the Pages domain stayed on the preview
+   > host. Only the API call above moves it. Verified 2026-08-08.
+   >
+   > **Do it before the DNS flip.** Until the domain is attached, Pages serves *"Site not found"*
+   > (404) for the apex — so if DNS is flipped first, real visitors hit that 404. Attaching it
+   > first costs nothing, because DNS still points at WordPress at that moment.
+   >
+   > **Free dress rehearsal — use it.** You can ask Pages what it will serve for the apex while
+   > DNS still points at WordPress, by bypassing DNS:
+   > `curl -sI --resolve fairytailsdoggrooming.co.uk:80:185.199.108.153 http://fairytailsdoggrooming.co.uk/`
+   > Confirm 200 + the right `<title>` + `robots.txt` before touching DNS.
+   > ⚠️ Pages edge-caches **per path for 600s and IGNORES query strings** — a `?cb=` buster does
+   > NOT bypass it. A probe made before the domain was attached caches a 404 for that exact path.
+   > Probe `/contact/` (harmless) rather than poisoning `/`, or wait the 600s out.
+
+   ### 🔴 THE CERTIFICATE WILL PROBABLY GET STUCK. THIS IS THE FIX.
+   After the DNS flip, GitHub must issue a Let's Encrypt cert for the apex. **On 2026-08-08 it
+   simply never started**: `https_certificate.state` stayed `null` for 14 minutes while the apex
+   served GitHub's `CN=*.github.io` wildcard — meaning every HTTPS visitor got a full-page red
+   **`ERR_CERT_COMMON_NAME_INVALID` / "Your connection is not private"** warning on a live
+   business site. DNS was correct the whole time.
+   - ❌ Waiting does not fix it. ❌ Re-PUTting the same cname is a no-op.
+   - ✅ **Remove the custom domain, then re-add it.** Approved in ~20s:
+     ```
+     gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=
+     gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=fairytailsdoggrooming.co.uk
+     ```
+   - Then poll until approved, and only then enforce HTTPS:
+     ```
+     gh api repos/Fairytails123/groomingwebsite/pages --jq '.https_certificate.state,.https_enforced'
+     gh api repos/Fairytails123/groomingwebsite/pages -X PUT -F https_enforced=true
+     ```
+   - Confirm the real cert is served (not the wildcard):
+     `echo | openssl s_client -connect fairytailsdoggrooming.co.uk:443 -servername fairytailsdoggrooming.co.uk 2>/dev/null | openssl x509 -noout -subject`
+     → must read `CN=fairytailsdoggrooming.co.uk`, and `.https_certificate.domains` must list
+     **both** the apex and `www`.
+   **Rule of thumb: `cert_state: null` for >10 minutes is STUCK, not slow.**
+   *(Mitigating factor worth knowing: the old site sends no HSTS, so `http://` keeps working
+   during a cert gap — the damage is limited to visitors arriving on https, which includes
+   everyone clicking a Google result.)*
 5. **Verify** (PowerShell):
    ```powershell
    Resolve-DnsName fairytailsdoggrooming.co.uk -Type A    -Server aster.dns-parking.com

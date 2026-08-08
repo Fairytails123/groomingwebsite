@@ -2,6 +2,64 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## 🎉 2026-08-08 — **THE SWITCHOVER IS DONE. fairytailsdoggrooming.co.uk NOW SERVES THE NEW SITE.**
+
+**Flipped 19:02 UTC, fully secure and verified by 19:17 UTC.** The old WordPress site is no longer
+the live site (it is still up and untouched on Hostinger = instant rollback).
+
+**Final live state:** `https://fairytailsdoggrooming.co.uk/` → 200 from `Server: GitHub.com` ·
+cert `CN=fairytailsdoggrooming.co.uk`, state **approved**, covering **apex AND www** ·
+`https_enforced: true` · http → 301 → https · www → 301 → apex ·
+`protected_domain_state: verified` · **`npm run verify-urls --live`: 18 URLs, 0 failures** ·
+robots.txt allows + names the sitemap · 0 noindex on all 8 spot-checked pages · canonicals→apex ·
+all 3 legacy stubs 200 · 0 occurrences of the retired mobile.
+
+**Zone after the flip = 13 record-sets, exactly as predicted** (12 − ALIAS + A + AAAA):
+`@` A×4 185.199.108–111.153 (TTL 300) · `@` AAAA×4 2606:50c0:8000–8003::153 (TTL 300) ·
+`www` CNAME → fairytails123.github.io. **Every mail record survived, verified from PUBLIC DNS,
+not just the panel:** MX×2, SPF, DKIM×3, DMARC, autodiscover, autoconfig — plus the preview CNAME
+and the GitHub challenge TXT. `thefairytails.co.uk` (where the real mailboxes are) untouched.
+
+**ROLLBACK if ever needed:** surgical values in `docs/seo-baseline/dns-pre-flip-2026-08-08.json`.
+Blunt fallback snapshot = **`170615272`** (2026-08-08T19:02:06Z, the pre-delete state).
+
+### ⚠️ THE ONE THING THAT WENT WRONG — and the fix, because it will recur
+
+**GitHub Pages would not provision the TLS certificate.** For ~14 minutes after the DNS flip,
+`https_certificate.state` stayed `null` while the apex served GitHub's **`CN=*.github.io`**
+wildcard — so every visitor on HTTPS got a full-page red
+**`ERR_CERT_COMMON_NAME_INVALID` / "Your connection is not private"** interstitial. DNS was
+provably correct throughout (all four A records at Google's resolver), so this was purely GitHub
+failing to start provisioning.
+
+- ❌ Waiting did not help (20 polls over 10 minutes, state never left `null`).
+- ❌ Re-PUTting the SAME cname was a no-op — it does **not** re-trigger provisioning.
+- ✅ **REMOVE the custom domain, then RE-ADD it.** `cert_state` went to `approved` within 20s and
+  the correct cert was served ~40s later:
+  ```
+  gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=          # remove
+  gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=fairytailsdoggrooming.co.uk
+  gh api repos/Fairytails123/groomingwebsite/pages -X PUT -F https_enforced=true   # after approved
+  ```
+**Lesson: `cert_state: null` for more than ~10 minutes is STUCK, not slow. Don't wait it out —
+remove and re-add.** Cost here: ~14 min of scary browser warnings on a live business site.
+
+### Two other things worth knowing next time
+
+1. **Pushing `public/CNAME` does NOT move the Pages custom domain** (this deploy uses
+   `actions/deploy-pages`). The domain only moved when set via the API. **Set the Pages custom
+   domain BEFORE flipping DNS, not after as the runbook said** — otherwise the apex serves
+   GitHub's "Site not found" 404 to real visitors during the gap. Verified by probing Pages with
+   `curl --resolve fairytailsdoggrooming.co.uk:80:185.199.108.153` while DNS still pointed at
+   WordPress — a free dress rehearsal that cost nothing and caught this.
+2. **Pages edge-caches per path for 600s and ignores query strings.** Those pre-flight probes
+   cached a 404 for `/` and `/robots.txt`; a `?cb=` cache-buster did **not** bypass it. Both
+   cleared exactly on schedule. Probe a path you don't mind poisoning, or probe and then wait.
+3. **Hostinger REFUSES to let `ALIAS` and `A` coexist** — the API returns
+   `[DNS:4005] ... IN ALIAS must not be used with A on the same name`. So the "half-flipped site"
+   split-brain the readiness sweep feared is impossible at this provider; the delete genuinely
+   must precede the add, and the provider enforces it.
+
 ## 🚀 2026-08-08 — SWITCHOVER SESSION: owner sign-off given, pre-flip items being cleared
 
 **✅ OWNER SIGN-OFF (Kam, 2026-08-08): "Yes — signed off, ship it."** The owner confirmed he has
