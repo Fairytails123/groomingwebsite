@@ -1,27 +1,31 @@
 {
-  "_comment": "Fresh 5-star Google review excerpts shown on the homepage. OVERWRITTEN WEEKLY by the n8n 'Grooming Reviews Rotator' workflow (see HANDOVER) — do not hand-edit except to fix an emergency. Excerpts are verbatim contiguous fragments of real reviews (ellipsis = truncated), author-attributed, from the salon's own Google Business Profile. Seeded from the 2026-07-12 harvest of the old site's live reviews widget.",
-  "capturedAt": "2026-07-16",
+  "_comment": "Five-star Google reviews for the homepage carousel. ACCUMULATED and OVERWRITTEN by the n8n 'Grooming Reviews Rotator' (sXavTjxM4hzZ8bTo, Mon 06:30) — NEVER hand-edit; your change is lost on the next rotation. Each run merges the newest five-star reviews from the Google Places API into this list (deduped, newest first, capped at 12). Places returns at most 5 per request, so the wall grows over weeks rather than in one go. `text` is the FULL review — the page clamps it to 4 lines and expands on click, so do not truncate here. `firstSeen` is the date we first saw the review. Known trade-off accepted by the owner 2026-08-09: a review later deleted on Google will linger here, because the API only ever shows us the newest five.",
+  "capturedAt": "2026-08-09",
   "placeId": "ChIJV3P8-VAb30cRHoBgRmxCYIM",
   "reviews": [
     {
       "author": "Sarah Griffiths",
       "rating": 5,
-      "text": "I used Fairy Tails for the first time this week. I couldn't be happier with the results. My dogs were brought back looking beautiful and smelling wonderful. I'll definitely be using this service again!"
+      "text": "I used Fairy Tails for the first time this week. I couldn't be happier with the results. My dogs were brought back looking beautiful and smelling wonderful. I'll definitely be using this service again!",
+      "firstSeen": "2026-07-16"
     },
     {
       "author": "Sharon Terrell",
       "rating": 5,
-      "text": "I booked my two little dogs in for a groom and arranged for them to be collected and returned to me...... Well, from start to finish a very professional service. Great care was taken and they were groomed exactly as I had requested, both…"
+      "text": "I booked my two little dogs in for a groom and arranged for them to be collected and returned to me...... Well, from start to finish a very professional service. Great care was taken and they were groomed exactly as I had requested, both my dogs were happy when they came home and slept peacefully all afternoon. I will definitely be returning when they need their next groom and the icing on the cake..... They are cheaper than most other places!! What more can you want!! Thank you to all at The Fairy Tails.",
+      "firstSeen": "2026-07-16"
     },
     {
       "author": "Mollie Taylor",
       "rating": 5,
-      "text": "The lovely people at the fairy tails grooming are so amazing and caring towards all the animals. My crazy caramel has been going there for her groom around 2 years now and she loves them all. My dog is such a people pleaser and loves…"
+      "text": "The lovely people at the fairy tails grooming are so amazing and caring towards all the animals. My crazy caramel has been going there for her groom around 2 years now and she loves them all. My dog is such a people pleaser and loves everyone around her. Always sends updates and pictures and videos of my puppy. Such a lovely experience, really appreciate everyone who looks after all the dogs",
+      "firstSeen": "2026-07-16"
     },
     {
       "author": "stella dunn",
       "rating": 5,
-      "text": "Darcy had her summer groom yesterday and what a difference it makes to her.. she looks younger and so cute. As always, the team did a fab job on her and looked after her well at a very reasonable price. I still wouldn't take her anywhere…"
+      "text": "Darcy had her summer groom yesterday and what a difference it makes to her.. she looks younger and so cute. As always, the team did a fab job on her and looked after her well at a very reasonable price. I still wouldn't take her anywhere else to be groomed, she is so relaxed and happy with the fairy tails team. thank you from Darcy and myself. X",
+      "firstSeen": "2026-07-16"
     }
   ]
 }
