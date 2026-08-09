@@ -378,10 +378,23 @@ below the fold, or an image cropped to nonsense. Take the screenshot AND look at
   email, and has no `errorWorkflow` — an SMTP failure shows the customer "thanks" and loses the
   enquiry. Hardening it is the top candidate for the next pass.
 - **Reviews rotation** → n8n "Grooming Reviews Rotator" `sXavTjxM4hzZ8bTo` (VPS, Mon 06:30
-  London): Google Place Details (newest) → 4 five-star excerpts → commits
-  `src/data/reviews-snapshot.json` via the GitHub contents API only when changed → Pages
-  deploys. Fail-closed (error ⇒ no commit). Live-verified end-to-end 2026-07-16. ⚠️ Since go-live
-  that weekly commit publishes **straight to the live site**, with no human in the loop.
+  London): Google Place Details (newest) → five-star reviews **MERGED into** the existing list
+  (deduped, newest first, capped at 12) → commits `src/data/reviews-snapshot.json` via the
+  GitHub contents API only when changed → Pages deploys. Fail-closed (error ⇒ no commit).
+  Live-verified end-to-end 2026-07-16, and again 2026-08-09 after the accumulate rewrite
+  (execution 407366 → commit `df5b48d`). ⚠️ Since go-live that weekly commit publishes
+  **straight to the live site**, with no human in the loop.
+  ⚠️ **It ACCUMULATES and stores FULL review text** (owner ruling 2026-08-09). Google Places
+  returns at most FIVE reviews per request, so a one-shot fetch can never fill the carousel —
+  the wall grows week by week instead. Three things a future change must not undo:
+  **(1)** never reintroduce a server-side excerpt — truncating before commit is what made the
+  page's "More" expand a fragment into a slightly longer fragment; the page CSS-clamps and
+  expands, so the data must carry the whole review. **(2)** the dedup key is a 60-char text
+  PREFIX, not the whole text, so a truncated old copy and its full replacement match as one
+  review. **(3)** it DROPS any carried-over review still ending in an ellipsis, because Places
+  may never show us that review again and the fragment could otherwise live forever.
+  ⚠️ Accepted trade-off: an older review deleted on Google will linger, since the API only ever
+  shows us the newest five.
 - **GTM** `GTM-W93L9XK5` (shared container), Consent Mode v2 defaulted denied before load;
   self-hosted ConsentBanner writes `localStorage.ft-consent`.
 - Public repo: no client data, no secrets, no harvest archive in git.

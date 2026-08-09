@@ -253,8 +253,11 @@ The runbook's remaining live sections are **post-flip monitoring** and **WordPre
       ever marked up, the rating MUST become visible on the page again (nothing in the repo emits
       it today — which is why removing the block was safe). The footer `ReviewsBadge` still shows
       "4.9 out of 5" / "From 63+ Google reviews" on every page — deliberately left alone; ask
-      before widening. ⚠️ NOT changed: the rotator still caps at 4 and truncates to 240 chars, so
-      "More" expands a fragment. Deliberately deferred — that workflow commits straight to `main`.
+      before widening. ✅ **The rotator was fixed later the same day** (owner approved
+      accumulation): it now stores the FULL review text and MERGES the newest five-star reviews
+      into the existing list, deduped, newest first, capped at 12 — so "More" reveals the whole
+      review and the wall grows weekly. Verified live: execution 407366 → commit `df5b48d`;
+      Sharon Terrell 238 → 510 chars, Mollie Taylor 234 → 394, stella dunn 238 → 347.
 - [ ] **HERO ANIMATION JUDGEMENT CALLS NEED THE OWNER'S EYE** (on the preview homepage from
       2026-07-17 and on the LIVE homepage `https://fairytailsdoggrooming.co.uk/` since
       2026-08-08 — phone AND desktop). **Feedback round 1 applied 2026-07-17 (`efb9122`):
@@ -413,10 +416,12 @@ The runbook's remaining live sections are **post-flip monitoring** and **WordPre
 3. **/who-we-are/: "training, day school and daycare"** (owner ruling: both are real, different
    things). Matches the K9 Centre site's own service naming.
 4. **Homepage gains a "Fresh from Google" block** (owner ruling: excerpts back, rotated weekly).
-   4 five-star excerpts render from `src/data/reviews-snapshot.json` (seeded from the 2026-07-12
-   harvest of the old live widget — verbatim contiguous fragments, ellipses mark truncation).
-   Weekly rotation via n8n is designed but blocked on two owner-created credentials (see the 🔑
-   open item).
+   Five-star reviews render from `src/data/reviews-snapshot.json` (originally seeded from the
+   2026-07-12 harvest of the old live widget as verbatim contiguous fragments with ellipses
+   marking truncation). ⚠️ **Superseded twice:** the n8n rotator went LIVE 2026-07-16 (the 🔑 item
+   above), and on 2026-08-09 it was rewritten to store **FULL review text** and to **accumulate**
+   week by week (deduped, newest first, capped at 12) — so "ellipses mark truncation" no longer
+   describes the contract. The block is headed **"Reviews from Google"** and is a carousel.
 
 ### 2026-07-16 (evening) — Stage 5: / (homepage), shipped last per the inside-out order
 

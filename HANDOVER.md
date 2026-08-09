@@ -44,21 +44,17 @@ bandana, matching dogs 3 and 4) to replace it.
 
 ### Owner-visible caveats carried out of this session
 
-- ⚠️ **The reviews carousel is built but the DATA cannot fill it yet.** The n8n "Grooming Reviews
-  Rotator" (`sXavTjxM4hzZ8bTo`) does two things that block the owner's asks, and BOTH are in its
-  `Build Snapshot` node, not on the page: `.slice(0, 4)` caps the wall at four cards, and an
-  `excerpt()` helper **truncates every review to 240 chars before committing it**. So "More"
-  currently expands a fragment into a slightly longer fragment — a data bug, not a UI bug.
-  **The fix was NOT applied this session** (deliberately: the workflow commits straight to `main`,
-  and a 12-card payload rendered by the pre-carousel grid would have looked wrong on the live site
-  in the interim). Now that the page is live, the workflow can be changed: stop truncating (let
-  the CSS clamp do it) and MERGE each week's newest five-star reviews into the existing list
-  instead of replacing, deduped, newest first, capped ~12.
-- ⚠️ **Google's Places API returns at most FIVE reviews per request.** A one-shot fetch can never
-  fill a scrolling wall like the owner's reference image; accumulation over weeks is the only
-  route with the API we own. Trade-off he should confirm: once we accumulate, we can no longer
-  re-verify that an older review still exists on Google (the API only ever shows the newest five),
-  so a deleted review would linger in our copy.
+- ✅ **RESOLVED later the same day — see §0.** This caveat originally read "the reviews carousel is
+  built but the DATA cannot fill it yet": the rotator's `Build Snapshot` node capped the wall at
+  four (`.slice(0, 4)`) and truncated every review to 240 chars before committing, so "More"
+  expanded a fragment into a slightly longer fragment — a data bug, not a UI bug. It was
+  deliberately deferred until the carousel shipped (that workflow commits straight to `main`).
+  The owner approved accumulation the same day and the rewrite is live and verified.
+- ⚠️ **Google's Places API returns at most FIVE reviews per request** — still true, and now the
+  governing constraint on the wall. A one-shot fetch can never fill a scrolling wall like the
+  owner's reference image; accumulation over weeks is the only route with the API we own.
+  **The owner CONFIRMED the trade-off on 2026-08-09:** once accumulating, we can no longer
+  re-verify that an older review still exists on Google, so one he later deletes will linger.
 - The footer `ReviewsBadge` still shows "4.9 out of 5" and "From 63+ Google reviews" on EVERY page
   including the homepage. The owner asked only about the homepage review *section*, so the footer
   was deliberately left alone — ask before widening.
