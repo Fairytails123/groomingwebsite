@@ -21,6 +21,27 @@ Branch `hero-v2-pack-animation` → `main`. All gates green before the push (see
    (`4.9 ★★★★★ · 63 reviews`) removed; the "Verbatim excerpts… refreshed weekly" caption
    removed; the card grid replaced with a **swipe/arrow carousel**.
 
+### Follow-up the same session: dog 1 replaced (owner)
+
+The handoff's leftmost dog — a wire terrier — read as **cut off**, and measurement confirmed it:
+its feet stopped at row 440 while dogs 3 and 4 reach 489/490, i.e. its lower body was cropped in
+the original composite. The owner supplied a photo of his beagle (in a Fairy Tails K9 Centre
+bandana, matching dogs 3 and 4) to replace it.
+
+- Background removed with **`rembg`** (`isnet-general-use` + alpha matting), trimmed to its alpha
+  bbox → `beagle-cut.png`, which lives in the **gitignored handoff assets folder** with the other
+  sources. ⚠️ `scripts/hero-assets.mjs` now **throws a hard error if that file is missing** — a
+  regeneration without it would silently emit the pack with the old cropped terrier back in, and
+  no gate would catch it.
+- Sized to the staffie (a beagle is that build) and stood on the back row's ground line, so the
+  pack keeps its small→large left-to-right reading. Composited in the SCRIPT, not by hand-editing
+  an asset, so it is reproducible.
+- ⚠️ **The swap moved the pack's top outline, so `CONTOUR`, `GLINTS` and `ART_L` were re-measured**
+  — the old `[127,373]` ended up **47px inside the beagle's head** and `[186,391]`/`[64,379]` landed
+  on empty stage, which would have rained stars into thin air and buried others in fur. New set
+  verified at a mean 3.6px clearance above the fur. **Any future artwork change means re-measuring
+  these three again — they are not portable constants.**
+
 ### Owner-visible caveats carried out of this session
 
 - ⚠️ **The reviews carousel is built but the DATA cannot fill it yet.** The n8n "Grooming Reviews

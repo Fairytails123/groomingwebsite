@@ -159,6 +159,14 @@ copy's type scales with `--ft-stage-h`, not the page: a fixed-size copy block la
   shadow as an alpha-only stencil that CSS paints darker than the band. All constants in
   `scripts/hero-assets.mjs` are MEASURED; its header shows the workings and the rejected
   alternatives. **Always judge this artwork composited on #2c3823, never on white.**
+- ⚠️ **Dog 1 is NOT from the handoff.** The handoff's leftmost dog was a wire terrier whose lower
+  body was cropped (feet at row 440 vs 489/490 for dogs 3–4), so it read as cut off. It was
+  replaced 2026-08-09 by the owner's beagle, cut out with `rembg` and composited **in
+  `hero-assets.mjs`** from `beagle-cut.png` in the gitignored handoff assets folder. That script
+  **throws if the file is missing** — otherwise a regeneration would silently restore the terrier.
+  ⚠️ That swap moved the pack's top outline, so `CONTOUR`, `GLINTS` and `ART_L` in HeroStage were
+  re-measured against it. **Change the artwork and you MUST re-measure all three** — the old
+  values put stars 47px inside the new dog's head and two anchors on empty stage.
 - ⚠️ **The handoff's own numbers are not trustworthy — verify against the artwork.** Measured in
   v2: its emission origin (606,138) and its visible wand star both land on **fully transparent
   pixels**, 25px and 21px from anything opaque (the real wand tip is stage 590,99); its reveal

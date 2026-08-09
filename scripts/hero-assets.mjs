@@ -309,9 +309,84 @@ const SHADOW_CAP = 0.72; // no contact patch becomes a hole in the band
 // 1280 viewport and 4.1× on a 390px phone at 2 DPR, and neither is distinguishable from the
 // full-size stencil on the band — which is why this is /6 and not /2 (3.8KB vs 61.9KB).
 const SHADOW_DIV = 6;
+// ── Dog 1 is REPLACED (owner, 2026-08-09) ────────────────────────────────────────────────
+// The handoff's leftmost dog is a wire terrier whose lower body was cropped in the original
+// composite: measured against the other three, its feet stop at row 440 while dogs 3 and 4 reach
+// 489/490 — so it reads as cut off rather than standing. The owner supplied a beagle photo to
+// replace it (his own dog, in a Fairy Tails K9 Centre bandana, matching dogs 3 and 4).
+//
+// `beagle-cut.png` is that photo with its background removed by `rembg` (isnet-general-use +
+// alpha matting) and trimmed to its alpha bbox — 844×1610. It lives in the gitignored handoff
+// folder with the other SOURCES; only the derived hero-dogs.webp is committed.
+// ⚠️ Which means a regeneration on a machine without that file would silently emit the pack with
+// the OLD terrier back in it, and nothing downstream would notice. Hence the hard failure below.
+//
+// Geometry, all measured off the cleaned pack (see the table in HANDOVER 2026-08-09):
+//   terrier slot   cols 46..238 (centre 142), rows 176..440
+//   ground line    dogs 1/2 land at 440/442; dogs 3/4 at 489/490 (the front row)
+// The beagle is sized to the staffie (a beagle is that build, not a terrier's) and stood on the
+// BACK row's ground line so the pack keeps its small→large left-to-right reading.
+const BEAGLE_H = 345; // px tall in the 963×497 source space (staffie is 356, terrier was 265)
+const BEAGLE_FEET = 446; // its ground line, just under dogs 1/2 at 440/442
+const BEAGLE_CX = 142; // the terrier slot's horizontal centre
+const TERRIER_COLS = [46, 238];
+// Erase the terrier down to alpha 160 rather than to zero: above that it is the dog, below it is
+// the studio floor — and that floor patch is what the shadow pass re-renders into a contact
+// shadow under the beagle. Wiping the whole box would leave the new dog hovering.
+const TERRIER_ERASE_A = 160;
 {
   const { data, info } = await raw('dogs-group.png');
   const { width: W, height: H } = info;
+
+  // ── Swap dog 1 ─────────────────────────────────────────────────────────────────────────
+  let beagle;
+  try {
+    beagle = await sharp(resolve(IN, 'beagle-cut.png'))
+      .resize({ height: BEAGLE_H })
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+  } catch {
+    throw new Error(
+      'beagle-cut.png is missing from the handoff assets folder. It is the replacement for the ' +
+        "handoff's cropped terrier (owner, 2026-08-09). Without it this script would silently " +
+        'regenerate hero-dogs.webp with the OLD terrier and no gate would catch it. Restore the ' +
+        'file (or re-cut it from the owner photo with rembg) before re-running.',
+    );
+  }
+  {
+    const bw = beagle.info.width;
+    const bh = beagle.info.height;
+    const bx = Math.round(BEAGLE_CX - bw / 2);
+    const by = BEAGLE_FEET - bh;
+    // 1. erase the terrier, keeping the floor under it
+    for (let y = 0; y < H; y++) {
+      for (let x = TERRIER_COLS[0]; x <= TERRIER_COLS[1]; x++) {
+        const i = (y * W + x) * 4;
+        if (data[i + 3] >= TERRIER_ERASE_A) data[i + 3] = 0;
+      }
+    }
+    // 2. composite the beagle over it, source-over in straight (un-premultiplied) alpha
+    for (let y = 0; y < bh; y++) {
+      const ty = by + y;
+      if (ty < 0 || ty >= H) continue;
+      for (let x = 0; x < bw; x++) {
+        const tx = bx + x;
+        if (tx < 0 || tx >= W) continue;
+        const s = (y * bw + x) * beagle.info.channels;
+        const sa = beagle.data[s + 3] / 255;
+        if (sa === 0) continue;
+        const d = (ty * W + tx) * 4;
+        const da = data[d + 3] / 255;
+        const oa = sa + da * (1 - sa);
+        for (let k = 0; k < 3; k++) {
+          data[d + k] = clamp255((beagle.data[s + k] * sa + data[d + k] * da * (1 - sa)) / oa);
+        }
+        data[d + 3] = clamp255(oa * 255);
+      }
+    }
+    console.log(`dogs:  swapped the cropped terrier for the beagle (${bw}×${bh} at ${bx},${by})`);
+  }
 
   // Subjectness = a blurred copy of the hard silhouette.
   // ⚠️ sharp PROMOTES a 1-channel raw input to 3 channels on OUTPUT. Take the object and stride
