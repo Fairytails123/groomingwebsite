@@ -105,22 +105,36 @@ was then swapped again for the owner's beagle, and the homepage Google-reviews b
 aggregate score and caption and became a carousel. All deployed and live-verified, at the owner's
 explicit instruction, **so that he can bug-test it live**. Expect feedback on it next session.
 
-### 0. ⚠️ IN FLIGHT — the one thing that is genuinely half-done
+### 0. ⚠️ AWAITING ITS FIRST RUN — the rotator fix is DEPLOYED but has not executed yet
 
-**The reviews carousel is built and live, but its DATA cannot fill it yet.** The n8n "Grooming
-Reviews Rotator" (`sXavTjxM4hzZ8bTo`) still caps at four reviews (`.slice(0, 4)`) and **truncates
-every review to 240 chars before committing it**, so the owner's "clicking More should show the
-whole review" is still unfulfilled — it expands a fragment. This was left deliberately: that
-workflow commits **straight to `main`**, so changing it before the carousel shipped would have put
-a 12-card payload into the old 4-column grid on the live site. **That reason has now expired — the
-fix can be done.** Two parts, both in its `Build Snapshot` node:
-  1. stop truncating (store the full text; the page already CSS-clamps to 4 lines and expands);
-  2. MERGE each week's newest five-star reviews into the existing list instead of replacing —
-     deduped, newest first, capped ~12 — because **Google's Places API returns at most FIVE reviews
-     per request**, so a scrolling wall can only be built by accumulating over weeks.
-  ⚠️ **Owner ruling still needed before part 2:** once we accumulate we can no longer re-verify
-  that an older review still exists on Google (the API only ever shows the newest five), so a
-  review the customer later deletes would linger on the site. Ask before shipping it.
+**The owner approved accumulation on 2026-08-09 and the fix is live in the n8n workflow
+`sXavTjxM4hzZ8bTo` (`Build Snapshot` node) — but it has NOT run yet**, so the site still shows the
+four old truncated cards until it fires. **It runs itself Monday 06:30 London.** To see it sooner,
+open the workflow in n8n and press **Execute workflow** — that is all that is outstanding.
+(It could not be driven from here: the trigger is a Schedule node, which `n8n_test_workflow`
+cannot fire, and retiming a live production schedule was correctly refused.)
+
+What the new `Build Snapshot` does:
+  1. **Stores the FULL review text** — the old code truncated to 240 chars BEFORE committing, which
+     is why "More" expanded a fragment into a slightly longer fragment. The page CSS-clamps to 4
+     lines and expands on click, so the data must carry the whole review. **Never reintroduce a
+     server-side excerpt.**
+  2. **MERGES** each week's newest five-star reviews into the existing list — deduped, newest
+     first, capped at 12 — because **Google Places returns at most FIVE reviews per request**, so a
+     scrolling wall can only be built by accumulating over weeks. Entries gain `firstSeen`.
+  3. **Drops any carried-over review still ending in an ellipsis.** Those are the old truncated
+     copies and they can never be repaired (Places only ever shows the newest five, so we may never
+     see their full text again). Keeping them would leave the original bug alive forever on those
+     cards. ⚠️ **Expect the wall to DIP to roughly 2–4 cards on the first run and then grow.**
+
+⚠️ **Owner accepted the trade-off:** once accumulating, we can no longer re-verify that an older
+review still exists on Google, so one the customer later deletes will linger on the site.
+
+**Still owed: read the first execution** (`n8n_executions`, workflow `sXavTjxM4hzZ8bTo`) and check
+the resulting commit on `main` — a green validator proves nothing for n8n Code nodes. The logic was
+proven against fixtures first (5 cases: migration de-duplication across the truncation boundary,
+idempotency, degraded-API fail-closed, API-error throw, the 12 cap) but has not touched the real
+Places response yet.
 
 ### 1. The deferred checks — do these FIRST (owner deferred them from flip night)
 

@@ -109,10 +109,14 @@ step left between you and them.
 - `src/data/reviews-snapshot.json` — the homepage Google-reviews band (white widget-style
   cards with More/Less expanders since 2026-07-17; a **scroll-snap carousel with prev/next
   arrows** since 2026-08-09, when the aggregate score block and the "refreshed weekly" caption
-  were removed by owner ruling — **do not reinstate either without asking**). ⚠️ The rotator
-  currently `.slice(0,4)`s the list AND truncates every review to 240 chars in its
-  `Build Snapshot` node, so "More" expands a fragment into a slightly longer fragment. That is a
-  DATA bug, not a UI bug — fix it in the workflow, never on the page. **OWNED BY THE
+  were removed by owner ruling — **do not reinstate either without asking**). ⚠️ **The rotator ACCUMULATES**
+  (owner ruling 2026-08-09): each Monday it MERGES the newest five-star reviews into the list
+  already on the site — deduped, newest first, capped at 12 — because Google Places returns at
+  most FIVE reviews per request, so a one-shot fetch can never fill the carousel. It stores the
+  FULL review text; the page clamps to 4 lines and expands on click, so **never reintroduce a
+  server-side excerpt** (that was the old bug: "More" expanded a fragment into a slightly longer
+  fragment). Entries carry `firstSeen`. ⚠️ Accepted trade-off: we can no longer re-verify that an
+  older review still exists on Google, so one the customer later deletes will linger. **OWNED BY THE
   n8n "Grooming Reviews Rotator"** (`sXavTjxM4hzZ8bTo`, VPS, Mon 06:30): it commits a fresh
   version weekly when the newest 5★ reviews change, which triggers the Pages deploy. NEVER
   hand-edit (your edit is overwritten on the next rotation); to change the block's behaviour,
