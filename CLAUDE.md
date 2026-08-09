@@ -107,7 +107,12 @@ step left between you and them.
   twice on 2026-07-16 alone) — five pages render it; `stage3-checks` positively asserts it on
   all of them. Never retype that list as prose.
 - `src/data/reviews-snapshot.json` — the homepage Google-reviews band (white widget-style
-  cards with More/Less expanders since 2026-07-17). **OWNED BY THE
+  cards with More/Less expanders since 2026-07-17; a **scroll-snap carousel with prev/next
+  arrows** since 2026-08-09, when the aggregate score block and the "refreshed weekly" caption
+  were removed by owner ruling — **do not reinstate either without asking**). ⚠️ The rotator
+  currently `.slice(0,4)`s the list AND truncates every review to 240 chars in its
+  `Build Snapshot` node, so "More" expands a fragment into a slightly longer fragment. That is a
+  DATA bug, not a UI bug — fix it in the workflow, never on the page. **OWNED BY THE
   n8n "Grooming Reviews Rotator"** (`sXavTjxM4hzZ8bTo`, VPS, Mon 06:30): it commits a fresh
   version weekly when the newest 5★ reviews change, which triggers the Pages deploy. NEVER
   hand-edit (your edit is overwritten on the next rotation); to change the block's behaviour,
@@ -128,7 +133,11 @@ step left between you and them.
 go from desaturated to full colour behind a soft right-to-left reveal front, while the Fairy Tails
 fairy showers them with stars from her wand. Ported from handoff **v2** in
 `Luxury dog grooming animation/` (gitignored, like the harvest: bulky SOURCE out, derived assets +
-generator script in). **Read HeroStage.astro's frontmatter before touching it** — it documents all
+generator script in). ⚠️ **That folder is now LOAD-BEARING and UNBACKED.** Since 2026-08-09 it
+holds `beagle-cut.png` — dog 1 of the live pack — and `hero-assets.mjs` THROWS without it. It
+also supplies `dogs-group.png`, `fairy-color.png` and `dog-hero.png` (that last one is still
+read, despite the handoff README calling it unused). Gitignored means git cannot restore any of
+it: never prune it as "design leftovers", and copy it to the other machine before relying on it. **Read HeroStage.astro's frontmatter before touching it** — it documents all
 five deliberate divergences from the handoff. The load-bearing ones:
 
 ⚠️ **v1 was a single scruffy puppy with a bow-pop payoff. The bow, the 6-star burst and the
@@ -202,6 +211,11 @@ copy's type scales with `--ft-stage-h`, not the page: a fixed-size copy block la
   index.astro — an ASSET ceiling, not a design choice: uncapped, a 2560×1440 monitor upscales the
   photograph 47% and it reads soft. Raise it only if a higher-resolution original arrives, and
   move both numbers together.
+- ⚠️ **`contain: paint` on `.ft-rev-scroll` (index.astro) is LOAD-BEARING.** Without it the
+  reviews carousel's off-screen cards inflate `documentElement.scrollWidth` to 1124px at a
+  390px viewport and fail `mobile-check.mjs:93` — even though `overflow-x` clips them and the
+  page provably cannot scroll sideways (window.scrollX stays 0). The fix belongs on the DOM
+  (make the reported width honest), never in the gate, which is right to be strict.
 - `npm run hero-resilience` now also asserts **the reveal actually reveals** (pack chroma at p=0
   vs p=1). That test exists because the p=0 mask rule can be lost — dropped, typo'd, or its
   selector renamed — and the pack then starts in full colour with the whole animation invisible,
@@ -212,7 +226,12 @@ copy's type scales with `--ft-stage-h`, not the page: a fixed-size copy block la
 `grooming-image-archive/` (gitignored) = verbatim harvest of the old WordPress site
 (2026-07-12, before anything could vanish — 70 images rescued from the temporary Bluehost
 origin). Per slug: `page.html`, `copy.md`, `meta.json` (Yoast title/description/canonical/og),
-`links.json`, `images/<host>/<path>`. Regenerate/extend with `npm run harvest` (idempotent).
+`links.json`, `images/<host>/<path>`. 🔴 **NEVER run `npm run harvest`.** DISARMED 2026-08-08:
+its `SITE` points at fairytailsdoggrooming.co.uk, which now serves THIS site, and it always
+rewrites page.html / copy.md / meta.json / links.json — so a run overwrites the verbatim record
+of the OLD site with a copy of the new one, silently, reporting success. The archive is
+gitignored, so git cannot restore it. A genuine re-harvest needs `HARVEST_SOURCE` pointed at a
+real old-site origin, plus a backup taken first.
 Every page build starts from its harvest folder; facts must match verbatim.
 
 ⚠️ **The harvest has had TWO holes, and both times it reported `failed: 0`.** It missed the 20 MB
@@ -238,7 +257,7 @@ single migration re-save on the harvest date — see WEBSITE-PLAN's copy log).
 | `verify-stage3` | Services-cluster facts: 105 rows render, 0 hidden at t=0, spot-check vs the rendered table, and no banned pick-up/policy wording anywhere. |
 | `price-list-e2e` | Drives the breed filter, then reloads with **JS off** and asserts all 105 rows are visible by computed style. |
 | `extract-prices` | Regenerates `pricing.json` from the harvest. Edit the SCRIPT, never the JSON. |
-| `harvest` | Re-harvests the old site (idempotent). |
+| `harvest` | 🔴 **DISARMED 2026-08-08 — DO NOT RUN.** The domain now serves the NEW site and this script always rewrites page.html/copy.md/meta.json/links.json, so a run destroys the irreplaceable old-site archive while reporting success. Read its header. |
 | `video-poster` | Poster frame for the Bruno video. No ffmpeg here — decodes in real Chrome. |
 | `gallery-crop` | Recovers the 10 gallery photos from the old before/after composites. Read its header before touching a crop. |
 | `hero-shots` | Hero-animation eyeball check: screenshots the scrub at **p = 0/.30/.42/.55/.73/1** plus the mobile play-through. That ladder is tuned to the v2 timeline — .42 is the reveal's midpoint and every glint pops between .30 and .52; the old .25/.72/.85 wasted frames (at .25 nothing is revealed yet, and .72/.85/1 are near-identical). **`shots` cannot do this** — it captures fullPage, which renders a sticky hero once at p=0 followed by ~1,300px of empty moss. ⚠️ It waits on `ART_SELECTOR` (`.ft-dogs-before`); rename a pack layer and it now fails immediately WITH the reason. |
@@ -256,7 +275,7 @@ or by a desktop Lighthouse run — it requires actually rendering the page at ph
 **looking at it**.
 
 **1. Responsiveness + visuals** — `npm run mobile-check` (needs `npx astro preview` running).
-It renders every page at 390×844 as a touch device and FAILS on:
+It renders every page at 390×844 — **and ONLY 390×844** — as a touch device and FAILS on:
 - **horizontal overflow** — the body must never scroll sideways at 390px (a wide table must
   scroll inside its own `overflow-x` container), plus any element extending past the viewport;
 - **content hidden by computed style at t=0** (a closed `<details>` is fine);
@@ -264,6 +283,13 @@ It renders every page at 390×844 as a touch device and FAILS on:
 - **tap targets under 44×44 CSS px** — links, buttons, `summary`, inputs. Inline links inside a
   paragraph are exempt (WCAG 2.5.8's sentence exception), and a checkbox is measured by its
   `<label>`, which is what you actually tap.
+⚠️ **The gate's blind spot is proven, not theoretical.** The homepage has an unfixed horizontal
+overflow at **1024–1300px** (`documentElement.scrollWidth` 1123 at a 1024px viewport, 1306 at
+1280px — found 2026-08-09, pre-existing). `mobile-check` renders one viewport and the quality
+gates' desktop check is 1440px, so the bug lives exactly in the gap between the two widths we
+look at. Until the gate grows a second viewport, check ~1024 and ~1280 by hand on any layout
+change.
+
 It only WARNS on low-resolution images, because the harvested sources are genuinely small (the
 clip photos are 580×580, the add-on thumbs 300×300, the gallery crops 242–309px) and a gate that
 demands an image we cannot create just teaches us to ignore it.
@@ -286,11 +312,18 @@ below the fold, or an image cropped to nonsense. Take the screenshot AND look at
 
 1. Copy fact-checked against `grooming-image-archive/<slug>/copy.md` (prices/phones/hours verbatim).
 2. **The mobile gate above** — `npm run mobile-check` green AND the 390px screenshot eyeballed.
-   Then check desktop ~1440px too (hard owner rule from the main site: BOTH viewports).
+   Then check desktop ~1440px too (hard owner rule from the main site: BOTH viewports). ⚠️ On any
+   LAYOUT change also check ~1024 and ~1280 by hand — no gate covers that band, and there is a
+   known unfixed overflow in it.
 3. Lighthouse ≥ 90 perf/SEO/a11y, measured on MOBILE (production-flagged local build, see above).
 4. `prefers-reduced-motion` pass.
 5. `npm run build && npm run verify-urls` green; manifest entry flipped `planned` → `built`.
    For the services cluster also: `npm run verify-stage3` + `npm run price-list-e2e`.
+5b. **If the change touches the HERO:** `npm run hero-resilience` (7 assertions),
+   `npm run hero-mask-support` (WebKit + Chromium), and `npm run hero-shots` — then **actually
+   open** the p = 0/.30/.42/.55/.73/1 frames. If the ARTWORK changed, re-measure `CONTOUR`,
+   `GLINTS` and `ART_L` FIRST, and judge the result composited on moss-900 (#2c3823), never on
+   white — that is precisely how both handoffs' artwork defects stayed invisible.
 6. HANDOVER.md updated; push. ⚠️ **A push to `main` IS the deploy, and the deploy is LIVE to
    customers** — there is no preview URL to hide behind any more (Pages no longer serves
    `preview.fairytailsdoggrooming.co.uk`), so anything risky gets the owner's sign-off BEFORE

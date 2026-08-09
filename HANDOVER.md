@@ -81,7 +81,7 @@ bandana, matching dogs 3 and 4) to replace it.
   green. `hero-resilience` now asserts pack chroma at p=0 vs p=1 — verified by injecting the real
   bug: healthy 1.85×, broken 1.01×.
 - **Pre-existing, NOT introduced here and NOT fixed**: the homepage reports horizontal overflow at
-  1024–1300px viewport widths (`document.scrollWidth` 1123 at 1024px, 1306 at 1280px). Identical
+  1024–1300px viewport widths (`documentElement.scrollWidth` 1123 at 1024px, 1306 at 1280px). Identical
   numbers with and without the new hero. It is the same *phantom* signature as the carousel hit —
   a clipped scroller inflating the root's reported width, with no element actually overflowing —
   and `mobile-check` only renders 390px so no gate sees that band. Worth its own ticket.
@@ -91,7 +91,8 @@ bandana, matching dogs 3 and 4) to replace it.
 `build` clean · `verify-urls` 18/18 · `mobile-check` all pages pass · `hero-resilience` 7/7
 (incl. the new reveal assertion) · `hero-mask-support` WebKit + Chromium · Lighthouse on a
 `PUBLIC_INDEXABLE=true` local build: **perf 98 / a11y 100 / best-practices 100 / SEO 100, CLS 0**.
-Hero weight 49.1KB → **56.3KB**. Both viewports eyeballed at 1440 and 390.
+Hero weight 49.1KB (v1) → **58,070 bytes shipped** (pack 45,592 + shadow 3,896 + fairy 8,582
+= 56.7 KiB). Both viewports eyeballed at 1440 and 390.
 
 ## ▶︎ NEXT SESSION STARTS HERE (session closed 2026-08-09)
 

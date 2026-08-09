@@ -67,11 +67,24 @@ and mirror the date here).
 - **Stage 5 — Homepage + whole-site pass** ✅ 2026-07-16: hero/teasers/reviews/subscription band
   shipped; whole-site pass run — dist-wide link crawl (82 internal URLs, 0 broken), sitemap
   sanity (14 canonical trailing-slash entries), full mobile-check 15/15, full verify-urls.
-- **Homepage hero animation** ✅ 2026-07-17: the scroll-scrubbed grooming transformation
+- **Homepage hero animation (v1)** ✅ 2026-07-17 — **SUPERSEDED 2026-08-09, see the next entry**:
+  the scroll-scrubbed grooming transformation
   (desktop scrubs a 240vh sticky track; phone plays once when seen) merged to `main` after a
   full gate re-run on BOTH machines and a same-machine Lighthouse parity proof on x64
   (`main` median 99 vs `hero-animation` median 99, LCP 2.0→2.1s — the animation costs
   ~nothing). Judgement calls queued for the owner in Open items below.
+- **Homepage hero animation v2 — REPLACED v1** ✅ 2026-08-09 (`b13b682`, `4a6c188`): the salon's
+  own four dogs go desaturated → full colour behind a right-to-left reveal front (34 star
+  particles, 9 landing glints, sheen sweep, 6px proud lift). The bow, the 6-star burst and
+  `.ft-ground-core` are DELETED; the contact shadow is now an alpha-only stencil painted by CSS.
+  The hero is **FULL-BLEED** (owner decision) — the stage spans the moss band with the copy
+  overlaid on its naturally empty top-left, sized by `--ft-stage-h`; it was a two-column grid
+  capping the stage at 594px and now gets 775–1682px. Dog 1 was swapped the same day for the
+  owner's beagle (`beagle-cut.png`, rembg, composited in `hero-assets.mjs`, which now THROWS if
+  that file is missing). Homepage reviews the same day: aggregate score block and caption removed,
+  grid → carousel. Gates green (`hero-resilience` 7 assertions incl. a new reveal test; Lighthouse
+  98/100/100/100, CLS 0); deployed live at the owner's instruction for his own bug testing.
+  Full detail: HANDOVER 2026-08-09.
 - **Switchover — DNS cutover to production** ✅ 2026-08-08: `fairytailsdoggrooming.co.uk` moved
   from WordPress to GitHub Pages at 19:02 UTC and was fully secure and verified by 19:17 UTC —
   cert `CN=fairytailsdoggrooming.co.uk` approved (apex AND www), `https_enforced`,
@@ -123,6 +136,8 @@ not block the flip and has moved to the Polish backlog at the end of this file.
       *(2026-07-18 x64 recheck: home 94/100/100/100 ×3 CLS 0 · contact 98 · price-list 97 ·
       gallery 99 · /services/ 88–95 bimodal over 6 runs — text-LCP font-swap race under
       post-gate-suite load, no content change since it gated 95; re-measure settled.)*
+      ⚠️ **The `home` figure predates hero v2 (2026-08-09) and is no longer the baseline** — the
+      full-bleed four-dog hero measured **98/100/100/100 with CLS 0**. Compare against that, not 94.
       ⏳ Not fully settled at flip time and deliberately not a blocker — **carried to the Polish
       backlog**, and now measurable against the LIVE apex rather than a local
       `PUBLIC_INDEXABLE=true` build, since production is indexable.
@@ -230,19 +245,47 @@ The runbook's remaining live sections are **post-flip monitoring** and **WordPre
       old widget's screenshot as the target: white band, avatar/name/gold-star cards, text
       clamped with More/Less expanders, G-logo link. Shipped same day; content contract with
       the n8n rotator unchanged (`reviews-snapshot.json`, verbatim excerpts).
+      ⚠️ **AMENDED 2026-08-09 (owner rulings):** the aggregate score block (`4.9 ★★★★★ · 63
+      reviews`) and the "Verbatim excerpts … refreshed weekly" caption were **REMOVED**, and the
+      4-column grid became a **scroll-snap carousel with prev/next arrows**. The white cards,
+      avatar/name/gold stars, More/Less expanders and rotator contract are unchanged. **Do not
+      reinstate the aggregate block or the caption without asking.** If an `AggregateRating` is
+      ever marked up, the rating MUST become visible on the page again (nothing in the repo emits
+      it today — which is why removing the block was safe). The footer `ReviewsBadge` still shows
+      "4.9 out of 5" / "From 63+ Google reviews" on every page — deliberately left alone; ask
+      before widening. ⚠️ NOT changed: the rotator still caps at 4 and truncates to 240 chars, so
+      "More" expands a fragment. Deliberately deferred — that workflow commits straight to `main`.
 - [ ] **HERO ANIMATION JUDGEMENT CALLS NEED THE OWNER'S EYE** (on the preview homepage from
       2026-07-17 and on the LIVE homepage `https://fairytailsdoggrooming.co.uk/` since
       2026-08-08 — phone AND desktop). **Feedback round 1 applied 2026-07-17 (`efb9122`):
       the "Scroll to see the transformation" caption and the warm floor light-pool behind the
-      dog are removed — owner ruled the dog must blend seamlessly into the band, nothing may
-      highlight it off the page.** Six deliberate deviations from the design handoff,
-      full rationale in HANDOVER's 2026-07-16/17 entry: the bow is MOSS not honey (honey is
-      invisible against the honey-400 topknot); the topknot's red band retoned moss (green bow
-      over red band read as Christmas holly); the bow is REDRAWN (the handoff silhouette reads
-      as a moth at the 33px it renders); burst stars enlarged (handoff sizes land invisible at
-      our smaller stage); the wand star moved onto the wand tip; desktop scrubs a 240vh sticky
-      track while phones play once with no scroll-jack. Overrule any freely — each is a
-      small, isolated edit in `HeroStage.astro`.
+      dogs are removed — owner ruled the dogs must blend seamlessly into the band, nothing may
+      highlight them off the page.** ⚠️ **THE SIX CALLS BELOW WERE WRITTEN FOR v1 AND FOUR NO LONGER EXIST.**
+      The hero was replaced 2026-08-09 (v2, the four-dog pack); the bow, the 6-star burst and
+      `.ft-ground-core` were DELETED. **Dead — do NOT resurrect them to satisfy a ruling:** the
+      moss bow · the retoned red topknot band · the redrawn bow · the enlarged burst stars.
+      **Still live and still open:** the wand-star position (re-derived on the v2 artwork to stage
+      590,99 — the handoff's 606,138 lands on a transparent pixel) and the 240vh desktop track with
+      no scroll-jack below lg.
+      **New v2 calls that DO need his eye:** the full-bleed hero band with the copy overlaid; the
+      beagle as dog 1; the scroll-snap reviews carousel; the removal of the aggregate rating block.
+      ⚠️ Overruling is NOT "a small isolated edit" any more: `CONTOUR`, `GLINTS` and `ART_L` are
+      MEASURED against the current artwork and must be re-measured if the pack changes.
+- [ ] 🐛 **HOMEPAGE SCROLLS SIDEWAYS BETWEEN ~1024px AND ~1300px.**
+      `documentElement.scrollWidth` = 1123 at a 1024px viewport, 1306 at 1280px.
+      **PRE-EXISTING — not caused by hero v2, and deliberately NOT fixed in that pass** (identical
+      numbers with and without the new hero). Same *phantom* signature as the reviews carousel's
+      (a clipped scroller inflating the root's reported width, with nothing actually overflowing).
+      ⚠️ **No gate sees it:** `mobile-check` renders only 390px and the quality gates' desktop
+      check is 1440px — the bug lives exactly in the gap between the two widths we look at. Fix,
+      then widen the gate to assert `scrollWidth <= innerWidth` at 1024 and 1280 too.
+      Found 2026-08-09.
+- [ ] **Decide the fate of `src/assets/pages/home/hero-dog.png`** (775KB, the v1 single puppy).
+      Nothing imports it since hero v2, so it ships nothing — but `scripts/hero-assets.mjs` still
+      re-emits it, and it is the only COMMITTED copy of that artwork (its source is gitignored).
+      Either keep both (current state, deliberate) or delete the asset AND the script block
+      together. ⚠️ Do NOT delete `beagle-cut.png` or anything else in the gitignored handoff
+      folder — `hero-assets.mjs` throws without it and git cannot restore it.
 - [x] ~~🔴 **THE LIVE BOOKING FORM SELLS A SERVICE THE SITE SAYS WE DON'T OFFER.**~~ —
       **RESOLVED 2026-07-16 (evening), owner ruling: the FORM was right.** Bath & Brush pick-ups
       **are offered, at the same £2 per journey**. All three site claims of the old restriction

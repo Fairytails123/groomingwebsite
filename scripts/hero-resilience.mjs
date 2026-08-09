@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// The hero animation's three failure modes that NO other gate in this repo can see. Each one
-// ships silently broken if it regresses, and each is cheap to assert here.
+// The hero animation's FIVE failure modes that NO other gate in this repo can see. Each one
+// ships silently broken if it regresses, and each is cheap to assert here. (Five tests, but
+// SEVEN printed assertions — play-once runs across three phone viewports.)
 //
 //   1. REDUCED MOTION — must render the FINISHED dog, with no scrub and no rAF loop running.
 //      (Not "less motion": a different render path. See HeroStage.astro divergence 4.)
@@ -65,7 +66,9 @@ const readState = (page) =>
 // armed p=0 mask rule is dropped, typo'd, or its selector renamed, the after-layer is fully
 // revealed at p=0 — the pack starts in full colour and the entire transformation is invisible —
 // while readState stays byte-identical (armed:true, inited:true, beforeOpacity:1, fairy:0).
-// Measured on the live component: healthy p=0 chroma 24.65, broken 76.45. Every other gate in
+// Measured on the live component (see the threshold note at the test itself for the current
+// pair — an earlier v1-era reading of 24.65/76.45 is NOT comparable: the subject changed).
+// Every other gate in
 // this repo stayed green through that. Colour, not opacity, is the load-bearing signal.
 const packChroma = async (page) => {
   const box = await page.locator('[data-dogs]').boundingBox();

@@ -1,4 +1,5 @@
-# dependencies (junctioned outside OneDrive to C:\dev\grooming-website-node_modules — see CLAUDE.md)
+# dependencies (NOT currently a junction — a real directory inside OneDrive since 2026-07-16,
+# so deps sync between two machines of different CPU architectures. See CLAUDE.md 'Local dev'.)
 node_modules/
 
 # build output
@@ -8,9 +9,10 @@ dist/
 # verbatim harvest of the old WordPress site — NEVER commit (large; public repo)
 grooming-image-archive/
 
-# hero-animation design handoff — the prototypes + their source artwork (1.5MB). Same rule as
+# hero-animation design handoff — the prototypes + their source artwork (~3.5MB). Same rule as
 # the harvest: the bulky SOURCE stays out of the public repo, while the derived assets
-# (src/assets/pages/home/hero-*.png) and the script that makes them (scripts/hero-assets.mjs)
+# (src/assets/pages/home/hero-*.png and hero-*.webp) and the script that makes them
+# (scripts/hero-assets.mjs)
 # are committed. Re-run that script only if this folder's artwork changes.
 Luxury dog grooming animation/
 

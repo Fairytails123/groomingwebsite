@@ -1,10 +1,13 @@
 #!/usr/bin/env node
-// Prepares the two hero-animation artworks for a DARK band. Run once; output is committed.
+// Prepares the hero-animation artwork for a DARK band. Run once; output is committed.
+// Three live outputs (pack, contact shadow, fairy stencil) plus the superseded v1 puppy.
 //
 //   node scripts/hero-assets.mjs
 //
-//   in:  Luxury dog grooming animation/design_handoff_hero_animation/assets/
+//   in:  Luxury dog grooming animation/design_handoff_hero_animation/assets/   (GITIGNORED —
+//        git cannot restore any of it, and this script THROWS without beagle-cut.png)
 //          {dogs-group,fairy-color}.png            — the LIVE hero pair (handoff v2)
+//          beagle-cut.png                          — dog 1 of the live pack (REQUIRED)
 //          dog-hero.png                            — superseded single puppy, see below
 //   out: src/assets/pages/home/hero-dogs.webp        (the pack, baked floor removed)
 //        src/assets/pages/home/hero-dogs-shadow.webp (alpha-only contact shadow; CSS paints it)

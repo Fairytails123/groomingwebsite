@@ -192,5 +192,14 @@ account verification in place (harmless, enables re-flip without redoing setup).
 All true: HTTPS enforced since flip · new pages indexed with apex canonicals · zero rollbacks ·
 harvest re-verified (images are gone forever after deletion). Before cancelling ANYTHING:
 `billing_getSubscriptionListV1` + `hosting_listWebsitesV1` — confirm email + DNS are NOT
-bundled with the hosting being dropped. Delete only the WordPress website; the domain, DNS
+bundled with the hosting being dropped.
+
+🔴 **DELETE THE WORDPRESS WEBSITE ONLY — DO NOT CANCEL THE "Business Web Hosting" PLAN.**
+On order **1009494758**, `fairytailsdoggrooming.co.uk` is the MAIN vhost and the Main Website
+`thefairytails.co.uk` is an **ADDON on the SAME plan** — cancelling the plan takes the Main
+Website down with it. (There are no mailboxes on this domain to keep; all five are on
+`thefairytails.co.uk`.) ⚠️ `npm run harvest` is DISARMED — re-verify the archive by inspection,
+never by re-running it.
+
+Delete only the WordPress website; the domain, DNS
 zone and mailboxes stay at Hostinger indefinitely.
