@@ -37,3 +37,31 @@ from GitHub Pages, HTTPS enforced. It is no longer WordPress, and it is **indexe
 Full detail, plus the mobile gate, the quality gates, the hero animation rules and every hard-won
 trap: **`CLAUDE.md`**. Current state and session history: **`HANDOVER.md`** (read it first each
 session). What the cutover did and how to roll it back: **`docs/SWITCHOVER-RUNBOOK.md`**.
+
+
+<!-- dualdev-standing-rules-v1 (appended 2026-08-09; canonical copy: _dev-system\templates\AGENTS.md) -->
+
+## Standing rules (non-negotiable - Dual-Model Development System)
+
+1. Master Google Sheet "Jot form Dog Details"
+   (ID: 1OD8SQR2WxgO0nncXwBKYAkNv-qAhw018CXaH4kWgTDU) is permanently
+   READ-ONLY. Never write, edit or modify it. Any workflow needing writes
+   uses a separate derived sheet.
+2. Hosting: GitHub Pages under `fairytails123` is the only permitted
+   target for PWAs and web projects. Never Netlify or Vercel.
+3. Additive-only edits: never remove functionality without explicit
+   confirmation (sole standing exception: authorised removals named in
+   the contract's Authorised scope).
+4. Timestamped backup before every file edit:
+   cp <file> <file>.backup-$(date +%Y%m%d-%H%M%S)
+5. Branch before live on any production codebase.
+6. British English throughout all code, comments, docs and output.
+7. Telegram bot URLs: NO percent-encoded sequences, ever. Use + for
+   spaces; strip commas, dots, parentheses and ampersands; never call
+   encodeURIComponent on final values. (Telegram iOS double-encodes
+   %XX -> %25XX and breaks map deep links. Verified in production
+   May 2026.)
+8. No secrets in chat, GitHub, worktrees or logs. Reference environment
+   values by name only.
+9. Transactional email via Resend; website/mailbox on Hostinger;
+   IONOS is not in use.

@@ -23,3 +23,7 @@ shots/
 *.log
 .DS_Store
 Thumbs.db
+
+.task/
+
+.gate-evidence/
