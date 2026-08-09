@@ -99,42 +99,43 @@ Hero weight 49.1KB (v1) → **58,070 bytes shipped** (pack 45,592 + shadow 3,896
 **The site is LIVE and healthy. The working tree is clean and everything is pushed (`4a6c188`).**
 The build and switchover phases are over; this project is in **post-launch monitoring + polish**.
 
-**What changed on 2026-08-09** (full detail in the entry at the top of this file): the hero
+**What changed on 2026-08-09** (full detail in the entry at the top of this file): the reviews
+rotator now accumulates and stores full review text (§0 — done and verified); the hero
 animation was replaced with **v2 — the four-dog pack, full-bleed across the moss band** — dog 1
 was then swapped again for the owner's beagle, and the homepage Google-reviews block lost its
 aggregate score and caption and became a carousel. All deployed and live-verified, at the owner's
 explicit instruction, **so that he can bug-test it live**. Expect feedback on it next session.
 
-### 0. ⚠️ AWAITING ITS FIRST RUN — the rotator fix is DEPLOYED but has not executed yet
+### 0. ✅ DONE — the rotator fix ran and is verified live (was the last thing in flight)
 
-**The owner approved accumulation on 2026-08-09 and the fix is live in the n8n workflow
-`sXavTjxM4hzZ8bTo` (`Build Snapshot` node) — but it has NOT run yet**, so the site still shows the
-four old truncated cards until it fires. **It runs itself Monday 06:30 London.** To see it sooner,
-open the workflow in n8n and press **Execute workflow** — that is all that is outstanding.
-(It could not be driven from here: the trigger is a Schedule node, which `n8n_test_workflow`
-cannot fire, and retiming a live production schedule was correctly refused.)
+**Nothing is in flight.** The reviews rotator fix ran on 2026-08-09 (owner pressed Execute) and is
+proven on production. Execution **407366** (manual, success, 1.2s) → commit **`df5b48d`**
+*"Rotate homepage Google reviews (2026-08-09, 4 cards)"* → Pages run 31313210250 green in 36s.
 
-What the new `Build Snapshot` does:
-  1. **Stores the FULL review text** — the old code truncated to 240 chars BEFORE committing, which
-     is why "More" expanded a fragment into a slightly longer fragment. The page CSS-clamps to 4
-     lines and expands on click, so the data must carry the whole review. **Never reintroduce a
-     server-side excerpt.**
-  2. **MERGES** each week's newest five-star reviews into the existing list — deduped, newest
-     first, capped at 12 — because **Google Places returns at most FIVE reviews per request**, so a
-     scrolling wall can only be built by accumulating over weeks. Entries gain `firstSeen`.
-  3. **Drops any carried-over review still ending in an ellipsis.** Those are the old truncated
-     copies and they can never be repaired (Places only ever shows the newest five, so we may never
-     see their full text again). Keeping them would leave the original bug alive forever on those
-     cards. ⚠️ **Expect the wall to DIP to roughly 2–4 cards on the first run and then grow.**
+What it changed, measured on the live file:
 
-⚠️ **Owner accepted the trade-off:** once accumulating, we can no longer re-verify that an older
-review still exists on Google, so one the customer later deletes will linger on the site.
+| review | before | after |
+|---|---|---|
+| Sharon Terrell | 238 chars, ellipsis | **510 chars, whole** |
+| Mollie Taylor | 234 chars, ellipsis | **394 chars, whole** |
+| stella dunn | 238 chars, ellipsis | **347 chars, whole** |
+| Sarah Griffiths | 201, already whole | 201, unchanged |
 
-**Still owed: read the first execution** (`n8n_executions`, workflow `sXavTjxM4hzZ8bTo`) and check
-the resulting commit on `main` — a green validator proves nothing for n8n Code nodes. The logic was
-proven against fixtures first (5 cases: migration de-duplication across the truncation boundary,
-idempotency, degraded-API fail-closed, API-error throw, the 12 cap) but has not touched the real
-Places response yet.
+Live-verified at 1440px: the card clamps to 91px, **"More" expands it to 273px = the full
+scrollHeight**, and the button flips to "Less" with `aria-expanded="true"`. The whole review is
+readable. That was the owner's actual complaint and it is fixed.
+
+⚠️ **Better than predicted, for a reason worth knowing.** I expected the wall to DIP to ~2–4 cards,
+because the new code drops any carried-over review still ending in an ellipsis (those are old
+truncated copies that can never be repaired — Places only ever returns the newest five). It stayed
+at 4 because **all four happened to still be inside Google's newest five**, so every one was
+refreshed to full text instead of dropped. **Do not read that as "the drop rule never bites"** — it
+will, the first time an old review falls out of the newest five before we have seen it whole.
+
+The wall now GROWS: each Monday merges the newest five-star reviews in, deduped, newest first,
+capped at 12. Entries carry `firstSeen`. It will sit at 4 until the salon gets a new five-star
+review. ⚠️ Accepted trade-off: a review later deleted on Google will linger, because the API only
+ever shows us the newest five.
 
 ### 1. The deferred checks — do these FIRST (owner deferred them from flip night)
 
