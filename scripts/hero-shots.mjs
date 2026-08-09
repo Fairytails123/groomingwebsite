@@ -30,7 +30,12 @@ const browser = await chromium.launch();
     const d = document.querySelector('.ft-dog-before');
     return d && d.complete && d.naturalWidth > 0;
   });
-  for (const p of [0, 0.25, 0.5, 0.72, 0.85, 1]) {
+  // Ladder retuned for the v2 (four-dog) choreography — the old [0,.25,.5,.72,.85,1] wasted two
+  // of its six frames on it. Computed from front(p): at p=0.25 the reveal front has not reached
+  // the pack at all (0% in colour, i.e. identical to p=0), and 0.72/0.85/1 are three near-
+  // identical finished frames. The reveal's own midpoint — half the pack in colour, the single
+  // most informative frame — is at p=0.42, and every glint pops between 0.30 and 0.52.
+  for (const p of [0, 0.3, 0.42, 0.55, 0.73, 1]) {
     await page.evaluate((target) => {
       const t = document.querySelector('[data-hero-track]');
       const r = t.getBoundingClientRect();

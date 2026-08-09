@@ -147,51 +147,62 @@ const testimonials = [
   ogImageType="image/jpeg"
 >
   <article data-page="home">
-    {/* Hero — the old 2-slide carousel's copy, as a static header, now with the scroll-scrubbed
-        grooming transformation as its media half (see components/HeroStage.astro).
+    {/* ── HERO — FULL-BLEED ──────────────────────────────────────────────────────────────────
+        Owner decision 2026-08-09: the grooming transformation spans the WHOLE moss band and the
+        copy is laid over the composition's naturally empty top-left. It is no longer a
+        two-column grid — that grid capped the stage at 594px at every desktop width, which was
+        right for the old single-puppy artwork but starves the new four-dog pack. Full-bleed
+        gives the stage 775–1682px, so the pack renders 652–1416px wide instead of 500px.
 
-        The TRACK is what the animation scrubs against, and it only exists at lg+: there the hero
-        pins for 240vh and the dog transforms as you scroll, with the headline and CTA held on
-        screen the whole way. Below lg the track collapses to auto height, nothing sticks, and
-        the stage plays through once when it scrolls into view — most of this salon's customers
-        arrive on a phone (CLAUDE.md), and pinning them for two extra screens before any content
-        is a conversion cost the animation has not earned. Copy is unchanged and verbatim. */}
+        The TRACK still only exists at lg+: there the hero pins for 240vh and the pack is groomed
+        as you scroll, with the headline and CTAs held on screen the whole way. Below lg the
+        track collapses, nothing sticks, the copy sits ABOVE the stage (text over four dogs is
+        unreadable) and the stage plays through once when it scrolls into view — most of this
+        salon's customers arrive on a phone (CLAUDE.md), and pinning them for two extra screens
+        before any content is a conversion cost the animation has not earned.
+
+        Copy is unchanged and verbatim, and is FIRST in the DOM: that is the reading order, the
+        mobile visual order, and the H1 is the LCP element. The desktop overlay is done with
+        z-index, NEVER with source order. */}
     <div class="relative bg-moss-900 lg:h-[240vh]" data-hero-track>
       <header
-        class="flex items-center pb-16 pt-32 sm:pb-24 sm:pt-44 lg:sticky lg:top-0 lg:h-screen lg:py-24"
+        class="relative overflow-hidden pb-16 pt-32 sm:pb-24 sm:pt-44 lg:sticky lg:top-0 lg:h-screen lg:pb-0 lg:pt-0"
+        data-hero-sticky
       >
-        <div class="mx-auto w-full max-w-6xl px-4">
-          {/* The media column takes the larger share: the stage's own 760×620 coordinate box
-              carries generous empty margins around the dog, so an even split renders her
-              smaller than she reads on paper. The copy column still holds ~500px, which is what
-              the h1 needs to wrap to two lines at text-6xl. */}
-          <div class="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <div>
-              <p class="eyebrow text-honey-300">Hastings dog groomers</p>
-              <h1 class="mt-4 max-w-2xl font-display text-4xl font-bold leading-tight text-cream-50 sm:text-6xl">
-                Caring for your best friend
-              </h1>
-              <p class="mt-5 max-w-xl text-lg text-cream-200">
-                Dog grooming to suit your needs — every groom tailored to your dog's breed, in the
-                heart of Hastings.
-              </p>
-              <div class="mt-8 flex flex-wrap items-center gap-4">
-                <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
-                <a href="/services/full-groom-price-list/" class="btn btn-ghost-light">
-                  See the price list
-                </a>
-              </div>
-              {/* No ReviewsBadge here by owner ruling (2026-07-17): the hero carries copy and
-                  CTAs only. The badge still renders in the footer on every page, and the
-                  "Fresh from Google" section below carries the review proof on this one. */}
-            </div>
-
-            <div>
-              <HeroStage />
-              {/* No scroll cue here by owner ruling (2026-07-17): the transformation announces
-                  itself; a caption under the stage was one more thing popping out of the band. */}
+        <div class="mx-auto w-full max-w-6xl px-4" data-hero-copy>
+          {/* Two blocks, because the pack is a STAIRCASE not a box — see the style block. The
+              eyebrow + H1 sit against the wide shelf; the subcopy + CTAs drop into the narrow
+              one under the shorter dogs on the left. */}
+          <div data-hero-head>
+            <p class="eyebrow text-honey-300" data-hero-eyebrow>Hastings dog groomers</p>
+            <h1
+              class="mt-4 max-w-2xl font-display text-4xl font-bold leading-tight text-cream-50 sm:text-6xl lg:mt-0"
+            >
+              Caring for your best friend
+            </h1>
+          </div>
+          <div data-hero-lower>
+            <p class="mt-5 max-w-xl text-lg text-cream-200 lg:mt-0" data-hero-sub>
+              Dog grooming to suit your needs — every groom tailored to your dog's breed, in the
+              heart of Hastings.
+            </p>
+            <div class="mt-8 flex flex-wrap items-center gap-4 lg:mt-0" data-hero-cta>
+              <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+              <a href="/services/full-groom-price-list/" class="btn btn-ghost-light">
+                See the price list
+              </a>
             </div>
           </div>
+          {/* No ReviewsBadge here by owner ruling (2026-07-17): the hero carries copy and
+              CTAs only. The badge still renders in the footer on every page, and the
+              "Fresh from Google" section below carries the review proof on this one.
+              Unchanged by the full-bleed restructure. */}
+        </div>
+
+        <div data-hero-media>
+          <HeroStage />
+          {/* No scroll cue here by owner ruling (2026-07-17): the transformation announces
+              itself; a caption under the stage was one more thing popping out of the band. */}
         </div>
       </header>
     </div>
@@ -406,17 +417,64 @@ const testimonials = [
         <p class="mt-1 text-sm text-neutral-600">
           {business.address.line1}, {business.address.town}
         </p>
-        <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span class="text-4xl font-bold leading-none text-neutral-900">{business.reviews.rating}</span>
-          <span class="text-2xl leading-none text-[#fbbc05]" aria-hidden="true">★★★★★</span>
-          <span class="sr-only">Rated {business.reviews.rating} out of 5</span>
-          <span class="text-neutral-600">{business.reviews.count} reviews</span>
-        </p>
+        {/* The aggregate score block ("4.9 ★★★★★ · 63 reviews") was REMOVED by owner ruling
+            (2026-08-09): the headline count read as thin next to the quality of the reviews
+            themselves. The individual review cards below carry the proof instead, which is the
+            stronger signal anyway. Do NOT reinstate it without asking.
+            Safe to remove: nothing in this repo emits AggregateRating structured data, so there
+            is no schema that now claims a rating the page does not show (which Google treats as
+            a structured-data violation). If an aggregate rating is ever marked up, it MUST be
+            visible on the page again. business.reviews.rating/count are still live — the footer
+            ReviewsBadge renders them on every page, this one included. */}
 
-        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Carousel (owner ruling 2026-08-09: the cards should move left and right).
+            Native scroll-snap does the work, so it swipes on a phone and trackpad-scrolls on a
+            desktop with NO JavaScript — the arrows are pure enhancement and stay hidden until JS
+            proves the strip actually overflows (same progressive-enhancement rule as the More
+            expanders and the price-list filter: never render a dead control).
+            The card widths deliberately leave the next card PEEKING (86% on a phone, ~31% on
+            desktop). That peek, not the arrows, is what tells a thumb it can swipe — arrows are
+            hidden below sm because nobody taps a carousel arrow on a phone.
+            The strip scrolls inside its OWN overflow-x container, which is what keeps the body
+            from scrolling sideways at 390px (the mobile gate's hard rule). */}
+        <div class="relative mt-8">
+          <button
+            type="button"
+            data-rev-prev
+            hidden
+            aria-label="Previous reviews"
+            class="absolute left-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-neutral-700 shadow-md ring-1 ring-neutral-200 transition hover:bg-neutral-50 disabled:pointer-events-none disabled:opacity-0 sm:flex"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
+          </button>
+          <button
+            type="button"
+            data-rev-next
+            hidden
+            aria-label="More reviews"
+            class="absolute right-0 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-neutral-700 shadow-md ring-1 ring-neutral-200 transition hover:bg-neutral-50 disabled:pointer-events-none disabled:opacity-0 sm:flex"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
+
+          {/* tabindex+role: a scrollable region must be reachable and operable by keyboard
+              (WCAG 2.1.1). Without them the arrows are the only way through, and they are
+              mouse-only by design. */}
+          <div
+            data-rev-scroller
+            role="region"
+            aria-label="Reviews from Google"
+            tabindex="0"
+            class="ft-rev-scroll flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2"
+          >
+          {/* Card widths are chosen so the NEXT card always peeks by a visible amount, never a
+              sliver: at lg, 3 cards (3×28% + 2 gaps ≈ 88%) leave ~130px of the fourth showing.
+              31% was tried first and left a 31px edge that read as a clipping bug rather than an
+              invitation to swipe. (This comment lives OUTSIDE the .map() on purpose — an Astro
+              expression beside the <figure> makes two root nodes and fails the build.) */}
           {
             reviewsSnapshot.reviews.map((r, i) => (
-              <figure class="flex flex-col">
+              <figure class="flex shrink-0 basis-[82%] snap-start flex-col sm:basis-[44%] lg:basis-[28%]">
                 <figcaption class="flex items-center gap-3">
                   <span
                     class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base font-bold text-white"
@@ -455,6 +513,7 @@ const testimonials = [
               </figure>
             ))
           }
+          </div>
         </div>
 
         <div class="mt-8 flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
@@ -470,9 +529,9 @@ const testimonials = [
             </svg>
             See all our reviews on Google
           </a>
-          <p class="text-xs text-neutral-500">
-            Verbatim excerpts from our Google Business Profile — refreshed weekly.
-          </p>
+          {/* The "Verbatim excerpts … refreshed weekly" caption was REMOVED by owner ruling
+              (2026-08-09). The reviews are still exactly that — verbatim, rotator-fed — the
+              owner simply does not want the mechanism narrated to customers. Don't reinstate. */}
         </div>
       </div>
     </section>
@@ -512,10 +571,199 @@ const testimonials = [
     overflow: hidden;
   }
 
+  /* The review strip scrolls, but its scrollbar is noise under a row of white cards — the
+     peeking next card and the arrows carry the affordance instead. Keyboard and wheel scrolling
+     are untouched; only the bar is hidden. */
+  .ft-rev-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* ⚠ Load-bearing, and NOT a cosmetic hint. Without it this strip's off-screen cards leak
+       into `document.documentElement.scrollWidth` (measured: 1124px at a 390px viewport) even
+       though `overflow-x: auto` clips them correctly and the page provably cannot scroll
+       sideways — window.scrollX stays 0 when you try. Setting `overflow: hidden` does NOT
+       suppress the inflated number; only paint containment does.
+       That matters because scripts/mobile-check.mjs:93 gates on exactly
+       `de.scrollWidth > vw + 1`, so the phantom width fails the mobile gate outright. The fix
+       belongs here — making the DOM's reported width honest — rather than in the gate, which is
+       right to be strict. Safe: the arrows live OUTSIDE this element, so nothing inside needs to
+       escape its paint box. */
+    contain: paint;
+  }
+  .ft-rev-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  /* A focused scroll region must still show where focus is (WCAG 2.4.7) — the default outline
+     is clipped by overflow, so give it an offset ring that sits outside the scroll box. */
+  .ft-rev-scroll:focus-visible {
+    outline: 2px solid var(--color-moss-500);
+    outline-offset: 4px;
+  }
+  /* scroll-smooth is motion: honour the OS setting, or an arrow press becomes a lurch for
+     exactly the people who asked it not to. */
+  @media (prefers-reduced-motion: reduce) {
+    .ft-rev-scroll {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* ══ THE FULL-BLEED HERO ══════════════════════════════════════════════════════════════════
+     Every constant here is MEASURED off the handoff's artwork. The pack (dogs-group.png,
+     963×497, drawn at stage 30,256,640×330) is a STAIRCASE, not a box: its left end tops out at
+     stage y≈372 while the tallest dog on the right reaches y=257. Sampling its alpha per column
+     gives the depth a left-anchored copy column may reach:
+
+         copy runs to stage x ≤ 190  →  clear to y 371.5  (59.9% of stage height)
+         copy runs to stage x ≤ 360  →  clear to y 311.8  (50.3%)
+         copy runs to stage x ≤ 520  →  clear to y 278.6  (44.9%)
+         copy runs to stage x ≤ 570  →  clear to y 256.7  (41.4%)
+         fairy occupies stage x 580..750, y 10..233
+
+     So the copy is two blocks against two shelves: eyebrow + H1 use the wide one (x ≤ 520),
+     subcopy + CTAs drop into the narrow one (x ≤ 360). Verified at 14 viewports; the tightest
+     clearance anywhere is 26.5 stage units (27px) at 1440×700. That number is measured against
+     the SILHOUETTE, not a bounding box — it is a CTA sitting 27px above the tip of an ear. If
+     the subcopy ever grows or a third CTA appears, this is what breaks first: re-measure, don't
+     eyeball.
+
+     ⚠️ The STARS are deliberately NOT in this budget. Their flight path is a diagonal across the
+     whole top-left (painted-ink bbox stage x 1.7..697.7, y 98..392); dodging it would leave the
+     copy ~100 stage units wide. They pass BEHIND the copy instead — legibility is a hard
+     requirement, sparkle is decoration, and a 19px glowing star crossing a cream glyph destroys
+     the letterform for several frames. */
+
+  /* = the fixed site header's measured height: py-3 (12+12) + the h-11 logo (44) = 68px.
+     .is-scrolled only scales the logo with a transform, so this never changes at runtime. */
+  [data-hero-track] {
+    --ft-hero-top: 4.25rem;
+  }
+
+  /* Below lg the stage is edge-to-edge (the composition carries its own 4% left / 1.3% right
+     margins), but capped by HEIGHT so a landscape phone does not get a 688px stage on a 390px
+     screen: 78svh × 760/620 = 95.61svh, written as a WIDTH so the aspect-ratio box still
+     produces the height. svh, not vh — it must not move with the URL bar. */
+  [data-hero-media] {
+    margin-top: 2rem;
+    width: min(100%, 95.61svh);
+    margin-inline: auto;
+  }
+
+  @media (min-width: 64rem) {
+    /* --ft-stage-h is THE single source of every hero proportion: the composition's rendered
+       height. It is the sticky's content box (100vh minus the header clearance) unless the band
+       is too narrow to hold a 760:620 box, in which case the WIDTH is the limit
+       (620/760 = 0.815789). Drive ONE dimension and let aspect-ratio produce the other —
+       `max-width` would clamp the width while leaving the height at 100%, violating the ratio
+       and squashing every percentage-positioned child inside HeroStage with it.
+
+       ⚠️ THE 64rem THIRD TERM IS AN ASSET CEILING, not a design choice. dogs-group.png is only
+       963px wide at source and renders at 1.032 × --ft-stage-h, so 1:1 parity is at a stage
+       height of 933px. Uncapped, a 2560×1440 monitor asks for a 1372px stage height = a 1416px
+       pack = a 47% upscale of a photograph, which reads soft. Capping at 64rem (1024px) holds
+       the worst case to ~1.10×, which is invisible, and simply centres the composition in the
+       band on very tall screens. Raise this ONLY if a higher-resolution original of the pack
+       photo is supplied — then re-measure parity and move both numbers together. */
+    [data-hero-sticky] {
+      --ft-stage-h: min(calc(100vh - var(--ft-hero-top)), 81.5789vw, 64rem);
+      display: grid;
+      grid-template-areas: 'stack';
+      padding: var(--ft-hero-top) 0 0;
+    }
+    /* Exact version where container queries exist: cqh/cqw are the sticky's own content box, so
+       this tracks the real geometry instead of re-deriving it, and is scrollbar-proof. The vh
+       line above is the identical fallback — both measured green at all 14 viewports, so this
+       is a refinement, not a dependency.
+       ⚠️ container-type MUST stay inside this media query: it implies contain:size, and below lg
+       the sticky is auto-height, so leaking it out collapses the whole hero to zero height. */
+    @supports (container-type: size) {
+      [data-hero-sticky] {
+        container-type: size;
+        --ft-stage-h: min(100cqh, 81.5789cqw, 64rem);
+      }
+    }
+
+    [data-hero-copy],
+    [data-hero-media] {
+      grid-area: stack;
+    }
+
+    /* ⚠️ z-index is explicit on BOTH layers and is load-bearing. HeroStage's own children carry
+       z-index up to 6 (.ft-fairy). `position: relative` alone does NOT create a stacking
+       context, so without `z-index: 0` here the fairy and the particle layer compete directly
+       with the copy and paint OVER the headline. */
+    [data-hero-media] {
+      position: relative;
+      z-index: 0;
+      justify-self: center;
+      align-self: center;
+      margin: 0;
+      height: var(--ft-stage-h);
+      width: auto;
+      aspect-ratio: 760 / 620;
+    }
+    /* The copy box IS the stage box (same height, same centring), so its padding and type are
+       percentages OF THE COMPOSITION — the same idiom HeroStage uses internally. */
+    [data-hero-copy] {
+      position: relative;
+      z-index: 10;
+      align-self: center;
+      height: var(--ft-stage-h);
+      padding-top: calc(0.035 * var(--ft-stage-h));
+    }
+
+    /* The two shelves. Percentages are of the max-w-6xl container — which is also what puts the
+       H1's left edge on exactly the same line as every section below. Do NOT re-derive this
+       from 100vw: that includes the scrollbar and max-w-6xl does not, so it misaligns by ~7px
+       on real Windows Chrome. */
+    [data-hero-head] {
+      max-width: min(42rem, 64%);
+    }
+    [data-hero-lower] {
+      max-width: min(31rem, 44%);
+    }
+
+    /* Type scales with the COMPOSITION, not the page — the handoff's own clamp(40px,4.5vw,64px)
+       idea re-anchored to HEIGHT because the stage is height-driven. Without it the block is a
+       fixed ~485px and lands ON the dogs at 1366×768 and 1280×800 (measured: 134px and 119px of
+       overlap). Narrowing the column makes it WORSE, not better — the CTA row wraps to two rows
+       (238px vs 142px). */
+    [data-hero-eyebrow] {
+      font-size: clamp(0.7rem, calc(0.016 * var(--ft-stage-h)), 0.8rem);
+    }
+    [data-hero-copy] h1 {
+      font-size: clamp(2rem, calc(0.072 * var(--ft-stage-h)), 4rem);
+      margin-top: clamp(0.5rem, calc(0.018 * var(--ft-stage-h)), 1rem);
+      /* em, not px — and 10.5 is measured, not rounded. The headline sets on ONE line at 12.92em
+         in Fraunces, 13.32em in Georgia, but only 11.17em in the swap fallback Windows Chrome
+         actually uses (ui-serif → Times New Roman). Any cap between those gives one line before
+         the font lands and two after: a layout shift on the LCP element on every cold load.
+         10.5em is below all three, so the break is identical in every font. */
+      max-width: 10.5em;
+      text-wrap: balance;
+    }
+    [data-hero-sub] {
+      font-size: clamp(0.9375rem, calc(0.022 * var(--ft-stage-h)), 1.125rem);
+      margin-top: clamp(0.625rem, calc(0.024 * var(--ft-stage-h)), 1.25rem);
+      max-width: none; /* the shelf on [data-hero-lower] governs here, not max-w-xl */
+    }
+    [data-hero-cta] {
+      margin-top: clamp(0.875rem, calc(0.033 * var(--ft-stage-h)), 2rem);
+    }
+    [data-hero-copy] .btn {
+      /* The clamp alone drops the button to 42.1px at 1440×700 — under the 44px tap floor. */
+      min-height: 2.75rem;
+      padding-block: clamp(0.55rem, calc(0.0155 * var(--ft-stage-h)), 0.875rem);
+      font-size: clamp(0.9375rem, calc(0.019 * var(--ft-stage-h)), 1rem);
+    }
+  }
+
   /* Reduced motion: there is no scrub, so the 240vh track is pure dead scroll — 1.5 screens of
      a pinned, static hero before any content, which reads as a stuck page. The track's whole
      justification is giving the animation room to play; when the visitor's OS has switched the
-     animation off, only the cost remains. Same principle the mobile layout already applies. */
+     animation off, only the cost remains. Same principle the mobile layout already applies.
+     ⚠️ height:auto does NOT collapse the hero itself — the sticky keeps lg:h-screen, so the
+     full-bleed composition still gets its whole screen and the copy stays laid over it; only
+     the 1.4 screens of dead scroll below it go. Never add `lg:h-auto` here: that would make
+     --ft-stage-h resolve against the copy's own height and squash the composition. */
   @media (prefers-reduced-motion: reduce) {
     [data-hero-track] {
       height: auto;
@@ -549,6 +797,50 @@ const testimonials = [
       });
     });
   }
+  // Review carousel arrows. The strip is already fully usable without this (native scroll-snap
+  // + swipe + keyboard); JS only adds the two buttons, and only when the strip really overflows.
+  function initReviewCarousel() {
+    const scroller = document.querySelector<HTMLElement>('[data-rev-scroller]');
+    if (!scroller || scroller.dataset.revCarousel) return;
+    const prev = document.querySelector<HTMLButtonElement>('[data-rev-prev]');
+    const next = document.querySelector<HTMLButtonElement>('[data-rev-next]');
+    if (!prev || !next) return;
+    scroller.dataset.revCarousel = '1';
+
+    // Step by one whole card (card width + the gap) rather than a fixed pixel count, so the
+    // snap points and the arrows agree at every breakpoint.
+    const step = () => {
+      const card = scroller.firstElementChild as HTMLElement | null;
+      if (!card) return scroller.clientWidth;
+      const gap = parseFloat(getComputedStyle(scroller).columnGap || '0') || 0;
+      return card.getBoundingClientRect().width + gap;
+    };
+
+    // 1px of slack: fractional layout widths mean scrollLeft rarely hits the exact maximum, and
+    // without it the "next" arrow stays enabled forever at the right-hand end.
+    const sync = () => {
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      const overflows = max > 1;
+      prev.hidden = !overflows;
+      next.hidden = !overflows;
+      if (!overflows) return;
+      prev.disabled = scroller.scrollLeft <= 1;
+      next.disabled = scroller.scrollLeft >= max - 1;
+    };
+
+    prev.addEventListener('click', () => scroller.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next.addEventListener('click', () => scroller.scrollBy({ left: step(), behavior: 'smooth' }));
+    scroller.addEventListener('scroll', sync, { passive: true });
+    // Expanding a review changes the strip's height, not its width — but a breakpoint change or
+    // a font swap changes both, so observe rather than measure once.
+    new ResizeObserver(sync).observe(scroller);
+    sync();
+  }
+
   initReviewExpanders();
-  document.addEventListener('astro:page-load', initReviewExpanders);
+  initReviewCarousel();
+  document.addEventListener('astro:page-load', () => {
+    initReviewExpanders();
+    initReviewCarousel();
+  });
 </script>

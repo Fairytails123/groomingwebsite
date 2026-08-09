@@ -122,24 +122,49 @@ step left between you and them.
 - ⚠️ The Stripe subscription link is LIVE — never complete a test checkout. Always show
   "£25/month per dog, 2-month minimum term" next to the sign-up CTA.
 
-## The homepage hero animation (2026-07-16)
+## The homepage hero animation (v2, 2026-08-09 — replaced v1 of 2026-07-16)
 
-`src/components/HeroStage.astro` — a scroll-scrubbed transformation: a scruffy puppy is groomed
-by the Fairy Tails fairy's wand. Ported from `Luxury dog grooming animation/` (gitignored, like
-the harvest: bulky SOURCE out, derived assets + generator script in). **Read HeroStage.astro's
-frontmatter before touching it** — it documents all five deliberate divergences from the handoff.
-The load-bearing ones:
+`src/components/HeroStage.astro` — a scroll-scrubbed transformation: **the salon's own four dogs**
+go from desaturated to full colour behind a soft right-to-left reveal front, while the Fairy Tails
+fairy showers them with stars from her wand. Ported from handoff **v2** in
+`Luxury dog grooming animation/` (gitignored, like the harvest: bulky SOURCE out, derived assets +
+generator script in). **Read HeroStage.astro's frontmatter before touching it** — it documents all
+five deliberate divergences from the handoff. The load-bearing ones:
+
+⚠️ **v1 was a single scruffy puppy with a bow-pop payoff. The bow, the 6-star burst and the
+ground-shadow ellipse are GONE** — they exist in neither the v2 handoff nor the v2 artwork. Don't
+resurrect them from git history. `src/assets/pages/home/hero-dog.png` is the superseded v1 puppy;
+nothing imports it, so it ships nothing, but it is the ONLY committed copy of that artwork (its
+source is gitignored) — leave it alone.
+
+⚠️ **THE HERO IS FULL-BLEED** (owner decision 2026-08-09). The stage spans the whole moss band and
+the copy is laid over the composition's naturally empty top-left. `index.astro`'s hero owns the
+sizing via `--ft-stage-h`; **HeroStage's `.ft-stage { width:100%; aspect-ratio:760/620 }` must stay
+exactly that** — switching it to `height:100%` or adding `max-width` breaks the hero layout. The
+copy's type scales with `--ft-stage-h`, not the page: a fixed-size copy block lands ON the dogs at
+1366×768 and 1280×800 (measured 134px and 119px of overlap).
 
 - ⚠️ **The handoff is designed in the OLD BRAND BLUE (#00AFF1) on a WHITE page.** This site is
   moss/honey/cream on a dark hero band. Every blue is remapped to honey, and the remap re-anchors
   LIGHTNESS, not just hue: the blue palette carried its sparkle on dark members that only work on
   white. **Never use honey-500/600/700 for sparkle on the moss band — they read as mud.**
-- ⚠️ **The handoff's artwork had two defects that are invisible on white by construction**: a
-  white matte on every soft edge (all 5,871 semi-transparent px were near-white) and a cream
-  floor painted into the bottom. On moss: a halo round a fluffy dog, and a torn-paper slab.
-  `scripts/hero-assets.mjs` fixes both, plus recolours the topknot's crimson band — the only red
-  in the palette, and next to the moss bow it read as Christmas holly. All constants in that
-  script are MEASURED off the artwork; its header shows the workings.
+- ⚠️ **BOTH handoffs shipped artwork defects that are invisible on white BY CONSTRUCTION** — this
+  is the recurring trap, not a one-off. v1: a white matte on every soft edge + a cream floor.
+  v2 (a PHOTOGRAPH): **no matte at all** — un-matting it would be actively wrong — but a baked
+  studio floor + cast shadow held at partial alpha, 89% of its semi-transparent pixels sitting
+  3px+ out from the dogs, of which 57% composites *lighter* than moss, i.e. reads as dirt.
+  ⚠️ **v1's chroma key CANNOT be reused on v2**: dog 2's floor and dog 2's own chest are the same
+  pixel (chroma 7.4 vs 7.2), and that key would delete 47,351px of real terrier and sheepdog.
+  v2 separates by GEOMETRY (a Gaussian blur of the hard silhouette), and re-emits the contact
+  shadow as an alpha-only stencil that CSS paints darker than the band. All constants in
+  `scripts/hero-assets.mjs` are MEASURED; its header shows the workings and the rejected
+  alternatives. **Always judge this artwork composited on #2c3823, never on white.**
+- ⚠️ **The handoff's own numbers are not trustworthy — verify against the artwork.** Measured in
+  v2: its emission origin (606,138) and its visible wand star both land on **fully transparent
+  pixels**, 25px and 21px from anything opaque (the real wand tip is stage 590,99); its reveal
+  sweep leaves a 34px wedge of the right-hand dog already in colour at p=0; its particle landing
+  maths puts **27 of 34 stars off the pack**, ten of them left of the dog box entirely. All three
+  are corrected in HeroStage with the workings in comments.
 - **Authored FINISHED, armed backwards.** The markup renders the final state; CSS imposes p=0
   only under `[data-ft-armed]` inside `@media (prefers-reduced-motion: no-preference)`. That is
   what makes JS-off and reduced-motion correct for free. An `is:inline` script arms it pre-paint
@@ -152,11 +177,23 @@ The load-bearing ones:
   port would shift layout every load). CLS is 0 and must stay 0.
 - **Desktop ≥lg scrubs a sticky 240vh track; below lg there is NO scroll-jack** — the stage plays
   once on entering view. Owner rule: most customers are on a phone.
-- Perf: the whole animation is **50KB** (dog 41KB webp + fairy 8.4KB mask), ONE fetch for the dog
-  (the two stacked copies and the sheen mask share one deterministic `getImage()` URL — never add
-  `widths`/`densities` there or the mask desyncs and double-downloads). Both assets are at NATIVE
-  width because downscaling makes them BIGGER (measured). Nothing in the hero may outrank the
-  fonts: the LCP element is the H1, and it waits on Fraunces.
+- Perf: the whole animation is **56.3KB** (pack 45.2KB webp + shadow stencil 3.9KB + fairy 8.6KB
+  mask), ONE fetch for the pack — the two stacked copies AND the sheen mask share one
+  deterministic URL; **never add `widths`/`densities`** or the mask desyncs and double-downloads.
+  The pack and its shadow are **pre-encoded webp by the script and imported directly**, not run
+  through `getImage()`, because Astro's sharp service does not expose `alphaQuality` (worth 22KB
+  here). All assets are at NATIVE width because downscaling makes them BIGGER (measured).
+  Nothing in the hero may outrank the fonts: the LCP element is the H1, waiting on Fraunces —
+  which is why the pack is `loading="lazy" fetchpriority="low"` even though it is the centrepiece.
+- ⚠️ **The pack photo is only 963px wide at source**, and renders at 1.032 × `--ft-stage-h`, so
+  1:1 parity is a stage height of 933px. `--ft-stage-h` is therefore capped at **64rem** in
+  index.astro — an ASSET ceiling, not a design choice: uncapped, a 2560×1440 monitor upscales the
+  photograph 47% and it reads soft. Raise it only if a higher-resolution original arrives, and
+  move both numbers together.
+- `npm run hero-resilience` now also asserts **the reveal actually reveals** (pack chroma at p=0
+  vs p=1). That test exists because the p=0 mask rule can be lost — dropped, typo'd, or its
+  selector renamed — and the pack then starts in full colour with the whole animation invisible,
+  while every other gate stays green. Proven: healthy 1.85×, broken 1.01×.
 
 ## Harvest archive (content source of record)
 

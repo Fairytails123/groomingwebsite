@@ -2,6 +2,76 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## 2026-08-09 — Hero animation v2 (four-dog pack) + homepage reviews changes → LIVE
+
+**Deployed to production at the owner's instruction, explicitly for live bug testing by him.**
+Branch `hero-v2-pack-animation` → `main`. All gates green before the push (see below).
+
+### What changed
+
+1. **The hero animation was replaced.** v1 (single scruffy puppy, bow-pop payoff) → v2 (the
+   salon's own four dogs, desaturated → full colour behind a right-to-left reveal front, 34 star
+   particles arcing from the fairy's wand, 9 landing glints, sheen sweep, 6px proud lift). The
+   bow, the 6-star burst and the ground-shadow ellipse are DELETED.
+2. **The hero is now FULL-BLEED** (owner decision this session, chosen from three options). The
+   stage spans the whole moss band with the copy laid over the composition's empty top-left. It
+   was a two-column grid that capped the stage at 594px at every desktop width; it now gets
+   775–1682px, so the pack renders 859px wide at 1440×900 instead of 500px.
+3. **Homepage Google reviews** (owner asks, this session): the aggregate score block
+   (`4.9 ★★★★★ · 63 reviews`) removed; the "Verbatim excerpts… refreshed weekly" caption
+   removed; the card grid replaced with a **swipe/arrow carousel**.
+
+### Owner-visible caveats carried out of this session
+
+- ⚠️ **The reviews carousel is built but the DATA cannot fill it yet.** The n8n "Grooming Reviews
+  Rotator" (`sXavTjxM4hzZ8bTo`) does two things that block the owner's asks, and BOTH are in its
+  `Build Snapshot` node, not on the page: `.slice(0, 4)` caps the wall at four cards, and an
+  `excerpt()` helper **truncates every review to 240 chars before committing it**. So "More"
+  currently expands a fragment into a slightly longer fragment — a data bug, not a UI bug.
+  **The fix was NOT applied this session** (deliberately: the workflow commits straight to `main`,
+  and a 12-card payload rendered by the pre-carousel grid would have looked wrong on the live site
+  in the interim). Now that the page is live, the workflow can be changed: stop truncating (let
+  the CSS clamp do it) and MERGE each week's newest five-star reviews into the existing list
+  instead of replacing, deduped, newest first, capped ~12.
+- ⚠️ **Google's Places API returns at most FIVE reviews per request.** A one-shot fetch can never
+  fill a scrolling wall like the owner's reference image; accumulation over weeks is the only
+  route with the API we own. Trade-off he should confirm: once we accumulate, we can no longer
+  re-verify that an older review still exists on Google (the API only ever shows the newest five),
+  so a deleted review would linger in our copy.
+- The footer `ReviewsBadge` still shows "4.9 out of 5" and "From 63+ Google reviews" on EVERY page
+  including the homepage. The owner asked only about the homepage review *section*, so the footer
+  was deliberately left alone — ask before widening.
+
+### Findings worth keeping (all measured, all in code comments)
+
+- **The v2 artwork has NO matte** — un-matting it is actively wrong (it drives 66% of edge
+  channels below zero). Its defect is a baked studio floor + cast shadow at partial alpha, 57% of
+  which composites *lighter* than moss. **v1's chroma key would have deleted 47,351px of real
+  dog** (dog 2's floor and its own chest are statistically identical). Separation is geometric.
+- **The handoff's own coordinates are wrong in three places**: its emission origin and its visible
+  wand star both land on fully transparent pixels (~25px from the real wand tip at stage 590,99);
+  its reveal sweep leaves a 34px wedge of the right-hand dog in colour at p=0; and its particle
+  maths puts 27 of 34 stars off the pack. All corrected.
+- **A proven silent-pass hole was closed**: `hero-resilience.mjs` returned `null` for a missing
+  layer and `null < 0.05` is TRUE in JS, so *renaming* `[data-before]` made the reduced-motion
+  test pass with the layer gone. Absence now returns NaN and fails in both directions.
+- **A new gate exists because the old ones could not see the bug**: if the p=0 reveal mask is lost,
+  the pack starts in full colour, the whole animation is invisible, and every previous gate stayed
+  green. `hero-resilience` now asserts pack chroma at p=0 vs p=1 — verified by injecting the real
+  bug: healthy 1.85×, broken 1.01×.
+- **Pre-existing, NOT introduced here and NOT fixed**: the homepage reports horizontal overflow at
+  1024–1300px viewport widths (`document.scrollWidth` 1123 at 1024px, 1306 at 1280px). Identical
+  numbers with and without the new hero. It is the same *phantom* signature as the carousel hit —
+  a clipped scroller inflating the root's reported width, with no element actually overflowing —
+  and `mobile-check` only renders 390px so no gate sees that band. Worth its own ticket.
+
+### Gates at deploy
+
+`build` clean · `verify-urls` 18/18 · `mobile-check` all pages pass · `hero-resilience` 7/7
+(incl. the new reveal assertion) · `hero-mask-support` WebKit + Chromium · Lighthouse on a
+`PUBLIC_INDEXABLE=true` local build: **perf 98 / a11y 100 / best-practices 100 / SEO 100, CLS 0**.
+Hero weight 49.1KB → **56.3KB**. Both viewports eyeballed at 1440 and 390.
+
 ## ▶︎ NEXT SESSION STARTS HERE (session closed 2026-08-08, ~21:15 UTC)
 
 **The site is LIVE and healthy. Nothing is in flight, nothing is half-done, the working tree is

@@ -3,9 +3,22 @@
 //
 //   node scripts/hero-assets.mjs
 //
-//   in:  Luxury dog grooming animation/design_handoff_hero_animation/assets/{dog-hero,fairy-color}.png
-//   out: src/assets/pages/home/hero-dog.png          (cleaned puppy)
+//   in:  Luxury dog grooming animation/design_handoff_hero_animation/assets/
+//          {dogs-group,fairy-color}.png            — the LIVE hero pair (handoff v2)
+//          dog-hero.png                            — superseded single puppy, see below
+//   out: src/assets/pages/home/hero-dogs.webp        (the pack, baked floor removed)
+//        src/assets/pages/home/hero-dogs-shadow.webp (alpha-only contact shadow; CSS paints it)
 //        src/assets/pages/home/hero-fairy-stencil.png (alpha-only fairy; CSS paints her)
+//        src/assets/pages/home/hero-dog.png          (SUPERSEDED — the v1 single puppy)
+//
+// ⚠️ FORMAT CONVENTION DIFFERS BY BLOCK, deliberately. The two v1 blocks emit PNG and leave
+// format/quality to getImage() in the component. The dogs block emits WEBP DIRECTLY and takes
+// that asset out of the getImage path, because Astro's sharp service does not expose
+// `alphaQuality`, and alphaQuality 75 is visually lossless on this near-binary rim
+// (max |Δα| = 2/255) while saving 22KB. Verified against a real build that an imported .webp is
+// emitted to _astro/ byte-identical rather than re-encoded. The cost: this asset will not gain
+// an AVIF variant and is immune to future image-settings changes. Worth 22KB; know that it is
+// a choice.
 //
 // Same convention as scripts/gallery-crop.mjs: the SOURCE is an untracked handoff folder, the
 // OUTPUT is committed. Re-run only if the handoff artwork changes.
@@ -214,4 +227,156 @@ const isBandish = (r, g, b) => r - g > 50 && g - b < 45;
     .png({ compressionLevel: 9 })
     .toFile(resolve(OUT, 'hero-fairy-stencil.png'));
   console.log(`fairy: alpha stencil → hero-fairy-stencil.png (${W}×${H})`);
+}
+
+// ── Dogs — the NEW hero subject (handoff v2, 2026-08-09) ─────────────────────────────────
+// dogs-group.png is a PHOTOGRAPH of the salon's own four dogs, and its defect is the OPPOSITE
+// of dog-hero.png's. Everything below is measured off the artwork; do not re-tune by eye.
+//
+// THERE IS NO MATTE. Un-matting over white drives 65.9% of the 91,758 informative mid-alpha
+// channels below zero (mean recovered fg = −387,−396,−417). Grey (#64615b) and black are
+// rejected too (30.4%/15.9% and 0%/37.5% out of gamut), so the data is not premultiplied
+// either. The straight RGB is already the true colour. Corroborated at the rim: composited on
+// moss, the 1–3px edge is DARKER than the fur it borders on three of the four dogs (terrier
+// 131.9 vs 156.2, staffie 89.5 vs 93.7, sheepdog 118.2 vs 144.1). The old un-matte pass would
+// be actively wrong here — do not apply it.
+//
+// WHAT IS ACTUALLY BAKED IN is a studio FLOOR + CAST-SHADOW layer preserved at partial alpha:
+// 89.4% of the 112,390 semi-transparent pixels lie 3px+ from the silhouette in four soft
+// ellipses that leave the canvas on the left, right and bottom edges. Only 10.6% (11,858 px)
+// are a genuine antialias rim within 2px, measured under the same 4-neighbour metric as the
+// distance table below. (A first pass wrote 25.4%/74.6% here; that reproduces under no metric —
+// Chebyshev d≤2 gives 13.7%, Manhattan d≤3 gives 14.9% — and the true figure makes the case
+// stronger, not weaker. Numbers in this header are re-derivable; treat any you cannot reproduce
+// as wrong.) On the handoff's white page that is a correct shadow. On moss-900 it is DIRT:
+// 57.1% of the field composites LIGHTER than #2c3823 (mean +19.9 L, peak +161.5).
+//
+// ⚠️ THE OLD FLOOR KEY DOES NOT TRANSFER, and this is the trap. dog-hero was golden fur on a
+// pale colourless floor, so "pale AND low-chroma = floor" separated them. This pack contains a
+// blue staffie and a grey/white sheepdog. Dog 2's floor and dog 2's own chest are, statistically,
+// the same pixel:
+//
+//     region                          meanA   meanRGB      chroma   density
+//     dog2 floor  x300-420 y415-445     239   (64,62,59)      7.4     0.705
+//     dog2 chest  x300-420 y300-360     251   (66,61,59)      7.2     0.749
+//
+// and (L>165 && chroma<78) would delete 13,795 px of the terrier and 33,556 px of the sheepdog
+// — 47,351 px of real dog. SEPARATE BY GEOMETRY, NEVER BY COLOUR.
+//
+// Geometry, but not a 4-neighbour BFS distance: Manhattan isolines are diamonds, and keyed on
+// them the terrier's soft-focus flank comes out as a 45° staircase. A Gaussian blur of the hard
+// silhouette is isotropic and is four lines.
+//
+// WHERE THE EDGE ENDS (distance from the a≥250 silhouette):
+//     d:            1     2     3     4     5     6     7     8    10    16
+//     n:         6665  5193  4906  4804  4460  3520  2646  2310  2116  1827
+//     mean α:     225   191   145   107    89    96   118   131   134   121
+//     mean chroma 19.5  17.9  15.0  13.6  14.3  13.3  11.0   8.8   7.9   7.1
+// Chroma (real fur) collapses between d=3 and d=8 and never recovers, while alpha stops falling
+// at d≈6 and PLATEAUS near 130. A fur edge decays; a floor does not. So the wisps end at d≈3–5.
+// SOLID is NOT a tuning knob, despite looking like one: the source alpha is quantized with a
+// hard gap between 239 and 251, so ANY threshold in 240..251 selects the identical 213,031-px
+// silhouette. Don't be afraid of it, and don't bother tuning it.
+const SOLID = 250; // the dogs ARE the a≥250 region
+const SIGMA = 2.6; // blur of that binary mask
+const KEEP_LO = 0.16; // blurred value below which a px is pure backdrop
+const KEEP_HI = 0.62; // above which it is pure subject → keep band measures 1.98px
+
+// ⚠️ THE CUT IS TOTAL BEYOND d≈3, AND THAT IS THE ACCEPTED TRADE — not an oversight. With these
+// constants `keep` is 0.006 at d=3 and exactly 0.000 at every d≥4, so ~4,700 high-chroma pixels
+// (the terrier's whiskers, the sheepdog's flyaway fur) go to alpha 0 rather than fading out.
+// Two things follow, both measured, so nobody re-litigates this from theory:
+//   · Raising KEEP_HI to "save" them is a PROVABLE NO-OP (loss 4,668 → 4,668): at SIGMA 2.6 the
+//     blurred silhouette is already below KEEP_LO out there, so KEEP_HI never reaches those
+//     pixels — it only NARROWS the band. The only levers that reach d≥4 are SIGMA up or
+//     KEEP_LO down.
+//   · Both of those were rendered on moss and REJECTED: SIGMA 3.6 and KEEP_LO 0.08 each retain
+//     ~30% more soft pixels but bring back a visible pale halo round the terrier's ear and head
+//     outline — the exact artefact this block exists to remove. The crisper cut wins by eye at
+//     3× zoom, which is the standard this file has always used.
+
+// The shadow is RE-RENDERED, not deleted. Its SHAPE is worth keeping (it is what beds the pack
+// into the band); its COLOUR is a white-studio grey and is worthless on moss. The artwork hands
+// over the recoverable quantity for free, because it was authored over white: composite each
+// field pixel on #ffffff and its luminance falls with alpha, so density = 1 − L_white/255.
+// NOT strictly monotonic — it reverses at the 208-223 → 224-239 bin (density .576 → .541) and
+// once mid-ramp — but the outliers are ~0.3% of the mass, so the ramp is usable. Re-emitted as
+// an ALPHA-ONLY stencil that CSS paints — the same trade as hero-fairy-stencil.png, for the
+// same reason: keep the alpha, throw the colour away.
+const SHADOW_GAIN = 1.25; // density → alpha
+const SHADOW_CAP = 0.72; // no contact patch becomes a hole in the band
+// A shadow is low-frequency, so it survives heavy downscaling: 161×83 is upscaled 6.7× at a
+// 1280 viewport and 4.1× on a 390px phone at 2 DPR, and neither is distinguishable from the
+// full-size stencil on the band — which is why this is /6 and not /2 (3.8KB vs 61.9KB).
+const SHADOW_DIV = 6;
+{
+  const { data, info } = await raw('dogs-group.png');
+  const { width: W, height: H } = info;
+
+  // Subjectness = a blurred copy of the hard silhouette.
+  // ⚠️ sharp PROMOTES a 1-channel raw input to 3 channels on OUTPUT. Take the object and stride
+  //    by info.channels, or every read lands on the wrong pixel and the pack comes out striped
+  //    into scanlines — a failure only the render shows.
+  const hard = Buffer.alloc(W * H);
+  for (let p = 0; p < W * H; p++) hard[p] = data[(p << 2) + 3] >= SOLID ? 255 : 0;
+  const blur = await sharp(hard, { raw: { width: W, height: H, channels: 1 } })
+    .blur(SIGMA)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const bc = blur.info.channels;
+
+  const dogs = Buffer.from(data);
+  const dens = Buffer.alloc(W * H);
+  let cut = 0;
+  for (let p = 0; p < W * H; p++) {
+    const i = p << 2;
+    const a = data[i + 3];
+    const keep = smooth((blur.data[p * bc] / 255 - KEEP_LO) / (KEEP_HI - KEEP_LO));
+
+    dogs[i + 3] = clamp255(a * keep);
+    if (dogs[i + 3] < a) cut++;
+    if (a === 0) continue;
+
+    // Density = the algebraic inverse of the white page this shadow was drawn for.
+    const af = a / 255;
+    const L = 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+    const Lw = L * af + 255 * (1 - af);
+    const d = Math.max(0, 1 - Lw / 255);
+    dens[p] = clamp255(255 * Math.min(SHADOW_CAP, d * SHADOW_GAIN) * (1 - keep));
+  }
+
+  // 1. The pack, cut clean. NATIVE width — 900px encodes LARGER than 963 (69.1KB vs 66.5KB),
+  //    the same counter-intuitive trap the other two hero assets hit. Pre-encoded here rather
+  //    than left to getImage() because Astro's sharp service does not expose alphaQuality, and
+  //    alphaQuality 75 is visually lossless on this near-binary rim (max |Δα| = 2/255) while
+  //    saving 22KB. quality 60 is NOT lossless here (max |Δα| = 12).
+  await sharp(dogs, { raw: { width: W, height: H, channels: 4 } })
+    .webp({ quality: 68, alphaQuality: 75, effort: 6 })
+    .toFile(resolve(OUT, 'hero-dogs.webp'));
+
+  // 2. The shadow, alpha-only, at 1/6 scale. White RGB + the density as alpha, exactly as the
+  //    fairy stencil does — a CSS mask reads only alpha, and a constant RGB compresses to ~0.
+  const sw = Math.round(W / SHADOW_DIV);
+  const sh = Math.round(H / SHADOW_DIV);
+  const small = await sharp(dens, { raw: { width: W, height: H, channels: 1 } })
+    .resize({ width: sw, height: sh, kernel: 'lanczos3' })
+    .blur(0.8)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const sc = small.info.channels;
+  const stencil = Buffer.alloc(sw * sh * 4);
+  for (let p = 0; p < sw * sh; p++) {
+    stencil[p * 4] = 255;
+    stencil[p * 4 + 1] = 255;
+    stencil[p * 4 + 2] = 255;
+    stencil[p * 4 + 3] = small.data[p * sc];
+  }
+  await sharp(stencil, { raw: { width: sw, height: sh, channels: 4 } })
+    .webp({ quality: 70, alphaQuality: 92, effort: 6 })
+    .toFile(resolve(OUT, 'hero-dogs-shadow.webp'));
+
+  console.log(
+    `dogs:  cut the baked floor from ${cut} px → hero-dogs.webp (${W}×${H}), ` +
+      `shadow re-rendered as a ${sw}×${sh} stencil → hero-dogs-shadow.webp`,
+  );
 }

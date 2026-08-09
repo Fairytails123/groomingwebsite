@@ -27,20 +27,62 @@ const problems = [];
 const browser = await chromium.launch();
 
 // The "before" layer at full opacity is the tell for a stage stuck at p=0.
+//
+// ⚠️ MISSING ≠ FINISHED. This helper used to return `null` for an absent layer, and `null < 0.05`
+// is TRUE in JS — so simply RENAMING [data-before] made the reduced-motion test below pass with
+// the layer gone. Proven against the live component 2026-08-09: removing the attribute left this
+// gate reporting OK. Absence now returns NaN, because every NaN comparison is false in BOTH
+// directions, so an absent layer fails "finished" AND fails "not yet played" — the only honest
+// answer. `missing` names what actually went wrong so the failure message is not a riddle.
 const readState = (page) =>
   page.evaluate(() => {
     const stage = document.querySelector('[data-hero-stage]');
     const before = document.querySelector('[data-before]');
     const fairy = document.querySelector('[data-fairy]');
     const fx = document.querySelector('[data-fx]');
+    const after = document.querySelector('[data-after]');
+    const missing = [
+      ['[data-hero-stage]', stage],
+      ['[data-before]', before],
+      ['[data-fairy]', fairy],
+      ['[data-fx]', fx],
+      ['[data-after]', after],
+    ]
+      .filter(([, el]) => !el)
+      .map(([sel]) => sel);
     return {
-      armed: stage?.hasAttribute('data-ft-armed') ?? null,
+      missing,
+      armed: stage?.hasAttribute('data-ft-armed') ?? false,
       inited: stage?.dataset.ftInit === '1',
-      beforeOpacity: before ? +getComputedStyle(before).opacity : null,
-      fairyOpacity: fairy ? +getComputedStyle(fairy).opacity : null,
+      beforeOpacity: before ? +getComputedStyle(before).opacity : NaN,
+      fairyOpacity: fairy ? +getComputedStyle(fairy).opacity : NaN,
       particles: fx ? fx.children.length : 0,
     };
   });
+
+// Mean chroma (max channel − min channel) of the pack's box. This is the ONLY thing that can
+// tell a working reveal from a broken one, and it exists because of a proven blind spot: if the
+// armed p=0 mask rule is dropped, typo'd, or its selector renamed, the after-layer is fully
+// revealed at p=0 — the pack starts in full colour and the entire transformation is invisible —
+// while readState stays byte-identical (armed:true, inited:true, beforeOpacity:1, fairy:0).
+// Measured on the live component: healthy p=0 chroma 24.65, broken 76.45. Every other gate in
+// this repo stayed green through that. Colour, not opacity, is the load-bearing signal.
+const packChroma = async (page) => {
+  const box = await page.locator('[data-dogs]').boundingBox();
+  if (!box) return NaN;
+  const shot = await page.screenshot({ clip: box });
+  const sharp = (await import('sharp')).default;
+  const { data } = await sharp(shot).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  let sum = 0;
+  let n = 0;
+  for (let i = 0; i < data.length; i += 4 * 5) {
+    const mx = Math.max(data[i], data[i + 1], data[i + 2]);
+    const mn = Math.min(data[i], data[i + 1], data[i + 2]);
+    sum += mx - mn;
+    n++;
+  }
+  return sum / n;
+};
 
 // ── 1. Reduced motion ────────────────────────────────────────────────────────────────────
 {
@@ -49,10 +91,17 @@ const readState = (page) =>
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
   await page.waitForTimeout(600);
   const s = await readState(page);
-  // Finished = muted layer gone, fairy present.
-  const ok = s.beforeOpacity < 0.05 && s.fairyOpacity > 0.95;
-  console.log(`  ${ok ? 'OK  ' : 'FAIL'} reduced-motion — before=${s.beforeOpacity} fairy=${s.fairyOpacity} (want 0 / 1)`);
-  if (!ok) problems.push(`reduced-motion renders p=0, not the finished state (before=${s.beforeOpacity}, fairy=${s.fairyOpacity})`);
+  // Finished = muted layer gone, fairy present. A missing element is a FAILURE, never a pass —
+  // see the readState note.
+  const ok = s.missing.length === 0 && s.beforeOpacity < 0.05 && s.fairyOpacity > 0.95;
+  const why = s.missing.length ? ` MISSING ${s.missing.join(' ')}` : '';
+  console.log(`  ${ok ? 'OK  ' : 'FAIL'} reduced-motion — before=${s.beforeOpacity} fairy=${s.fairyOpacity} (want 0 / 1)${why}`);
+  if (!ok)
+    problems.push(
+      s.missing.length
+        ? `hero elements are missing from the DOM: ${s.missing.join(' ')} — a renamed selector silently disarms this whole gate`
+        : `reduced-motion renders p=0, not the finished state (before=${s.beforeOpacity}, fairy=${s.fairyOpacity})`,
+    );
   await ctx.close();
 }
 
@@ -159,11 +208,55 @@ for (const [w, h] of [
   await ctx.close();
 }
 
+// ── 5. The reveal actually reveals ───────────────────────────────────────────────────────
+// The transformation IS the hero. Every other test here reads opacity and element presence, and
+// a stage whose reveal mask has been lost passes all of them while doing visibly nothing: the
+// pack simply starts in full colour. This asserts on COLOUR at both ends of the desktop scrub,
+// which is the only signal that distinguishes the two.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1000);
+
+  const seek = async (target) => {
+    await page.evaluate((t) => {
+      const track = document.querySelector('[data-hero-track]');
+      const r = track.getBoundingClientRect();
+      const top = window.scrollY + r.top;
+      window.scrollTo({ top: top + t * (r.height - window.innerHeight), behavior: 'instant' });
+    }, target);
+    await page.waitForTimeout(1600); // the 0.16 damping needs time to settle
+  };
+
+  await seek(0);
+  const cold = await packChroma(page);
+  await seek(1);
+  const warm = await packChroma(page);
+
+  // The 1.4x threshold is placed between two MEASURED endpoints, not guessed. Verified on this
+  // component at 1440x900 by injecting the actual bug (`[data-ft-armed] .ft-after{mask-image:none}`):
+  //     healthy            p0 16.4 → p1 30.4 = 1.85x
+  //     mask lost (broken) p0 30.2 → p1 30.4 = 1.01x
+  // 1.4 sits ~39% above the broken case and ~24% below the healthy one, so it catches "the
+  // reveal does nothing" without policing the exact before-filter grade — re-grading the muted
+  // layer is a legitimate design change and must not fail this gate.
+  const ok = Number.isFinite(cold) && Number.isFinite(warm) && warm > cold * 1.4;
+  console.log(
+    `  ${ok ? 'OK  ' : 'FAIL'} reveal — pack chroma ${cold.toFixed(1)} at p=0 → ${warm.toFixed(1)} at p=1 (want a 1.4x rise)`,
+  );
+  if (!ok)
+    problems.push(
+      `the reveal is not revealing: pack chroma ${cold.toFixed(1)} → ${warm.toFixed(1)}. The p=0 mask rule under [data-ft-armed] .ft-after is the usual cause — if it is dropped or its selector renamed, the pack starts in full colour and every other gate still passes.`,
+    );
+  await ctx.close();
+}
+
 await browser.close();
 console.log('');
 console.log(
   problems.length
     ? `❌ hero resilience FAILED:\n  - ${problems.join('\n  - ')}`
-    : '✅ Hero survives reduced-motion, JS-off, back-nav, and waits to play until seen.',
+    : '✅ Hero survives reduced-motion, JS-off, back-nav, plays only when seen, and actually reveals.',
 );
 process.exit(problems.length ? 1 : 0);
