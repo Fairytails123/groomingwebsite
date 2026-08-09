@@ -185,8 +185,12 @@ copy's type scales with `--ft-stage-h`, not the page: a fixed-size copy block la
   port would shift layout every load). CLS is 0 and must stay 0.
 - **Desktop ≥lg scrubs a sticky 240vh track; below lg there is NO scroll-jack** — the stage plays
   once on entering view. Owner rule: most customers are on a phone.
-- Perf: the whole animation is **56.3KB** (pack 45.2KB webp + shadow stencil 3.9KB + fairy 8.6KB
-  mask), ONE fetch for the pack — the two stacked copies AND the sheen mask share one
+- Perf: the whole animation is **58,070 bytes** shipped — pack `hero-dogs.webp` 45,592 + shadow
+  stencil 3,896 + fairy mask 8,582. (v1's shipped total was measured at 49.1KB on 2026-08-09;
+  its own docs said "50KB". Exact bytes are given here because "KB" in this repo's older notes
+  silently mixed 1000 and 1024, so the two figures were never quite comparable.) Re-measure with
+  `for f in dist/_astro/hero-*.webp; do wc -c < $f; done` after any artwork change.
+  ONE fetch for the pack — the two stacked copies AND the sheen mask share one
   deterministic URL; **never add `widths`/`densities`** or the mask desyncs and double-downloads.
   The pack and its shadow are **pre-encoded webp by the script and imported directly**, not run
   through `getImage()`, because Astro's sharp service does not expose `alphaQuality` (worth 22KB
@@ -237,10 +241,11 @@ single migration re-save on the harvest date — see WEBSITE-PLAN's copy log).
 | `harvest` | Re-harvests the old site (idempotent). |
 | `video-poster` | Poster frame for the Bruno video. No ffmpeg here — decodes in real Chrome. |
 | `gallery-crop` | Recovers the 10 gallery photos from the old before/after composites. Read its header before touching a crop. |
-| `hero-shots` | Hero-animation eyeball check: screenshots the scrub at p = 0/.25/.5/.72/.85/1 plus the mobile play-through. **`shots` cannot do this** — it captures fullPage, which renders a sticky hero once at p=0 followed by ~1,300px of empty moss. |
-| `hero-resilience` | The hero's four untestable-elsewhere failure modes: reduced-motion, JS off, view-transition back-nav, and play-once-only-when-seen. Needs `astro preview`. |
+| `hero-shots` | Hero-animation eyeball check: screenshots the scrub at **p = 0/.30/.42/.55/.73/1** plus the mobile play-through. That ladder is tuned to the v2 timeline — .42 is the reveal's midpoint and every glint pops between .30 and .52; the old .25/.72/.85 wasted frames (at .25 nothing is revealed yet, and .72/.85/1 are near-identical). **`shots` cannot do this** — it captures fullPage, which renders a sticky hero once at p=0 followed by ~1,300px of empty moss. ⚠️ It waits on `ART_SELECTOR` (`.ft-dogs-before`); rename a pack layer and it now fails immediately WITH the reason. |
+| `hero-resilience` | The hero's **five** untestable-elsewhere failure modes: reduced-motion, JS off, view-transition back-nav, play-once-only-when-seen, and **that the reveal actually reveals**. Needs `astro preview`. |
 | `hero-mask-support` | Proves the hero's WebP-alpha CSS masks decode in **WebKit** (= Safari/iOS, which we can't open on Windows). Needs `astro preview`. |
-| `hero-assets` | Regenerates the hero artwork from the design handoff. One-off; output is committed. Edit the SCRIPT. |
+| `hero-assets` | Regenerates the hero artwork from the design handoff **plus the owner-supplied beagle** (`beagle-cut.png`). One-off; output is committed. Edit the SCRIPT. ⚠️ Throws if `beagle-cut.png` is missing — do not "fix" that by deleting the guard. |
+| — | ⚠️ **After ANY rename inside HeroStage, run `hero-shots` AND `hero-resilience`.** Both drive the hero by selector, and a stale selector is how v1→v2 briefly broke `hero-shots` (an opaque 30s timeout) — the same rot elsewhere can make a gate pass while asserting nothing. |
 
 ## 📱 THE MOBILE GATE — no page ships without it (owner rule, 2026-07-16)
 

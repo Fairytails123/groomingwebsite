@@ -16,20 +16,43 @@ await mkdir(OUT, { recursive: true });
 
 const browser = await chromium.launch();
 
+// Wait for the pack artwork to actually decode before shooting.
+//
+// ⚠️ This used to be a bare waitForFunction on a class name, and when the hero was rebuilt as v2
+// the class was renamed `.ft-dog-before` -> `.ft-dogs-before`. The selector then matched nothing,
+// the predicate could never become true, and the whole script died on an OPAQUE 30-second
+// "Timeout 30000ms exceeded" with no hint as to why. So the element's EXISTENCE is now asserted
+// separately from its readiness, and says which selector went missing. Any future rename of the
+// pack layers must be reflected in ART_SELECTOR.
+const ART_SELECTOR = '.ft-dogs-before';
+async function waitForArt(page, where) {
+  const found = await page.locator(ART_SELECTOR).count();
+  if (!found) {
+    throw new Error(
+      `hero-shots (${where}): no element matches "${ART_SELECTOR}". The hero's markup has been ` +
+        'renamed and this script was not updated — fix ART_SELECTOR rather than waiting it out. ' +
+        '(Left alone this surfaced only as an unexplained 30s Playwright timeout.)',
+    );
+  }
+  // loading="lazy" + fetchpriority="low" is deliberate (decoration must not outrank the H1's
+  // font), so headless Chromium's lazy flush can land AFTER networkidle and the p00 frame would
+  // capture an empty stage a real visitor never dwells on. These captures judge ART, not loading.
+  await page.waitForFunction(
+    (sel) => {
+      const d = document.querySelector(sel);
+      return d && d.complete && d.naturalWidth > 0;
+    },
+    ART_SELECTOR,
+  );
+}
+
 // Desktop: drive the 240vh track to explicit progress points. p is defined by the track's own
 // geometry, so compute the scroll from the track rather than guessing pixel offsets.
 {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
-  // The dog imgs are loading="lazy" + fetchpriority="low" (deliberate — decoration must not
-  // outrank the H1's font), so headless Chromium's lazy flush can land AFTER networkidle and
-  // the p00 frame captures an empty stage that a real visitor never dwells on. Wait for the
-  // artwork to decode before shooting: these captures exist to judge ART states, not loading.
-  await page.waitForFunction(() => {
-    const d = document.querySelector('.ft-dog-before');
-    return d && d.complete && d.naturalWidth > 0;
-  });
+  await waitForArt(page, 'desktop 1440');
   // Ladder retuned for the v2 (four-dog) choreography — the old [0,.25,.5,.72,.85,1] wasted two
   // of its six frames on it. Computed from front(p): at p=0.25 the reveal front has not reached
   // the pack at all (0% in colour, i.e. identical to p=0), and 0.72/0.85/1 are three near-
@@ -56,10 +79,7 @@ const browser = await chromium.launch();
   const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
   const page = await ctx.newPage();
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
-  await page.waitForFunction(() => {
-    const d = document.querySelector('.ft-dog-before');
-    return d && d.complete && d.naturalWidth > 0;
-  });
+  await waitForArt(page, 'mobile 390');
   await page.screenshot({ path: `${OUT}/hero-390-top.png` });
   await page.evaluate(() => document.querySelector('[data-hero-stage]').scrollIntoView({ block: 'center', behavior: 'instant' }));
   await page.waitForTimeout(1500);

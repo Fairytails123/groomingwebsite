@@ -93,13 +93,39 @@ bandana, matching dogs 3 and 4) to replace it.
 `PUBLIC_INDEXABLE=true` local build: **perf 98 / a11y 100 / best-practices 100 / SEO 100, CLS 0**.
 Hero weight 49.1KB → **56.3KB**. Both viewports eyeballed at 1440 and 390.
 
-## ▶︎ NEXT SESSION STARTS HERE (session closed 2026-08-08, ~21:15 UTC)
+## ▶︎ NEXT SESSION STARTS HERE (session closed 2026-08-09)
 
-**The site is LIVE and healthy. Nothing is in flight, nothing is half-done, the working tree is
-clean and everything is pushed (`a03dfb7`).** The build phase and the switchover phase are both
-over; this project is now in **post-launch monitoring + polish**.
+**The site is LIVE and healthy. The working tree is clean and everything is pushed (`4a6c188`).**
+The build and switchover phases are over; this project is in **post-launch monitoring + polish**.
+
+**What changed on 2026-08-09** (full detail in the entry at the top of this file): the hero
+animation was replaced with **v2 — the four-dog pack, full-bleed across the moss band** — dog 1
+was then swapped again for the owner's beagle, and the homepage Google-reviews block lost its
+aggregate score and caption and became a carousel. All deployed and live-verified, at the owner's
+explicit instruction, **so that he can bug-test it live**. Expect feedback on it next session.
+
+### 0. ⚠️ IN FLIGHT — the one thing that is genuinely half-done
+
+**The reviews carousel is built and live, but its DATA cannot fill it yet.** The n8n "Grooming
+Reviews Rotator" (`sXavTjxM4hzZ8bTo`) still caps at four reviews (`.slice(0, 4)`) and **truncates
+every review to 240 chars before committing it**, so the owner's "clicking More should show the
+whole review" is still unfulfilled — it expands a fragment. This was left deliberately: that
+workflow commits **straight to `main`**, so changing it before the carousel shipped would have put
+a 12-card payload into the old 4-column grid on the live site. **That reason has now expired — the
+fix can be done.** Two parts, both in its `Build Snapshot` node:
+  1. stop truncating (store the full text; the page already CSS-clamps to 4 lines and expands);
+  2. MERGE each week's newest five-star reviews into the existing list instead of replacing —
+     deduped, newest first, capped ~12 — because **Google's Places API returns at most FIVE reviews
+     per request**, so a scrolling wall can only be built by accumulating over weeks.
+  ⚠️ **Owner ruling still needed before part 2:** once we accumulate we can no longer re-verify
+  that an older review still exists on Google (the API only ever shows the newest five), so a
+  review the customer later deletes would linger on the site. Ask before shipping it.
 
 ### 1. The deferred checks — do these FIRST (owner deferred them from flip night)
+
+⚠️ **Still outstanding as of 2026-08-09.** The HTTP-level ones were re-run today as the post-deploy
+gate and were clean (`verify-urls --live` 18/18; robots.txt still allows and names the sitemap),
+but **the GSC and Ahrefs items below were NOT done** — they still need a human with the consoles.
 
 The flip was 2026-08-08 19:02 UTC. The +1h check was done and was clean; **+24h and +48h were
 deliberately deferred to this session.** Run them now, in this order:
@@ -146,7 +172,14 @@ echo | openssl s_client -connect fairytailsdoggrooming.co.uk:443 -servername fai
    machines of different CPU architectures. Unchanged Kam call; must be done on both machines or
    neither.
 7. **The six hero judgement calls, the gallery breed alt text, and the who-we-are photo** remain
-   open in WEBSITE-PLAN — the owner has been eyeballing and only flagging changes.
+   open in WEBSITE-PLAN — the owner has been eyeballing and only flagging changes. ⚠️ Note those
+   six calls were written for the **v1** hero; re-read them against v2 before treating any as live.
+8. **The footer `ReviewsBadge` still shows "4.9 out of 5" and "From 63+ Google reviews" on EVERY
+   page, including the homepage** (added 2026-08-09). The owner asked for the aggregate to come off
+   the homepage review *section* and it did; the footer was deliberately left alone rather than
+   widening the scope. He may want it gone there too — it can keep the "read them on Google" link
+   without the numbers. Ask.
+9. **Whether the reviews wall may accumulate** — see §0. Needed before the rotator's merge change.
 
 ### 3. What NOT to do (the traps that now have teeth)
 
@@ -159,6 +192,45 @@ echo | openssl s_client -connect fairytailsdoggrooming.co.uk:443 -servername fai
 - **Do not cancel the Hostinger "Business Web Hosting" plan** — it holds the rollback AND the Main
   Website as an addon. Earliest WordPress decommission: **T+30 = 2026-09-07**.
 - **There is no preview URL.** Don't send the owner one; check locally.
+
+**Added 2026-08-09 — the hero's own traps. Every one of these fails SILENTLY:**
+
+- **Do not change the hero artwork without re-measuring `CONTOUR`, `GLINTS` and `ART_L`** in
+  `HeroStage.astro`. They are measured off the pack image, not portable constants. Proven twice in
+  one day: the handoff's values put stars 79px in mid-air off one dog's shoulder and 27px inside
+  another's back; after dog 1 was swapped, `[127,373]` sat **47px inside the new dog's head** and
+  two anchors landed on empty stage. Method and target clearance (~2–4px above the fur) are in the
+  comment above the array.
+- **Do not "clean up" `src/assets/pages/home/hero-dog.png`.** Nothing imports it, so it ships
+  nothing — but it is the ONLY committed copy of the v1 puppy artwork (its source is gitignored).
+- **Do not resurrect the bow, the 6-star burst or `.ft-ground-core` from git history.** They belong
+  to v1 and exist in neither the v2 handoff nor the v2 artwork.
+- **Do not change `.ft-stage { width: 100%; aspect-ratio: 760/620 }`** — index.astro's full-bleed
+  hero puts the sizing on the wrapper and depends on the stage filling it. `height:100%` or a
+  `max-width` here breaks the hero.
+- **Do not raise the `64rem` term in `--ft-stage-h`** unless a higher-resolution pack photo
+  arrives. It is an ASSET ceiling: the source is 963px wide, so uncapped a 2560px monitor upscales
+  the photograph 47%.
+- **Do not judge the hero artwork on a white background.** Both handoffs shipped defects that are
+  invisible on white *by construction* and only appear on moss-900 (`#2c3823`). Composite it on the
+  band before believing it is clean.
+- **Do not re-run `scripts/hero-assets.mjs` on a machine without the gitignored handoff folder.**
+  It throws if `beagle-cut.png` is missing — that guard is deliberate, because without it the
+  script would silently regenerate the pack with the OLD cropped terrier and no gate would catch it.
+- **Do not remove `contain: paint` from `.ft-rev-scroll`** in index.astro. Without it the review
+  carousel's off-screen cards inflate `documentElement.scrollWidth` to 1124px at a 390px viewport
+  and fail `mobile-check.mjs:93`, even though nothing actually scrolls sideways.
+- **Do not hand-edit `src/data/reviews-snapshot.json`** — the n8n rotator owns it and overwrites it.
+- **Do not reinstate the homepage's aggregate rating block or the "Verbatim excerpts" caption**
+  without asking — both were removed by owner ruling on 2026-08-09. ⚠️ If an aggregate rating is
+  ever marked up as `AggregateRating`, it MUST be visible on the page again; nothing in the repo
+  emits it today, which is why removing the visible block was safe.
+
+**Known, pre-existing, NOT introduced by the hero work and NOT fixed:** the homepage reports
+horizontal overflow at **1024–1300px** viewport widths (`documentElement.scrollWidth` 1123 at
+1024px, 1306 at 1280px) — identical with and without the new hero. It is the same *phantom* as the
+carousel's (a clipped scroller inflating the root's reported width, with no element actually
+overflowing), and `mobile-check` only renders 390px so no gate sees that band. Its own ticket.
 
 ## 🎉 2026-08-08 — **THE SWITCHOVER IS DONE. fairytailsdoggrooming.co.uk NOW SERVES THE NEW SITE.**
 
