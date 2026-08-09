@@ -122,4 +122,49 @@ if (mode === 'live') {
 }
 
 console.log(`\n${MANIFEST.length} URLs checked — ${fail} failures, ${warn} planned-but-missing.`);
+// ── INDEXABILITY (live mode only) ────────────────────────────────────────────────────────────
+// This exists because the failure it catches is SILENT and expensive. Indexability is driven by
+// the repo Actions variable INDEXABLE; unset it, rename it, or lose it in a workflow edit and the
+// next deploy de-indexes the live business site — through a completely GREEN Actions run, with no
+// error raised anywhere.
+//
+// It nearly happened for a different reason on 2026-08-09: the project's session memory — which
+// loads at the start of EVERY session — still said "noindexed until cutover; flip day sets true"
+// a day AFTER the flip, which reads as an instruction to unset the variable. Documentation rots.
+// A gate does not. So the post-deploy check now asserts the property directly against production
+// instead of trusting anyone to remember.
+//
+// ⚠️ dist mode deliberately does NOT check this. A LOCAL build is noindexed by design (the env var
+// is not set on a dev machine) and that is correct, not a bug — asserting it locally would train
+// everyone to ignore a red gate. Only production is asserted.
+if (mode === 'live') {
+  console.log('');
+  const problems = [];
+  try {
+    const robots = await (await fetch(`${SITE}/robots.txt`, { redirect: 'follow' })).text();
+    const disallowsAll = /^\s*Disallow:\s*\/\s*$/im.test(robots);
+    const namesSitemap = /^\s*Sitemap:\s*https?:\/\/\S+/im.test(robots);
+    if (disallowsAll) problems.push('robots.txt says `Disallow: /` — production is blocking ALL crawlers');
+    if (!namesSitemap) problems.push('robots.txt does not name a Sitemap');
+    console.log(
+      `  ${disallowsAll || !namesSitemap ? 'FAIL' : 'OK  '} robots.txt — ${disallowsAll ? 'DISALLOWS EVERYTHING' : 'allows'}${namesSitemap ? ', names the sitemap' : ', NO sitemap line'}`,
+    );
+
+    const html = await (await fetch(`${SITE}/`, { redirect: 'follow' })).text();
+    const meta = html.match(/<meta[^>]+name=["']robots["'][^>]*>/i);
+    const noindexed = meta && /noindex/i.test(meta[0]);
+    if (noindexed) problems.push(`the live homepage carries ${meta[0]}`);
+    console.log(`  ${noindexed ? 'FAIL' : 'OK  '} homepage meta robots — ${meta ? meta[0] : 'none (indexable)'}`);
+  } catch (err) {
+    problems.push(`could not verify indexability: ${err.message}`);
+    console.log(`  FAIL indexability check errored — ${err.message}`);
+  }
+  if (problems.length) {
+    fail += problems.length;
+    console.log(`\n❌ PRODUCTION IS NOT INDEXABLE:\n  - ${problems.join('\n  - ')}`);
+    console.log('  Check the repo Actions variable: gh variable list -R Fairytails123/groomingwebsite');
+    console.log('  It must be INDEXABLE=true. This is a live business site — fix this before anything else.');
+  }
+}
+
 process.exit(fail > 0 ? 1 : 0);

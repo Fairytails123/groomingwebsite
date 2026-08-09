@@ -48,6 +48,12 @@ step left between you and them.
   There is deliberately NO static `public/robots.txt`.
 - The deploy workflow passes `PUBLIC_INDEXABLE: ${{ vars.INDEXABLE }}`. **The repo Actions
   variable `INDEXABLE` is `true` — set at go-live 2026-08-08 — and must stay that way.**
+- ✅ **This is now machine-checked, not merely written down.** `npm run verify-urls -- --live`
+  asserts production's robots.txt allows and names the sitemap, and that the homepage carries no
+  `noindex` meta. Proven to fail on a genuinely noindexed build, not just to pass on a good one.
+  It was added because the near-miss came from DOCUMENTATION: the session memory still said
+  "noindexed until cutover; flip day sets true" a day after the flip, which reads as an
+  instruction to unset the variable. Docs rot; the gate does not.
   Unsetting, renaming or "restoring" it de-indexes the live business site on the next deploy,
   silently, via a GREEN run. Check, don't assume:
   `gh variable list -R Fairytails123/groomingwebsite`.
@@ -255,7 +261,7 @@ single migration re-save on the harvest date — see WEBSITE-PLAN's copy log).
 
 | Script | What it does |
 |---|---|
-| `verify-urls` | URL manifest gate (18 URLs). No flag = local `dist/`. **`-- --live` checks PRODUCTION over HTTP — that is the post-deploy gate now** (note the double dash; `npm run verify-urls --live` is swallowed by npm and silently runs in dist mode). `--preview` still points at the dead preview subdomain and will fail every URL; don't use it. |
+| `verify-urls` | URL manifest gate (18 URLs). No flag = local `dist/`. **`-- --live` checks PRODUCTION over HTTP — that is the post-deploy gate now** (note the double dash; `npm run verify-urls --live` is swallowed by npm and silently runs in dist mode). `--preview` was REMOVED at go-live. ⚠️ **In `--live` mode it also asserts PRODUCTION IS INDEXABLE** (robots.txt allows + names the sitemap; no `noindex` meta on the homepage) — added 2026-08-09 because that failure is otherwise completely silent. It deliberately does NOT assert this in dist mode: a local build is noindexed by design. |
 | `mobile-check` | 📱 The mobile gate (above). Needs `astro preview` running. |
 | `shots` | Dual-viewport screenshots → `shots/<slug>-{1440,390}.png`. Needs `astro preview`. |
 | `verify-stage3` | Services-cluster facts: 105 rows render, 0 hidden at t=0, spot-check vs the rendered table, and no banned pick-up/policy wording anywhere. |
