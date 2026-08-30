@@ -73,7 +73,7 @@ if (pl) {
 }
 
 console.log('\n--- pick-up facts (owner rulings 2026-07-16) ---');
-const pages = ['/terms-and-conditions/', '/who-we-are/', '/services/', '/services/full-groom-price-list/', '/services/frequently-asked-questions/', '/'];
+const pages = ['/terms-and-conditions/', '/who-we-are/', '/services/', '/services/full-groom-price-list/', '/services/frequently-asked-questions/', '/dog-groomers-st-leonards/', '/'];
 // Wordings the old site published that are now WRONG. Any reappearance is a regression.
 const banned = [
   [/free (pick|door)/i, 'a "free pick-up/door-to-door" claim (pick-ups are £2 per journey)'],
@@ -104,7 +104,7 @@ ok('no banned pick-up/policy wording in any built page (see list above)');
 // CURRENT list (pricing.pickup.eligible). Banned patterns only catch retired
 // wordings — this catches a page silently keeping a stale list after the next
 // ruling change (eligibility changed twice on 2026-07-16 alone).
-const eligiblePages = ['/', '/services/', '/services/frequently-asked-questions/', '/services/full-groom-price-list/', '/terms-and-conditions/'];
+const eligiblePages = ['/', '/services/', '/services/frequently-asked-questions/', '/services/full-groom-price-list/', '/terms-and-conditions/', '/dog-groomers-st-leonards/'];
 const eligibleRe = /full grooms,? hand stripping and bath (and|&(amp;)?) brush/i;
 for (const p of eligiblePages) {
   const html = read(p);

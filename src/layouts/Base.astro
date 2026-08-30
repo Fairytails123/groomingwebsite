@@ -80,8 +80,21 @@ const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
       });
       try {
         var saved = localStorage.getItem('ft-consent');
-        if (saved) gtag('consent', 'update', JSON.parse(saved));
-      } catch (e) {}
+        if (saved) {
+          var consent = JSON.parse(saved);
+          var consentKeys = ['ad_storage', 'ad_user_data', 'ad_personalization', 'analytics_storage'];
+          var validConsent = consent && typeof consent === 'object' && !Array.isArray(consent) &&
+            Object.keys(consent).length === consentKeys.length &&
+            consentKeys.every(function (key) {
+              return consent[key] === 'granted' || consent[key] === 'denied';
+            });
+          if (!validConsent) throw new Error('Invalid stored consent');
+          gtag('consent', 'update', consent);
+        }
+      } catch (e) {
+        // Corrupt/stale consent must never become a permanent hidden-banner latch.
+        try { localStorage.removeItem('ft-consent'); } catch (ignore) {}
+      }
     </script>
     <script is:inline define:vars={{ gtmId }}>
       (function (w, d, s, l, i) {

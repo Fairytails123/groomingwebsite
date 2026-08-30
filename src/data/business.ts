@@ -26,6 +26,18 @@ export const business = {
     jsonLd: { opens: '08:00', closes: '17:30', days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] },
   },
 
+  // Owner-confirmed SEO facts, 2026-08-09. Keep these claims precise: grooming
+  // takes place at the fixed Hastings salon; St Leonards is a collection and
+  // return service area, NOT a second location and NOT mobile/at-home grooming.
+  grooming: {
+    businessYears: 7,
+    qualifications: 'City & Guilds dog grooming qualifications',
+    fullyInsured: true,
+    airConditionedSalon: true,
+    serviceAreas: ['Hastings', 'St Leonards'],
+    model: 'salon-only',
+  },
+
   // ONE public number (owner ruling 2026-07-17): the salon line, which also runs
   // the business WhatsApp. The old mobile 07842 116216 is RETIRED from the site
   // entirely — the harvest's pages still carry it; never copy it back over.
@@ -54,6 +66,7 @@ export const business = {
   // link out, never iframe.
   booking: {
     jotform: 'https://pci.jotform.com/form/251190647924057',
+    confirmation: 'Appointments are confirmed immediately in the online booking system.',
   },
 
   // £25/month per dog: a Full Groom one month, a Bath, Brush & Tidy the next,
@@ -85,7 +98,8 @@ export const business = {
     placeId: 'ChIJV3P8-VAb30cRHoBgRmxCYIM',
     rating: 4.9,
     count: 63,
-    readUrl: 'https://search.google.com/local/reviews?placeid=ChIJV3P8-VAb30cRHoBgRmxCYIM',
+    readUrl:
+      'https://www.google.com/maps/search/?api=1&query=The+Fairy+Tails+Dog+Grooming&query_place_id=ChIJV3P8-VAb30cRHoBgRmxCYIM',
     writeUrl: 'https://search.google.com/local/writereview?placeid=ChIJV3P8-VAb30cRHoBgRmxCYIM',
   },
 
@@ -97,7 +111,10 @@ export const business = {
   sisterSite: 'https://www.thefairytails.co.uk',
 
   tracking: {
-    gtm: 'GTM-W93L9XK5', // shared container with the main site
+    // Dedicated grooming-only assets. Never reuse the separate www.thefairytails.co.uk
+    // account, container, property, stream, pixel or tag in this website.
+    gtm: 'GTM-TZWLLT4H',
+    ga4MeasurementId: 'G-TVNY7185K3',
   },
 
   // n8n "Grooming Website Enquiry" webhook on the self-hosted VPS —

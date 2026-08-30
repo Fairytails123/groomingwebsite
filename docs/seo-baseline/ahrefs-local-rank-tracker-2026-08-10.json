@@ -1,0 +1,87 @@
+{
+  "capturedAt": "2026-08-10",
+  "domain": "fairytailsdoggrooming.co.uk",
+  "ahrefsProject": {
+    "id": "10212777",
+    "name": "Fairytailsdoggrooming",
+    "verified": true
+  },
+  "siteExplorer": {
+    "organicKeywords": 5,
+    "estimatedUkOrganicTraffic": 51,
+    "estimatedTrafficValueUsd": 1.3,
+    "topThreeKeywords": 3,
+    "limitation": "The visible organic-ranking rows were last refreshed in July 2026, before the 8 August site cutover, so they are directional rather than evidence of the new site's settled performance."
+  },
+  "backlinks": {
+    "liveBacklinks": 207,
+    "liveReferringDomains": 168,
+    "qualityNote": "The totals remain polluted by low-quality profile spam. Qualifying links must be independently verified for relevance, crawlability, direct canonical target, truthful NAP and rel state."
+  },
+  "siteAudit": {
+    "status": "in_progress",
+    "healthScore": 84,
+    "urls": 87,
+    "errors": 14,
+    "warnings": 17,
+    "notices": 6,
+    "actionableIssuesReviewed": [
+      "Meta descriptions outside the tested useful range on contact, gallery, teeth cleaning and who-we-are",
+      "Three page titles shown in Google differ from current page titles"
+    ],
+    "excludedFalsePositive": "Fourteen missing-alt warnings are deliberate empty alt attributes on decorative Header and Hero imagery and must not be converted into noisy alternative text."
+  },
+  "rankTracker": {
+    "addedAt": "2026-08-10",
+    "source": "Google",
+    "deviceViewAtVerification": "desktop",
+    "totalKeywordLocationPairs": 11,
+    "initialRankState": "not_yet_processed",
+    "locations": [
+      {
+        "name": "Hastings, England, United Kingdom",
+        "language": "English",
+        "keywords": [
+          "fairy tails dog grooming",
+          "dog groomers hastings",
+          "dog grooming hastings",
+          "dog groomer hastings",
+          "dog grooming services hastings",
+          "qualified dog groomers hastings",
+          "dog grooming price list",
+          "dog grooming near me"
+        ]
+      },
+      {
+        "name": "Saint Leonards-on-sea, England, United Kingdom",
+        "language": "English",
+        "keywords": [
+          "dog groomers st leonards",
+          "dog grooming st leonards",
+          "dog grooming near me"
+        ]
+      }
+    ],
+    "verification": "Ahrefs Rank Tracker showed All 11 and only the two approved localities after eight unintended national rows were removed. No settled position data was available at capture time."
+  },
+  "keywordExplorerEvidence": {
+    "dog groomers hastings": {
+      "ukMonthlyVolume": 90,
+      "keywordDifficulty": 22
+    },
+    "dog grooming hastings": {
+      "ukMonthlyVolume": 30
+    },
+    "dog groomer hastings": {
+      "ukMonthlyVolume": 10
+    },
+    "dog grooming near me": {
+      "ukMonthlyVolume": 7900,
+      "keywordDifficulty": 2
+    },
+    "dog grooming price list": {
+      "ukMonthlyVolume": 70,
+      "keywordDifficulty": 0
+    }
+  }
+}

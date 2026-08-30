@@ -1,0 +1,151 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HillDivider from '../components/HillDivider.astro';
+import { business } from '../data/business';
+import pricing from '../data/pricing.json';
+import groupOfDogs from '../assets/pages/services/group-of-dogs.png';
+
+const { pickup } = pricing;
+---
+
+<Base
+  title="Dog Groomers St Leonards | Collection & Return | Fairy Tails"
+  description={`Book dog grooming for St Leonards online, with immediate confirmation. We collect your dog, groom them at our Hastings salon and return them for £${pickup.journeyPrice} each way.`}
+  path="/dog-groomers-st-leonards/"
+  ogImage={`${business.domain}${groupOfDogs.src}`}
+>
+  <article data-page="dog-groomers-st-leonards">
+    <header class="bg-moss-900 pb-16 pt-32 sm:pb-20 sm:pt-40">
+      <div class="mx-auto max-w-3xl px-4">
+        <p class="eyebrow text-honey-300">Dog groomers for St Leonards</p>
+        <h1 class="mt-4 font-display text-4xl font-bold leading-tight text-cream-50 sm:text-5xl">
+          Dog grooming without the wasted journey
+        </h1>
+        <p class="mt-4 max-w-2xl text-lg text-cream-200">
+          Book and confirm online, then let us collect your dog from St Leonards, groom them in
+          our air-conditioned Hastings salon and bring them home again.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href={business.booking.jotform} class="btn btn-honey">Book online now</a>
+          <a href="/services/full-groom-price-list/" class="btn btn-ghost-light">See grooming prices</a>
+        </div>
+      </div>
+    </header>
+    <HillDivider class="text-moss-900" flip />
+
+    <section class="mx-auto max-w-6xl px-4 pb-6 pt-10 sm:pt-14">
+      <div class="grid items-center gap-10 md:grid-cols-2">
+        <div>
+          <p class="eyebrow text-honey-700">Clear and local</p>
+          <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+            One Hastings salon, serving St Leonards
+          </h2>
+          <p class="mt-4 leading-relaxed text-bark-700">
+            Our salon is at {business.address.line1}, {business.address.town} — beside Alexandra
+            Park. We do not groom in a van or inside customers' homes. Instead, our collection
+            service saves St Leonards customers the drive and waiting around while their dog is
+            professionally groomed at the salon.
+          </p>
+          <p class="mt-4 leading-relaxed text-bark-700">
+            Collection costs £{pickup.journeyPrice} and the return journey costs
+            £{pickup.journeyPrice}, making a full round trip £{pickup.roundTripPrice}. It is
+            available for {pickup.eligible}.
+          </p>
+        </div>
+        <figure class="polaroid">
+          <Image
+            src={groupOfDogs}
+            alt="Four dogs after grooming by The Fairy Tails team"
+            widths={[480, 800, 1024]}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading="eager"
+          />
+        </figure>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 pt-16">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow text-honey-700">How it works</p>
+        <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+          Book, collect, groom and return
+        </h2>
+      </div>
+      <ol class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <li class="rounded-2xl border-2 border-cream-200 p-6">
+          <p class="font-display text-2xl font-bold text-honey-700">1</p>
+          <h3 class="mt-2 font-display text-xl font-bold text-moss-900">Book online</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bark-700">
+            Choose your appointment online. The system confirms it immediately.
+          </p>
+        </li>
+        <li class="rounded-2xl border-2 border-cream-200 p-6">
+          <p class="font-display text-2xl font-bold text-honey-700">2</p>
+          <h3 class="mt-2 font-display text-xl font-bold text-moss-900">We collect</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bark-700">
+            We pick your dog up from home or work in St Leonards for £{pickup.journeyPrice}.
+          </p>
+        </li>
+        <li class="rounded-2xl border-2 border-cream-200 p-6">
+          <p class="font-display text-2xl font-bold text-honey-700">3</p>
+          <h3 class="mt-2 font-display text-xl font-bold text-moss-900">We groom</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bark-700">
+            Our City & Guilds-qualified, fully insured team grooms your dog at the salon.
+          </p>
+        </li>
+        <li class="rounded-2xl border-2 border-cream-200 p-6">
+          <p class="font-display text-2xl font-bold text-honey-700">4</p>
+          <h3 class="mt-2 font-display text-xl font-bold text-moss-900">We bring them home</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bark-700">
+            Once the groom is finished, we return your dog for another £{pickup.journeyPrice}.
+          </p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 pt-16">
+      <div class="rounded-3xl bg-cream-100 px-6 py-10 sm:px-10 sm:py-12">
+        <div class="grid items-center gap-10 md:grid-cols-2">
+          <div>
+            <p class="eyebrow text-honey-700">Trusted local care</p>
+            <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+              Qualified groomers, established locally
+            </h2>
+            <ul class="mt-6 grid gap-3 text-bark-700">
+              <li class="paw-bullet">City & Guilds dog grooming qualifications</li>
+              <li class="paw-bullet">Fully insured grooming team</li>
+              <li class="paw-bullet">More than seven years in business</li>
+              <li class="paw-bullet">Air-conditioned salon for dogs' comfort</li>
+              <li class="paw-bullet">Every groom tailored to the individual dog</li>
+            </ul>
+          </div>
+          <figure class="polaroid">
+            <Image
+              src={groupOfDogs}
+              alt="A group of dogs after their grooms at The Fairy Tails"
+              widths={[600, 1200]}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-4 pb-24 pt-16 text-center">
+      <p class="eyebrow text-honey-700">Ready when you are</p>
+      <h2 class="mt-3 font-display text-3xl font-bold text-moss-900">
+        Confirm your groom online now
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl leading-relaxed text-bark-700">
+        Choose a full groom, hand stripping or bath and brush appointment and select the St
+        Leonards collection or return service you need. There is no need to wait for a callback.
+      </p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+        <a href={business.booking.jotform} class="btn btn-honey">Book online</a>
+        <a href="/services/" class="btn btn-moss">Explore grooming services</a>
+      </div>
+    </section>
+  </article>
+</Base>

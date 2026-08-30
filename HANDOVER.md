@@ -2,6 +2,261 @@
 
 Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief: `CLAUDE.md`.
 
+## Next session — start here
+
+1. Read `AGENTS.md`, `CLAUDE.md` and `SEO.md` before taking any action. `SEO.md` contains the
+   locked business facts, page-intent map, backlink ledger and verification contract.
+2. Confirm the working directory is
+   `C:\Users\FT Manager\OneDrive\Business\CODING\Dog Grooming website`. Inspect `git status`, the
+   newest release entry and the live GitHub Pages workflow before editing; preserve all unrelated
+   changes and timestamped backups.
+3. Enforce absolute third-party separation. Grooming uses only GTM `GTM-TZWLLT4H`, GA4
+   `G-TVNY7185K3` and `sc-domain:fairytailsdoggrooming.co.uk`. Never use or modify the separate
+   `www.thefairytails.co.uk` assets for grooming.
+4. The backlink gate is **2 of 2 complete**: Waggy List and FreeIndex are public, crawlable and
+   independently verified. Local Dog Groomers remains pending editorial publication; MuddyPup is a
+   corrected pre-existing link and does not count as new.
+5. Completed JotForm booking attribution is still unverified. Report `enquiry_submitted` as a
+   secondary key event only; never report a booking click or enquiry as a completed booking.
+6. Continue with the measured priorities in `SEO.md`: St Leonards indexing/performance, completed
+   booking attribution in the grooming-only estate, citation correction and weekly Ahrefs/GSC review.
+
+## 2026-08-30 — Hastings SEO foundation, link integrity and grooming-only analytics
+
+**Working branch:** `codex/seo-foundation-2026-08-09`, based on `8602d2d`.
+
+**Experiment path:** none - Kam-approved live project edit.
+
+**Actual working project:** `C:\Users\FT Manager\OneDrive\Business\CODING\Dog Grooming website`.
+
+**Release state:** final local candidate passed; approved commit/push/deployment and production
+read-back are in progress. Do not mark live until the Pages workflow and public checks pass.
+
+### Outcome and decisions
+
+- Created a permanently separate grooming measurement estate: GTM account/container
+  `Fairy Tails Dog Grooming` / `fairytailsdoggrooming.co.uk` (`GTM-TZWLLT4H`), dedicated GA4
+  property/stream (`G-TVNY7185K3`, property `552100824`, stream `15528315552`) and a link only to
+  `sc-domain:fairytailsdoggrooming.co.uk` in Search Console.
+- Published grooming GTM Version 2 with the Google tag on Initialization - All Pages and the exact
+  custom event `enquiry_submitted`. GA4 records that event as a key event with no artificial value.
+- Detected an accidental publish to the separate main-site container during rollback. Restored its
+  historical Version 5 as Live, created clean Version 7 (`Restored_5`) as Latest, synchronised the
+  workspace to it, and verified zero pending changes. The session-created Meta tags and both
+  grooming-named triggers are absent. Public payload read-back retains only the main site's own
+  pre-existing measurement configuration.
+- Locked the separation rule into `CLAUDE.md`, `SEO.md`, `WEBSITE-PLAN.md`, the combined baseline,
+  source data and user-level Codex instructions. Generated pages require `GTM-TZWLLT4H` and reject
+  `GTM-W93L9XK5`.
+- Repaired the retired Google-review destination with Google's supported place-search URL and added
+  a deterministic generated-site checker covering internal page links, image/srcset/poster URLs,
+  CSS assets, XML references and fragments. Final evidence: 201 generated files, 1,147 references,
+  838 same-origin references resolved and **zero broken internal or image references**.
+- Added malformed-consent recovery, dedicated analytics/public-payload checks, consent/network
+  isolation checks and GitHub Pages gates for production indexability, SEO, URLs, service facts and
+  internal assets.
+- Completed the honest St Leonards service-area page and Hastings local foundation without adding a
+  fake location or mobile/in-home grooming claim. The two-link SEO session gate is complete through
+  the independently verified Waggy List and FreeIndex profiles.
+
+### Changed release files
+
+`.github/workflows/deploy.yml`; `AGENTS.md`; `CLAUDE.md`; `HANDOVER.md`; `WEBSITE-PLAN.md`; `SEO.md`;
+`package.json`; `scripts/analytics-checks.mjs`; `scripts/consent-checks.mjs`;
+`scripts/link-checks.mjs`; `scripts/mobile-check.mjs`; `scripts/seo-checks.mjs`;
+`scripts/shots.mjs`; `scripts/stage3-checks.mjs`; `scripts/verify-urls.mjs`;
+`src/components/Footer.astro`; `src/components/LocalBusinessSchema.astro`;
+`src/data/business.ts`; `src/layouts/Base.astro`; `src/pages/contact.astro`;
+`src/pages/dog-groomers-st-leonards.astro`; `src/pages/gallery.astro`; `src/pages/index.astro`;
+`src/pages/services/index.astro`; `src/pages/services/teeth-cleaning.astro`;
+`src/pages/who-we-are.astro`; `docs/seo-baseline/ahrefs-programme-start-2026-08-09.json`;
+`docs/seo-baseline/ahrefs-local-rank-tracker-2026-08-10.json`;
+`docs/seo-baseline/ahrefs-gsc-programme-2026-08-30.json`; `lighthouse-seo-2026-08-30.json`.
+
+Timestamped recovery copies exist beside every edited pre-existing file. Rollback before release is
+to those copies; after release use a normal reverting commit, never history rewriting.
+
+### Preserved invariants and verification
+
+- One Hastings salon, current NAP, Hastings/St Leonards-only service area, salon-only grooming,
+  £2-per-journey collection terms, price list, immediate booking-system confirmation and all existing
+  primary journeys remain unchanged.
+- Production/indexable build: 16 pages. `verify-seo -- --indexable`: 15 canonical pages and every
+  metadata/schema/NAP/service-area/GTM isolation contract passed. `verify-urls`: 19/19;
+  `verify-stage3`: zero failures; price-list E2E: all 105 rows; hero resilience and Chromium/WebKit
+  mask checks: passed.
+- `verify-links`: 201 files, 1,147 references, 838 resolved same-origin references, zero failures.
+  Its adversarial incomplete-root check exited non-zero as required.
+- `verify-analytics`: generated site uses only grooming GTM; public grooming payload is non-empty,
+  contains `G-TVNY7185K3` and `enquiry_submitted`, and excludes `G-TPBSKV29CJ`.
+- `verify-consent`: malformed storage recovery, essential-only and accept-all persistence/data-layer
+  updates passed; browser requests used `GTM-TZWLLT4H` and `G-TVNY7185K3`, never the main-site IDs.
+- Mobile gate: all 15 pages passed, with 11 accepted low-resolution source-image warnings only.
+  St Leonards was visually reviewed at 390, 1024, 1280 and 1440 px with no layout regression.
+- Fresh local Lighthouse: Performance 98, Accessibility 100, Best Practices 100, SEO 100; FCP
+  1.5 s, LCP 2.2 s, CLS 0, TBT 10 ms and Speed Index 1.5 s.
+- Completed cross-domain JotForm booking attribution remains untested and must not be claimed.
+
+## 2026-08-10 — FreeIndex profile completed (EXTERNAL; manual review pending)
+
+Kam privately created/authenticated the FreeIndex account and explicitly authorised completing the
+listing. The free public profile is now 75% complete with every required field checked plus website,
+one Full Groom service, opening hours and payment methods. It contains the truthful Hastings NAP,
+Dog Grooming category, three unique salon/service/trust description sections, compliant service
+tags, Mon–Fri 08:00–17:30 hours, weekends closed and a direct canonical-site website link. The
+existing one photo/logo was retained. No review was created, no unsupported claim was added and the
+Premium offer was declined.
+
+Independent signed-out verification found HTTP 200, a self-canonical profile and a direct
+`https://fairytailsdoggrooming.co.uk/` website anchor with no `rel` attribute. However, the page
+currently emits `<meta name="robots" content="noindex">` and has no `Manually reviewed` date.
+Established comparison profiles are indexable and show manual-review dates, so FreeIndex remains a
+third-party moderation dependency. Backlink gate stays **1 of 2** until `noindex` is removed and the
+public page is reverified. The next session must recheck this existing profile read-only and must not
+create a second account/listing, resubmit it or purchase Premium to obtain the link. No source,
+commit, push, deployment, payment, review or message was made.
+
+Documentation recovery point for the anti-regression pass: `SEO.md.backup-20260810-170820` and
+`HANDOVER.md.backup-20260810-170820`. A second pre-read-back handover copy exists at
+`HANDOVER.md.backup-20260810-170945`.
+
+## 2026-08-10 — Ahrefs local tracking and metadata hardening (LOCAL ONLY; backlinks pending)
+
+**Working branch:** `codex/seo-foundation-2026-08-09` based on `8602d2d`.
+
+**Experiment path:** none - Kam-approved live project edit.
+
+**Actual working project:** `C:\Users\FT Manager\OneDrive\Business\CODING\Dog Grooming website`.
+**Release state:** local candidate only. No commit, push, deployment, Search Console/Business Profile action, payment, outreach or production-data change was made.
+
+### Outcome
+
+- Ahrefs Rank Tracker project `10212777` now contains exactly 11 approved keyword/location pairs:
+  eight for Hastings and three for Saint Leonards-on-sea. Eight mistakenly added national rows were
+  removed and the final Ahrefs read-back showed `All 11`, with only the two approved localities.
+  Ranks were still unprocessed; this is a tracking baseline, not a claimed ranking result.
+- Added `docs/seo-baseline/ahrefs-local-rank-tracker-2026-08-10.json` with the locality set, current
+  stale-data limitation, Ahrefs Site Explorer/Site Audit context and keyword-volume evidence.
+- Rewrote the local candidate meta descriptions for contact (142 characters), gallery (142) and
+  ultrasonic teeth cleaning (137). Tightened `scripts/seo-checks.mjs` from the permissive 50–200
+  range to 100–165 characters. The prior who-we-are candidate is 158 characters.
+- Ahrefs' 14 missing-alt warnings were reviewed and rejected as false positives: they are deliberate
+  empty alternative text on decorative Header/Hero imagery and remain unchanged.
+- The Good Dog Guide was removed from the qualifying-backlink route. Its website-link tiers are paid
+  (£25/£50 per year) and its terms make outbound links nofollow. Its profile can be corrected later
+  as a citation-only action, including the `Saloon` typo, but must not be purchased to satisfy this gate.
+- FreeIndex was the approved next route (Ahrefs DR 81, about 4,866 UK traffic/1,880 keywords). The
+  account and profile were subsequently completed on 2026-08-10; see the newer entry above. The
+  public page remains `noindex` pending manual review, so the backlink gate remains **1 of 2**.
+
+### Exact changed and added files in this continuation
+
+`src/pages/contact.astro`; `src/pages/gallery.astro`; `src/pages/services/teeth-cleaning.astro`;
+`scripts/seo-checks.mjs`; `docs/seo-baseline/ahrefs-local-rank-tracker-2026-08-10.json`; `SEO.md`;
+`HANDOVER.md`; generated local evidence `lighthouse-seo-2026-08-10.json` and refreshed `shots/*.png`.
+
+Timestamped `*.backup-20260810-134831` recovery copies exist for every edited pre-existing file.
+Rollback is to those exact copies on this branch; never reset the dirty worktree or rewrite `main`.
+
+### Fresh verification
+
+- Ordinary local/noindex build: successful; `npm run verify-seo`, `npm run verify-urls` (19/19) and
+  `npm run verify-stage3` passed.
+- Production/indexable local build: successful; `npm run verify-seo -- --indexable`, URL and Stage 3
+  suites passed; 15 canonical pages, sitemap, robots, JSON-LD, NAP and service-area honesty are green.
+- `npm run price-list-e2e`: 0 failures, including all 105 rows with JavaScript on and off.
+- `npm run hero-resilience` and `npm run hero-mask-support`: passed in the tested reduced-motion,
+  JavaScript-off, back-navigation, WebKit and Chromium states.
+- `npm run mobile-check`: all pages passed; 11 low-resolution warnings remain accepted because the
+  harvested source photographs are physically smaller than ideal 2x candidates.
+- Refreshed 390 px and 1440 px screenshots for every page. Contact, gallery and teeth-cleaning were
+  visually inspected at both sizes with no layout regression found; cookie controls visible in the
+  captures are expected first-visit state.
+- Fresh mobile Lighthouse on the local homepage: Performance 98, Accessibility 100, Best Practices
+  100, SEO 100; LCP 2.2 s, CLS 0, TBT 70 ms, Speed Index/FCP 1.5 s.
+
+## 2026-08-09 — Local SEO Phase 1 candidate (LOCAL ONLY; backlinks pending)
+
+**Working branch:** `codex/seo-foundation-2026-08-09` based on `8602d2d`.
+
+**Experiment path:** none - Kam-approved live project edit.
+
+**Actual working project:** `C:\Users\FT Manager\OneDrive\Business\CODING\Dog Grooming website`.
+**Release state:** local candidate only. No commit, push, deployment, production-data change, payment or outreach was made.
+
+### Pause checkpoint — 2026-08-09 20:57 BST
+
+Kam paused Phase 1 and approved a documentation-only anti-regression hardening pass. `CLAUDE.md`
+now makes `SEO.md` mandatory reading for SEO-adjacent development; `SEO.md` contains the locked
+business-fact, page-intent, verification and backlink contracts.
+
+- Preserve this branch and all unrelated/local candidate changes. Do not restore individual files
+  from `main`, delete the timestamped backups or start again from the pre-SEO baseline.
+- The source candidate remains local and previously tested; it has not been committed, pushed,
+  deployed or submitted for Search Console indexing. Every push to `main` is production, so none is
+  implied by this pause.
+- The backlink gate is **1 of 2 new qualifying links**: Waggy List counts; corrected MuddyPup does
+  not because its link predated the session; Local Dog Groomers remains unpublished.
+- **Superseded 2026-08-10:** do not resume at The Good Dog Guide; its website-link tiers are paid and
+  its outbound links are nofollow. FreeIndex has since been registered and completed at the public
+  URL in the newest entry, but remains `noindex` pending manual review. Recheck that existing profile
+  read-only; Dog Owners Guide and DogPack require separate action-level approval if needed.
+- Do not call Phase 1 complete until the second new link is public and verified, the final local
+  candidate has passed the gates in `SEO.md`, and both this file and `SEO.md` record the result.
+- Release still requires a separate, explicit scope covering commit, push and production
+  deployment, followed by live robots/sitemap/canonical/schema/booking and Pages-workflow checks.
+
+### Outcome
+
+- Added durable SEO memory in `SEO.md`, a dated Ahrefs baseline, and the project-level two-backlink session gate in `AGENTS.md`.
+- Repositioned the homepage around Hastings dog grooming, immediate online confirmation and optional paid collection/return.
+- Added an honest St Leonards service-area page. It says explicitly that grooming happens at the one Hastings salon and that this is not mobile or in-home grooming.
+- Added current LocalBusiness/WebSite structured data, qualifications/insurance/experience/air-conditioning trust signals, and supporting internal links.
+- Added an SEO regression suite and included the new canonical page in URL, mobile, screenshot and pickup-fact checks.
+
+### Exact changed and added files
+
+`AGENTS.md`; `CLAUDE.md`; `SEO.md`; `HANDOVER.md`; `package.json`; `docs/seo-baseline/ahrefs-programme-start-2026-08-09.json`; `scripts/mobile-check.mjs`; `scripts/seo-checks.mjs`; `scripts/shots.mjs`; `scripts/stage3-checks.mjs`; `scripts/verify-urls.mjs`; `src/components/Footer.astro`; `src/components/LocalBusinessSchema.astro`; `src/data/business.ts`; `src/pages/dog-groomers-st-leonards.astro`; `src/pages/index.astro`; `src/pages/services/index.astro`; `src/pages/who-we-are.astro`.
+
+Timestamped `*.backup-20260809-*` recovery copies exist beside every edited pre-existing file. They are deliberately untracked and must be preserved until the candidate is accepted or restored.
+
+### Preserved invariants
+
+- `INDEXABLE` was not changed. The production-mode test build is indexable; ordinary local builds remain deliberately noindexed.
+- Existing price, booking, services, pickup windows, one-Hastings-salon model, navigation, review display and hero behaviour remain intact.
+- Collection remains £2 per journey / £4 return and only for full groom, hand stripping and bath and brush appointments.
+- No `AggregateRating` was added to first-party structured data; no fake reviews, fake locations or mobile-grooming claims were introduced.
+
+### Verification evidence
+
+- `PUBLIC_INDEXABLE=true npm run build`: 16 pages built; production/indexable mode passed.
+- `npm run verify-seo -- --indexable`: all 15 canonical pages, titles/descriptions/canonicals/H1/robots, exact sitemap, schema NAP/service areas, St Leonards honesty and retired-claim checks passed.
+- `npm run verify-urls`: 19/19 passed. `npm run verify-stage3`: 0 failures.
+- `npm run mobile-check`: every canonical page passed at 390px; 11 accepted pre-existing small-source-image warnings only.
+- Screenshots visually reviewed at 390, 1024, 1280 and 1440px for homepage, St Leonards, services and who-we-are; no new clipping/overflow/layout regression found. The previously documented phantom root-width signature at 1024–1300 remains outside this SEO patch.
+- `hero-resilience`: reduced motion, JS-off, back-nav, play-once viewports and reveal all passed. `hero-mask-support`: WebKit and Chromium passed.
+- `price-list-e2e`: filter and all 105 JS/no-JS price rows passed. `git diff --check` and final status/diff review still required after this handover edit.
+- Performance: no new Lighthouse run yet; production baseline remains 98/100/100/100 with CLS 0 from the prior 2026-08-09 release. Do not claim a fresh performance result until measured.
+
+### Backlinks — mandatory Phase 1 item at 1 of 2
+
+The required background agent attempted only free, genuine listings and made no unauthorised account or external change.
+
+- Local Dog Groomers explicitly accepts free dog-groomer listing requests without signup. A truthful request was submitted at 15:46 BST through `https://localdoggroomers.co.uk/contact/`, including the current NAP, canonical URL, salon-only positioning and Hastings/St Leonards collection facts. The site returned `Your submission was successful.` This is pending editorial publication and **does not count as a backlink yet**.
+- Waggy List is now live at `https://waggylist.co.uk/listing/the-fairy-tails-dog-grooming-2` and is **qualifying new backlink 1 of 2**. An independent public read-back found the correct full NAP, Hastings category/search discovery, a self-canonical `index,follow` profile, correct LocalBusiness JSON-LD and two direct links to `https://fairytailsdoggrooming.co.uk/` with `rel="noopener noreferrer"` only.
+- MuddyPup's pre-existing profile at `https://www.muddypup.com/groomer/220d6b5e-ec98-4e7f-a434-28906daebdae` was claimed, corrected and published. It is self-canonical and `index,follow`, links directly to the canonical site with `rel="noopener noreferrer"` only, and now has the correct name, phone, TN34 3SB address data, salon/trust/service facts and collection terms. The retired Fairlight/Barley address, TN35 postcode and old mobile are absent from visible text and HTML. It does **not** count as a new backlink because the link predated this session. Known defect: its embedded OpenStreetMap marker and JSON-LD `geo` still use old coordinates `50.8710632, 0.6299924`, although Google/Apple map links query the correct Mount Pleasant Road address; opening hours are not publicly exposed. No support message was sent because outreach was not authorised.
+- The Good Dog Guide has a public correct-NAP listing at `https://www.thegooddogguide.com/east-sussex/hastings/dog-grooming-groomers/the-fairy-tails/30416`, but it contains no external website link. **Superseded route decision 2026-08-10:** do not pursue it for this backlink gate because website-link tiers are paid and outbound links are nofollow.
+- **Superseded status 2026-08-10:** FreeIndex now has a completed Fairy Tails profile at `https://www.freeindex.co.uk/profile(the-fairy-tails-dog-grooming)_865530.htm`. It is public with the correct direct followed link/NAP but remains `noindex` pending manual review. Never create a duplicate listing.
+- MyPetGroomer has a stale unclaimed 100 Parker Road profile and is a later cleanup fallback, not a completed link.
+- Ahrefs comparison confirms Dog Owners Guide (DR 37; about 2,793 UK traffic/901 keywords) and DogPack (DR 48; about 1,764 UK traffic/1,140 keywords) are stronger authenticated fallbacks than generic zero-traffic directories. Both need a real owner account/private authentication, so no account was fabricated. GoodHound, BizBranches and Firmlocator were rejected as too weak, broken or unable to guarantee a useful public link.
+- Paw Pages has a citation-integrity defect: Ahrefs reports five live nofollow links to Fairy Tails from profile pages, including unrelated competitor profiles such as The Groom Room Hastings and Pawfect Pooch. Its real Fairy Tails profile and all of those links predate this session. Treat Paw Pages as a cleanup task, not a new backlink source, and correct the mislinked profiles later.
+
+One new link is counted: Waggy List. The corrected MuddyPup citation is valuable but cannot satisfy the new-link quota because its backlink already existed. Local Dog Groomers is still unpublished. Phase 1 remains incomplete at **1 of 2** until one more new public page contains a crawlable, truthful link to the canonical homepage and is independently read back. **Current route decision superseding the original 2026-08-09 handoff:** recheck the existing FreeIndex profile for removal of `noindex`; do not duplicate or resubmit it. The Good Dog Guide is excluded. Dog Owners Guide and DogPack are the next evidence-backed options under separate action-level approval. Never ask Kam to paste passwords or email codes into chat.
+
+### Rollback and production considerations
+
+Rollback before commit is the timestamped backup set plus deletion of the new files listed above; branch baseline is `8602d2d`. If later released, use a normal reverting commit—never rewrite `main`. A release requires separate explicit permission to commit/push/deploy, then live checks of the new URL, robots, sitemap, JSON-LD, booking links and Pages workflow. Request Search Console indexing only after the live read-back succeeds.
+
 ## 2026-08-09 — Hero animation v2 (four-dog pack) + homepage reviews changes → LIVE
 
 **Deployed to production at the owner's instruction, explicitly for live bug testing by him.**

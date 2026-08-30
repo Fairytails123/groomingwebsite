@@ -3,6 +3,7 @@
 Static rebuild of **fairytailsdoggrooming.co.uk** (previously WordPress on Hostinger).
 Astro 6 + Tailwind v4, **hosted on GitHub Pages** (repo `Fairytails123/groomingwebsite`, public).
 Read `HANDOVER.md` first every session (where we are), `WEBSITE-PLAN.md` for the master plan,
+`SEO.md` before any SEO, local-business, metadata, structured-data or location-page work, and
 `docs/SWITCHOVER-RUNBOOK.md` for what the DNS cutover did and how to roll it back.
 
 ## 🔴 THE SITE IS LIVE — read this before you change anything (go-live 2026-08-08, 19:02 UTC)
@@ -136,6 +137,35 @@ step left between you and them.
   the old site's Acuity links.
 - ⚠️ The Stripe subscription link is LIVE — never complete a test checkout. Always show
   "£25/month per dog, 2-month minimum term" next to the sign-up CTA.
+
+## SEO anti-regression gate
+
+`SEO.md` is the durable SEO source of truth. Read it with the newest `HANDOVER.md` entry before
+changing public business facts, page titles or descriptions, canonicals, structured data,
+location/service-area pages, internal links, sitemap coverage, robots behaviour or backlinks.
+
+- Treat the confirmed NAP, single Hastings salon, Hastings/St Leonards-only service area,
+  salon-only grooming model, paid collection terms, eligible services, immediate online booking
+  confirmation and documented trust claims as contracts—not copy suggestions. Never revive the
+  retired mobile/address, imply a second St Leonards premises, mobile/in-home grooming, free
+  collection or out-of-area coverage.
+- Preserve the intent-to-page map in `SEO.md`. Do not create another Hastings or St Leonards page,
+  or repurpose an existing page, without checking cannibalisation and recording an owner-approved
+  map change.
+- An owner-approved business-fact change must update the canonical data source, affected page and
+  schema consumers, `SEO.md`, the newest `HANDOVER.md` entry and the relevant regression checks in
+  one reviewable scope. A third-party citation must not be treated as authority over owner-confirmed
+  first-party facts.
+- A submitted directory form is not a backlink. Count one only after a public, crawlable source
+  page and its direct canonical target, NAP, `rel`, robots and HTTP state have been read back.
+- Before an SEO candidate is handed off, run a production-indexable local build plus
+  `npm run verify-seo -- --indexable`, `npm run verify-urls`, `npm run verify-stage3` and
+  `npm run mobile-check`, followed by targeted visual/booking-link checks for affected pages.
+  Ordinary unflagged local builds remaining noindexed is expected. Never alter `INDEXABLE` to make
+  a local test pass.
+- Local source edits, commit, push, deployment, Search Console actions and external-profile changes
+  are separate permissions. Never describe a local candidate as live, or an incomplete backlink
+  quota as complete. The current pause/release state is always the newest `HANDOVER.md` entry.
 
 ## The homepage hero animation (v2, 2026-08-09 — replaced v1 of 2026-07-16)
 
@@ -401,6 +431,9 @@ below the fold, or an image cropped to nonsense. Take the screenshot AND look at
   may never show us that review again and the fragment could otherwise live forever.
   ⚠️ Accepted trade-off: an older review deleted on Google will linger, since the API only ever
   shows us the newest five.
-- **GTM** `GTM-W93L9XK5` (shared container), Consent Mode v2 defaulted denied before load;
-  self-hosted ConsentBanner writes `localStorage.ft-consent`.
+- **Grooming-only analytics:** GTM `GTM-TZWLLT4H`; GA4 `G-TVNY7185K3`. Consent Mode v2 is
+  defaulted denied before load; the self-hosted ConsentBanner writes `localStorage.ft-consent`.
+  **Never mix this site with `www.thefairytails.co.uk` in any third-party account, property,
+  container, stream, pixel, tag or other asset.** The main-site container `GTM-W93L9XK5` is
+  prohibited here. Create and use a dedicated grooming asset whenever another integration is added.
 - Public repo: no client data, no secrets, no harvest archive in git.

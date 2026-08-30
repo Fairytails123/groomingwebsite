@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-08-09",
+  "domain": "fairytailsdoggrooming.co.uk",
+  "ahrefsProject": {
+    "id": "10212777",
+    "name": "Fairytailsdoggrooming",
+    "verified": true
+  },
+  "overview": {
+    "domainRatingApprox": 1,
+    "organicKeywords": 5,
+    "estimatedUkOrganicTrafficRange": [48, 51],
+    "backlinks": 172,
+    "referringDomains": 135,
+    "backlinkQualityNote": "The raw counts are heavily inflated by low-quality nofollow .shop and .site profiles. Use independently controlled topical/local links and referral value, not the count, as the KPI."
+  },
+  "primaryKeyword": {
+    "keyword": "dog groomers hastings",
+    "country": "GB",
+    "position": 2,
+    "volume": 90,
+    "keywordDifficulty": 22,
+    "estimatedTraffic": 22,
+    "mobileSharePercent": 80,
+    "serpFeatures": ["local_pack"],
+    "serpSnapshotLastUpdated": "2026-07-08",
+    "limitation": "The SERP snapshot predates the 2026-08-08 production cutover and is not evidence of the new site's settled ranking."
+  },
+  "siteAudit": {
+    "status": "in_progress",
+    "provisionalHealthScore": 84,
+    "urls": 87,
+    "errors": 14,
+    "warnings": 17,
+    "notices": 6,
+    "limitation": "Provisional figures only; re-read the completed crawl before prioritising issues."
+  },
+  "googleSearchConsole": {
+    "status": "no_data_available_for_requested_range"
+  },
+  "rankTracker": {
+    "trackedKeywords": 0
+  }
+}

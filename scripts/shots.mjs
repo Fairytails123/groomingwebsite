@@ -15,6 +15,7 @@ const paths = process.argv.slice(2).length
   ? process.argv.slice(2)
   : [
       '/',
+      '/dog-groomers-st-leonards/',
       '/terms-and-conditions/',
       '/contact/',
       '/who-we-are/',

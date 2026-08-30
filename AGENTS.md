@@ -38,6 +38,29 @@ Full detail, plus the mobile gate, the quality gates, the hero animation rules a
 trap: **`CLAUDE.md`**. Current state and session history: **`HANDOVER.md`** (read it first each
 session). What the cutover did and how to roll it back: **`docs/SWITCHOVER-RUNBOOK.md`**.
 
+## SEO session backlink gate
+
+For every approved SEO work session, a background agent must research and pursue at least two new
+qualifying backlinks. Do not mark the session complete until two are live and verified, or record
+the session as pending when third-party moderation, login, identity proof or another external
+dependency prevents completion.
+
+A qualifying backlink must be crawlable, topically or geographically relevant, independently
+controlled, point directly to the canonical HTTPS domain, and use truthful business and NAP
+details. Paid link schemes, automated bulk submissions, generic spam directories, fake accounts,
+fake reviews, fake personas, undisclosed exchanges, exact-match anchor manipulation and any form
+of misrepresentation never count.
+
+Read-only prospecting is allowed. Creating or claiming accounts, accepting terms, submitting a
+listing, sending outreach, publishing content, paying money or changing an external profile still
+requires Kam's explicit action-level approval. Credentials must use the official login flow and
+must never be copied into files, prompts, logs or memory. For every earned link, record the source
+URL, target URL, anchor or context, `rel` attribute, HTTP status, NAP accuracy, date submitted,
+date live, approval owner and verification evidence; re-check it in Ahrefs and Google Search
+Console after crawling. This gate never overrides the live-project pre-change gate and never
+grants permission to commit, push, deploy, send messages, make purchases or perform another
+external change.
+
 
 <!-- dualdev-standing-rules-v1 (appended 2026-08-09; canonical copy: _dev-system\templates\AGENTS.md) -->
 

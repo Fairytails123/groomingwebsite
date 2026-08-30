@@ -1,0 +1,60 @@
+---
+import { business } from '../data/business';
+
+// Homepage-only entity markup. Keep it aligned with visible page copy and the
+// public business facts in business.ts. In particular, there is ONE physical
+// salon in Hastings; St Leonards is an areaServed, never a second address.
+const dayUrls = business.hours.jsonLd.days.map((day) => `https://schema.org/${day}`);
+const phone = business.phones.main.tel.replace('tel:', '');
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${business.domain}/#website`,
+      url: `${business.domain}/`,
+      name: business.name,
+      alternateName: 'Fairy Tails Dog Grooming',
+    },
+    {
+      '@type': 'LocalBusiness',
+      '@id': `${business.domain}/#grooming-salon`,
+      name: business.name,
+      description:
+        'City & Guilds-qualified, fully insured dog groomers in Hastings, with online booking and collection and return across Hastings and St Leonards.',
+      url: `${business.domain}/`,
+      logo: `${business.domain}/icon-512.png`,
+      image: `${business.domain}/icon-512.png`,
+      telephone: phone,
+      email: business.emails.info,
+      priceRange: '££',
+      currenciesAccepted: 'GBP',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: business.address.line1,
+        addressLocality: business.address.town,
+        postalCode: business.address.postcode,
+        addressCountry: business.address.countryCode,
+      },
+      areaServed: business.grooming.serviceAreas.map((name) => ({
+        '@type': 'City',
+        name,
+      })),
+      hasMap: business.mapsUrl,
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: dayUrls,
+        opens: business.hours.jsonLd.opens,
+        closes: business.hours.jsonLd.closes,
+      },
+      sameAs: Object.values(business.socials),
+    },
+  ],
+};
+
+// Escape '<' so user-controlled future values can never close the script tag.
+const json = JSON.stringify(schema).replaceAll('<', '\\u003c');
+---
+
+<script type="application/ld+json" set:html={json}></script>

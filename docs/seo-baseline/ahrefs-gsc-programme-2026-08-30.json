@@ -1,0 +1,178 @@
+{
+  "capturedAt": "2026-08-30",
+  "site": "https://fairytailsdoggrooming.co.uk/",
+  "scope": "United Kingdom web search, with Hastings and Saint Leonards-on-sea locality tracking",
+  "ahrefs": {
+    "project": {
+      "id": 10212777,
+      "name": "Fairytailsdoggrooming",
+      "verified": true
+    },
+    "siteAudit": {
+      "status": "in_progress",
+      "healthScore": 84,
+      "urls": 87,
+      "errors": 14,
+      "warnings": 17,
+      "notices": 8,
+      "actionableIssues": {
+        "external3xx": 2,
+        "external4xx": 1,
+        "metaDescriptionTooLong": 2,
+        "metaDescriptionTooShort": 2,
+        "pageTitleSerpTitleMismatch": 5,
+        "missingAltReported": 14
+      },
+      "interpretation": "The 14 missing-alt reports are deliberate decorative-image false positives. Re-read the completed crawl before prioritising any other issue."
+    },
+    "rankTracker": {
+      "comparisonDate": "2026-08-30",
+      "comparisonPreviousDate": "2026-08-23",
+      "keywordsConfigured": 11,
+      "mobile": {
+        "dog groomers hastings": 2,
+        "dog grooming hastings": 2,
+        "dog groomer hastings": 3,
+        "dog grooming near me — Hastings": 2,
+        "dog grooming st leonards": 11,
+        "dog groomers st leonards": 12,
+        "qualified dog groomers hastings": 3
+      },
+      "desktop": {
+        "dog groomers hastings": 2,
+        "dog grooming hastings": 3,
+        "dog groomer hastings": 3,
+        "dog grooming near me — Hastings": 6,
+        "dog grooming st leonards": 11,
+        "qualified dog groomers hastings": 3
+      },
+      "caveat": "Treat SERP-feature position and conventional organic position separately. Some Ahrefs position-two results are the first named blue link after the local pack."
+    },
+    "siteExplorer": {
+      "organicKeywords": 4,
+      "topThreeKeywords": 3,
+      "estimatedMonthlyTraffic": 57,
+      "note": "Site Explorer is sparse and contains stale SERP rows; GSC is the primary performance source."
+    },
+    "webAnalytics": {
+      "pageviews": 0,
+      "visitors": 0,
+      "visits": 0,
+      "status": "No usable tracking data captured for 2026-08-09 to 2026-08-30."
+    }
+  },
+  "googleSearchConsoleViaAhrefs": {
+    "dateRange": {
+      "start": "2026-08-09",
+      "end": "2026-08-29"
+    },
+    "country": "GBR",
+    "searchType": "web",
+    "queries": {
+      "dog groomers hastings": { "clicks": 15, "impressions": 101, "ctrPercent": 14.9, "averagePosition": 3.76 },
+      "dog grooming hastings": { "clicks": 4, "impressions": 42, "ctrPercent": 9.5, "averagePosition": 6.71 },
+      "dog groomer hastings": { "clicks": 4, "impressions": 29, "ctrPercent": 13.8, "averagePosition": 3.07 },
+      "dog groomers near me": { "clicks": 2, "impressions": 98, "ctrPercent": 2.0, "averagePosition": 6.38 },
+      "dog grooming near me": { "clicks": 1, "impressions": 60, "ctrPercent": 1.7, "averagePosition": 15.5 },
+      "dog grooming st leonards": { "clicks": 0, "impressions": 20, "ctrPercent": 0.0, "averagePosition": 9.4 },
+      "dog groomers st leonards": { "clicks": 0, "impressions": 10, "ctrPercent": 0.0, "averagePosition": 11.7 },
+      "dog grooming prices": { "clicks": 0, "impressions": 135, "ctrPercent": 0.0, "averagePosition": 13.12 },
+      "dog grooming price list": { "clicks": 0, "impressions": 30, "ctrPercent": 0.0, "averagePosition": 13.07 }
+    },
+    "pages": {
+      "/": { "clicks": 62, "impressions": 1290, "ctrPercent": 4.8 },
+      "/services/": { "clicks": 4, "impressions": 329, "ctrPercent": 1.2 },
+      "/services/full-groom-price-list/": { "clicks": 3, "impressions": 647, "ctrPercent": 0.46 },
+      "/who-we-are/": { "clicks": 1, "impressions": 177, "ctrPercent": 0.56 }
+    },
+    "priorityInterpretation": [
+      "Protect the homepage's strong ownership of core Hastings commercial queries.",
+      "The price and cost cluster is the largest evidenced non-brand opportunity.",
+      "Measure query-by-page ownership before diagnosing cannibalisation.",
+      "Do not target mobile-groomer terms because grooming occurs at the fixed Hastings salon."
+    ]
+  },
+  "linkIntegrity": {
+    "localCandidateReferences": 820,
+    "localCandidateUniqueInternalTargets": 185,
+    "confirmedBrokenInternalTargets": 0,
+    "confirmedBrokenInternalImages": 0,
+    "confirmedBrokenExternalDestinations": [
+      "https://search.google.com/local/reviews?placeid=ChIJV3P8-VAb30cRHoBgRmxCYIM"
+    ],
+    "repair": "Replace the retired Google reviews destination with Google's supported Maps place-search URL and enforce generated-site links/assets with npm run verify-links."
+  },
+  "backlinkGate": {
+    "status": "complete",
+    "qualifyingLinks": 2,
+    "links": [
+      "https://waggylist.co.uk/listing/the-fairy-tails-dog-grooming-2",
+      "https://www.freeindex.co.uk/profile(the-fairy-tails-dog-grooming)_865530.htm"
+    ],
+    "followUp": "Recheck crawler discovery in Ahrefs and GSC after recrawl."
+  },
+  "analytics": {
+    "primaryBusinessOutcome": "Completed online booking by organic landing page",
+    "separationRule": "fairytailsdoggrooming.co.uk and www.thefairytails.co.uk must never share third-party accounts, properties, containers, streams, pixels, tags or other integration assets.",
+    "dedicatedGroomingAssets": {
+      "gtmAccountName": "Fairy Tails Dog Grooming",
+      "gtmAccountId": "6374158960",
+      "gtmContainerName": "fairytailsdoggrooming.co.uk",
+      "gtmContainerId": "GTM-TZWLLT4H",
+      "gtmContainerNumericId": "262703758",
+      "gtmWorkspaceId": "2",
+      "ga4AccountName": "Fairy Tails Dog Grooming",
+      "ga4AccountId": "406400969",
+      "ga4PropertyName": "Fairy Tails Dog Grooming — Website",
+      "ga4PropertyId": "552100824",
+      "ga4WebStreamName": "Fairy Tails Dog Grooming — Website",
+      "ga4WebStreamId": "15528315552",
+      "ga4MeasurementId": "G-TVNY7185K3",
+      "googleSearchConsoleProperty": "sc-domain:fairytailsdoggrooming.co.uk",
+      "googleSearchConsoleLinked": true
+    },
+    "wrongContainerCleanup": {
+      "site": "www.thefairytails.co.uk",
+      "containerId": "GTM-W93L9XK5",
+      "removedSessionTriggers": [
+        "CE - enquiry_submitted (Meta Lead)",
+        "CE - contact_click phone or whatsapp (Meta Contact)"
+      ],
+      "unexpectedPublishedVersion": 6,
+      "restoredLiveVersion": 5,
+      "cleanLatestVersion": 7,
+      "cleanLatestVersionName": "Restored_5",
+      "workspaceChangesAfterCleanup": 0,
+      "sessionMetaTagsPresentAfterCleanup": false,
+      "sessionTriggersPresentAfterCleanup": false,
+      "publicPayloadReadback": "Historical Version 5 is Live. The session-created Meta trigger names are absent and the container retains only its pre-existing main-site measurement estate."
+    },
+    "groomingPublishedVersion": 2,
+    "groomingConfiguration": [
+      "Google tag G-TVNY7185K3 fires on Initialization - All Pages.",
+      "GA4 event enquiry_submitted fires from the exact custom event enquiry_submitted.",
+      "enquiry_submitted is configured as a GA4 key event with no artificial monetary value.",
+      "The dedicated GA4 property is linked only to sc-domain:fairytailsdoggrooming.co.uk."
+    ],
+    "repositoryEvidence": [
+      "GTM-TZWLLT4H and G-TVNY7185K3 are the grooming source-of-truth identifiers.",
+      "The enquiry form emits enquiry_submitted.",
+      "No completed cross-domain JotForm booking event is evidenced in this repository."
+    ],
+    "status": "Dedicated grooming GTM, GA4 and Search Console assets are established and wired for page measurement and enquiry_submitted. Completed cross-domain JotForm booking attribution remains unverified and must not be claimed."
+  },
+  "cadence": {
+    "weekly": [
+      "Ahrefs Rank Tracker by device and locality",
+      "GSC query, page, device and country comparisons",
+      "Ahrefs Site Audit after crawl completion",
+      "Qualifying backlink discovery and loss checks"
+    ],
+    "everyTwentyEightDays": [
+      "Non-brand clicks, impressions and CTR",
+      "Landing-page ownership and cannibalisation review",
+      "Competitor and content-gap reprioritisation",
+      "Grooming-only GA4 key events and organic landing-page conversion performance"
+    ]
+  }
+}

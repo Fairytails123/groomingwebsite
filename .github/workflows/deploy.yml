@@ -31,8 +31,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Protect production indexability
+        shell: bash
+        run: |
+          if [ "$PUBLIC_INDEXABLE" != "true" ]; then
+            echo "INDEXABLE must be exactly true for the live grooming site."
+            exit 1
+          fi
       - name: Build with Astro
         uses: withastro/action@v6
+      - name: Verify SEO contracts
+        run: npm run verify-seo -- --indexable
+      - name: Verify internal links and assets
+        run: npm run verify-links
+      - name: Verify planned URLs
+        run: npm run verify-urls
+      - name: Verify service and collection facts
+        run: npm run verify-stage3
 
   deploy:
     needs: build

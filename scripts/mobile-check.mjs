@@ -27,6 +27,7 @@ const PAGES = process.argv.slice(2).length
   ? process.argv.slice(2)
   : [
       '/',
+      '/dog-groomers-st-leonards/',
       '/who-we-are/',
       '/contact/',
       '/terms-and-conditions/',

@@ -29,6 +29,7 @@ const DIST = join(import.meta.dirname, '..', 'dist');
 const MANIFEST = [
   // ---- rebuilt pages (final 200s), 1:1 with the old WordPress URLs ----
   { path: '/', type: 'page', status: 'built' }, // homepage — built LAST in the inside-out order, 2026-07-16
+  { path: '/dog-groomers-st-leonards/', type: 'page', status: 'built' }, // local SEO service-area page, 2026-08-09
   { path: '/who-we-are/', type: 'page', status: 'built' }, // built 2026-07-12
   { path: '/services/', type: 'page', status: 'built' }, // built 2026-07-16
   { path: '/services/full-groom-price-list/', type: 'page', status: 'built' }, // built 2026-07-16

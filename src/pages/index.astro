@@ -27,6 +27,7 @@ import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import HillDivider from '../components/HillDivider.astro';
 import HeroStage from '../components/HeroStage.astro';
+import LocalBusinessSchema from '../components/LocalBusinessSchema.astro';
 import { business } from '../data/business';
 import pricing from '../data/pricing.json';
 import reviewsSnapshot from '../data/reviews-snapshot.json';
@@ -138,14 +139,15 @@ const testimonials = [
 ---
 
 <Base
-  title="Home - The Fairy Tails Dog Grooming"
-  description={`Your friendly Hastings dog groomers that care for your dog as you would yourself. Full grooms tailored to your dog's breed, from £${fullGroom.from}, in the heart of Hastings.`}
+  title="Dog Groomers Hastings | Book Online | Fairy Tails"
+  description={`Book a dog groom online with City & Guilds-qualified, fully insured Hastings groomers. Home collection and return in Hastings and St Leonards from £${pickup.journeyPrice} each way.`}
   path="/"
   ogImage={`${business.domain}${ogJpeg.src}`}
   ogImageWidth={Number(ogJpeg.attributes.width)}
   ogImageHeight={Number(ogJpeg.attributes.height)}
   ogImageType="image/jpeg"
 >
+  <LocalBusinessSchema />
   <article data-page="home">
     {/* ── HERO — FULL-BLEED ──────────────────────────────────────────────────────────────────
         Owner decision 2026-08-09: the grooming transformation spans the WHOLE moss band and the
@@ -174,17 +176,17 @@ const testimonials = [
               eyebrow + H1 sit against the wide shelf; the subcopy + CTAs drop into the narrow
               one under the shorter dogs on the left. */}
           <div data-hero-head>
-            <p class="eyebrow text-honey-300" data-hero-eyebrow>Hastings dog groomers</p>
+            <p class="eyebrow text-honey-300" data-hero-eyebrow>Trusted Hastings dog groomers</p>
             <h1
               class="mt-4 max-w-2xl font-display text-4xl font-bold leading-tight text-cream-50 sm:text-6xl lg:mt-0"
             >
-              Caring for your best friend
+              Dog grooming made easy
             </h1>
           </div>
           <div data-hero-lower>
             <p class="mt-5 max-w-xl text-lg text-cream-200 lg:mt-0" data-hero-sub>
-              Dog grooming to suit your needs — every groom tailored to your dog's breed, in the
-              heart of Hastings.
+              Book online and get your appointment confirmed straight away. We can collect your
+              dog from home, groom them in our Hastings salon and bring them back to you.
             </p>
             <div class="mt-8 flex flex-wrap items-center gap-4 lg:mt-0" data-hero-cta>
               <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
@@ -247,8 +249,8 @@ const testimonials = [
         Happy dogs are what we are all about
       </h2>
       <p class="mx-auto mt-4 max-w-xl leading-relaxed text-bark-700">
-        We offer a professional dog grooming service that matches your dog grooming preference
-        with a happy dog grooming experience.
+        Our City & Guilds-qualified grooming team is fully insured, with more than seven years in
+        business and an air-conditioned salon designed for dogs' comfort.
       </p>
       <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
         <a href="/who-we-are/" class="btn btn-moss">Know more</a>
@@ -323,6 +325,10 @@ const testimonials = [
             </p>
             <div class="mt-6">
               <a href={business.booking.jotform} class="btn btn-honey">Book Appointment</a>
+              <a
+                href="/dog-groomers-st-leonards/"
+                class="ml-4 inline-flex min-h-11 items-center font-bold text-moss-800 underline decoration-honey-500 decoration-2 underline-offset-4 hover:text-moss-900"
+              >St Leonards collection details</a>
             </div>
           </div>
           <figure class="polaroid mx-auto w-full max-w-sm">
