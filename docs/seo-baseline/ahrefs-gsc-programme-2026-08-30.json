@@ -103,13 +103,16 @@
     "repair": "Replace the retired Google reviews destination with Google's supported Maps place-search URL and enforce generated-site links/assets with npm run verify-links."
   },
   "backlinkGate": {
+    "sessionDate": "2026-08-30",
+    "scope": "2026-08-30 SEO release only",
     "status": "complete",
     "qualifyingLinks": 2,
     "links": [
       "https://waggylist.co.uk/listing/the-fairy-tails-dog-grooming-2",
       "https://www.freeindex.co.uk/profile(the-fairy-tails-dog-grooming)_865530.htm"
     ],
-    "followUp": "Recheck crawler discovery in Ahrefs and GSC after recrawl."
+    "followUp": "Recheck crawler discovery in Ahrefs and GSC after recrawl.",
+    "futureSessionRule": "Every future approved SEO work session starts a new 0-of-2 qualifying-backlink gate; these links must not be carried forward to satisfy it."
   },
   "analytics": {
     "primaryBusinessOutcome": "Completed online booking by organic landing page",
@@ -120,7 +123,10 @@
       "gtmContainerName": "fairytailsdoggrooming.co.uk",
       "gtmContainerId": "GTM-TZWLLT4H",
       "gtmContainerNumericId": "262703758",
-      "gtmWorkspaceId": "2",
+      "gtmPublicationSessionWorkspaceId": "2",
+      "gtmCurrentWorkspaceId": "3",
+      "gtmCurrentWorkspaceChanges": 0,
+      "gtmCurrentWorkspaceCheckedAt": "2026-08-30",
       "ga4AccountName": "Fairy Tails Dog Grooming",
       "ga4AccountId": "406400969",
       "ga4PropertyName": "Fairy Tails Dog Grooming — Website",
@@ -145,21 +151,67 @@
       "workspaceChangesAfterCleanup": 0,
       "sessionMetaTagsPresentAfterCleanup": false,
       "sessionTriggersPresentAfterCleanup": false,
-      "publicPayloadReadback": "Historical Version 5 is Live. The session-created Meta trigger names are absent and the container retains only its pre-existing main-site measurement estate."
+      "historicalCleanupNote": "Versions 5, 6 and 7 document prior cleanup and are not rollback instructions.",
+      "currentPublicPayloadCheckedAt": "2026-08-30",
+      "currentPublicVersion": 8,
+      "mutationScope": "The main-site container is outside the grooming project's mutation scope. Never restore, clean, synchronise or publish it during grooming work.",
+      "publicPayloadReadback": "The read-only public payload reported Version 8, the main-site GA4 destination and no grooming measurement ID. Version 8 name, publisher, workspace provenance and differences from historical Versions 5–7 were not investigated and belong to a separately scoped main-site review."
     },
     "groomingPublishedVersion": 2,
+    "groomingPublishedVersionName": "Grooming-only GA4 measurement",
+    "groomingPublishedVersionStatus": ["Live", "Latest"],
+    "groomingHistoricalVersion": {
+      "version": 1,
+      "name": "Empty Container",
+      "instruction": "Historical only; never restore."
+    },
     "groomingConfiguration": [
-      "Google tag G-TVNY7185K3 fires on Initialization - All Pages.",
-      "GA4 event enquiry_submitted fires from the exact custom event enquiry_submitted.",
+      "Google tag G-TVNY7185K3 is configured to fire on Initialization - All Pages.",
+      "GA4 event enquiry_submitted is configured to fire from the exact custom event enquiry_submitted.",
       "enquiry_submitted is configured as a GA4 key event with no artificial monetary value.",
       "The dedicated GA4 property is linked only to sc-domain:fairytailsdoggrooming.co.uk."
+    ],
+    "ga4Readback": {
+      "checkedAt": "2026-08-30",
+      "enquirySubmittedKeyEventConfigured": true,
+      "adminStatusMessage": "No stream data detected",
+      "adminStatusIsNegativeProofOfNoTransport": false,
+      "enquirySubmittedReceiptIndependentlyObserved": false
+    },
+    "measurementImplementationStatus": {
+      "taggingPublished": true,
+      "pageMeasurementDestinationVerified": true,
+      "enquiryEventConfigured": true,
+      "enquiryEventReceiptObserved": false,
+      "bookingStartEventImplemented": false,
+      "phoneClickEventImplemented": false,
+      "whatsappClickEventImplemented": false,
+      "completedBookingEventImplemented": false,
+      "crossDomainContinuityVerified": false,
+      "organicBookingAttributionVerified": false
+    },
+    "measurementBoundaries": [
+      "Published GTM configuration does not prove GA4 event receipt.",
+      "A configured GA4 key event does not prove that the event occurred.",
+      "The site emits enquiry_submitted after a successful webhook HTTP response; this does not prove downstream n8n table or email delivery and is not a completed booking.",
+      "Booking starts/completions and telephone/WhatsApp clicks have no implemented or independently verified event attribution in the grooming GTM/GA4 estate.",
+      "Consent-denied traffic means analytics totals are not exhaustive.",
+      "GSC and Ahrefs visibility do not prove conversion."
+    ],
+    "completedBookingAttributionDefinitionOfDone": [
+      "For an owner-authorised analytics-consented test booking or an owner-confirmed genuine booking, a real completion event is received by G-TVNY7185K3 and is absent from the main-site GA4 property.",
+      "Source, medium and cross-domain session continuity survive the analytics-consented JotForm journey.",
+      "Duplicate completion events are prevented.",
+      "For denied consent, no disallowed storage or identifiers are used; any permitted cookieless behaviour is documented separately.",
+      "Reconciliation quantifies GA4-measured completions against booking-system records, including consent-denied and otherwise unattributed bookings.",
+      "Agents do not submit a production booking, incur payment or modify JotForm merely to test measurement without explicit action-level authority."
     ],
     "repositoryEvidence": [
       "GTM-TZWLLT4H and G-TVNY7185K3 are the grooming source-of-truth identifiers.",
       "The enquiry form emits enquiry_submitted.",
       "No completed cross-domain JotForm booking event is evidenced in this repository."
     ],
-    "status": "Dedicated grooming GTM, GA4 and Search Console assets are established and wired for page measurement and enquiry_submitted. Completed cross-domain JotForm booking attribution remains unverified and must not be claimed."
+    "status": "Dedicated grooming GTM, GA4 and Search Console assets are established. Page and enquiry_submitted tags are published. At the 2026-08-30 GA4 Admin read-back, stream status displayed No stream data detected; this is not negative proof of zero transport, and enquiry_submitted receipt was not independently observed. Completed cross-domain JotForm booking attribution and booking-start/telephone/WhatsApp-click attribution remain unverified and must not be claimed."
   },
   "release": {
     "commit": "593bbc74388d35eca36bbe51c321e5d0a8e4b78c",
@@ -173,7 +225,7 @@
       "sitemapIncludesStLeonards": true,
       "liveGtmContainer": "GTM-TZWLLT4H",
       "prohibitedMainSiteGtmPresent": false,
-      "liveGa4MeasurementId": "G-TVNY7185K3",
+      "publicGtmPayloadGa4Destination": "G-TVNY7185K3",
       "prohibitedMainSiteGa4Present": false,
       "brokenInternalOrImageReferences": 0
     },
@@ -196,7 +248,7 @@
       "Non-brand clicks, impressions and CTR",
       "Landing-page ownership and cannibalisation review",
       "Competitor and content-gap reprioritisation",
-      "Grooming-only GA4 key events and organic landing-page conversion performance"
+      "Grooming-only GA4 enquiry receipt and organic landing pages; do not calculate completed-booking conversion until completion attribution and booking-system reconciliation exist"
     ]
   }
 }

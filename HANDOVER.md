@@ -12,12 +12,20 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
    changes and timestamped backups.
 3. Enforce absolute third-party separation. Grooming uses only GTM `GTM-TZWLLT4H`, GA4
    `G-TVNY7185K3` and `sc-domain:fairytailsdoggrooming.co.uk`. Never use or modify the separate
-   `www.thefairytails.co.uk` assets for grooming.
-4. The backlink gate is **2 of 2 complete**: Waggy List and FreeIndex are public, crawlable and
-   independently verified. Local Dog Groomers remains pending editorial publication; MuddyPup is a
+   `www.thefairytails.co.uk` assets for grooming. The main-site container is outside this project's
+   mutation scope: version drift there is a read-only verification matter, never a rollback cue.
+   Use `git grep` or explicitly exclude `*.backup-*` when inspecting current source. Pre-separation
+   backups are recovery evidence only; never restore their tracking blocks wholesale.
+4. The **2026-08-30 SEO release** backlink gate is **2 of 2 complete**: Waggy List and FreeIndex are
+   public, crawlable and independently verified. Every future approved SEO work session starts a
+   new 0-of-2 gate. Local Dog Groomers remains pending editorial publication; MuddyPup is a
    corrected pre-existing link and does not count as new.
-5. Completed JotForm booking attribution is still unverified. Report `enquiry_submitted` as a
-   secondary key event only; never report a booking click or enquiry as a completed booking.
+5. Completed JotForm booking attribution is still unverified. At the 2026-08-30 GA4 Admin read-back,
+   the stream status displayed `No stream data detected`. No `enquiry_submitted` receipt was
+   independently observed; the status message is a snapshot, not negative proof of zero transport.
+   Booking starts/completions and telephone/WhatsApp clicks have no implemented or independently
+   verified event attribution in the grooming GTM/GA4 estate. Never report a click or enquiry as a
+   completed booking.
 6. Continue with the measured priorities in `SEO.md`: St Leonards indexing/performance, completed
    booking attribution in the grooming-only estate, citation correction and weekly Ahrefs/GSC review.
 
@@ -38,13 +46,24 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
   `Fairy Tails Dog Grooming` / `fairytailsdoggrooming.co.uk` (`GTM-TZWLLT4H`), dedicated GA4
   property/stream (`G-TVNY7185K3`, property `552100824`, stream `15528315552`) and a link only to
   `sc-domain:fairytailsdoggrooming.co.uk` in Search Console.
-- Published grooming GTM Version 2 with the Google tag on Initialization - All Pages and the exact
-  custom event `enquiry_submitted`. GA4 records that event as a key event with no artificial value.
-- Detected an accidental publish to the separate main-site container during rollback. Restored its
-  historical Version 5 as Live, created clean Version 7 (`Restored_5`) as Latest, synchronised the
-  workspace to it, and verified zero pending changes. The session-created Meta tags and both
-  grooming-named triggers are absent. Public payload read-back retains only the main site's own
-  pre-existing measurement configuration.
+- Grooming GTM Version 2, `Grooming-only GA4 measurement`, is **Live and Latest**. It contains the
+  Google tag on Initialization - All Pages and the exact custom event `enquiry_submitted`.
+  Version 1, `Empty Container`, is historical and must never be restored. The current authenticated
+  read-back on 2026-08-30 showed workspace 3 with zero pending changes; workspace 2 was the recorded
+  workspace during the publication session.
+- GA4 Admin has `enquiry_submitted` configured as a key event with no artificial value, but its
+  2026-08-30 stream-status read-back said `No stream data detected`. No `enquiry_submitted` receipt
+  was independently observed; that dated status is not negative proof of zero transport. Published
+  GTM configuration is not evidence of GA4 receipt, and a key-event definition is not evidence that
+  the event occurred. The website emits `enquiry_submitted` after the enquiry webhook returns a
+  successful HTTP response; that does not prove the downstream n8n table write or email delivery
+  and is not a completed booking.
+- The 2026-08-30 read-only public payload for the separate main-site container reported Version 8
+  and contained the main-site GA4 destination but no grooming measurement ID. Version 8's name,
+  publisher, workspace provenance and differences from historical Versions 5–7 were not investigated
+  and belong to a separately scoped main-site review. Those historical versions are not rollback
+  instructions. Never restore, clean, synchronise or publish the main-site container during grooming
+  work.
 - Locked the separation rule into `CLAUDE.md`, `SEO.md`, `WEBSITE-PLAN.md`, the combined baseline,
   source data and user-level Codex instructions. Generated pages require `GTM-TZWLLT4H` and reject
   `GTM-W93L9XK5`.
@@ -52,9 +71,9 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
   a deterministic generated-site checker covering internal page links, image/srcset/poster URLs,
   CSS assets, XML references and fragments. Final evidence: 201 generated files, 1,147 references,
   838 same-origin references resolved and **zero broken internal or image references**.
-- Added malformed-consent recovery, dedicated analytics/public-payload checks, consent/network
-  isolation checks and GitHub Pages gates for production indexability, SEO, URLs, service facts and
-  internal assets.
+- Added malformed-consent recovery and manual analytics/public-payload and consent/network isolation
+  checks. GitHub Pages gates cover production indexability, SEO, URLs, service facts and internal
+  assets; the workflow does not run `verify-analytics` or `verify-consent`.
 - Completed the honest St Leonards service-area page and Hastings local foundation without adding a
   fake location or mobile/in-home grooming claim. The two-link SEO session gate is complete through
   the independently verified Waggy List and FreeIndex profiles.
@@ -87,15 +106,19 @@ to those copies; after release use a normal reverting commit, never history rewr
   mask checks: passed.
 - `verify-links`: 201 files, 1,147 references, 838 resolved same-origin references, zero failures.
   Its adversarial incomplete-root check exited non-zero as required.
-- `verify-analytics`: generated site uses only grooming GTM; public grooming payload is non-empty,
-  contains `G-TVNY7185K3` and `enquiry_submitted`, and excludes `G-TPBSKV29CJ`.
-- `verify-consent`: malformed storage recovery, essential-only and accept-all persistence/data-layer
+- Manual network-dependent `verify-analytics`: generated site uses only grooming GTM; public grooming payload is non-empty,
+  contains the configuration for `G-TVNY7185K3` and `enquiry_submitted`, and excludes
+  `G-TPBSKV29CJ`. This proves published configuration and isolation, not GA4 event receipt.
+- Manual browser `verify-consent`: malformed storage recovery, essential-only and accept-all persistence/data-layer
   updates passed; browser requests used `GTM-TZWLLT4H` and `G-TVNY7185K3`, never the main-site IDs.
 - Mobile gate: all 15 pages passed, with 11 accepted low-resolution source-image warnings only.
   St Leonards was visually reviewed at 390, 1024, 1280 and 1440 px with no layout regression.
 - Fresh local Lighthouse: Performance 98, Accessibility 100, Best Practices 100, SEO 100; FCP
   1.5 s, LCP 2.2 s, CLS 0, TBT 10 ms and Speed Index 1.5 s.
 - Completed cross-domain JotForm booking attribution remains untested and must not be claimed.
+  Booking starts/completions and telephone/WhatsApp clicks have no implemented or independently
+  verified event attribution in the grooming GTM/GA4 estate. Consent-denied traffic means analytics
+  totals will not be exhaustive.
 
 ### Production deployment and live read-back
 

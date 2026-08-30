@@ -118,7 +118,8 @@ not block the flip and has moved to the Polish backlog at the end of this file.
       ⏳ Did not block the flip — **carried to the Polish backlog**. Known outstanding case: the
       /who-we-are/ doubled site-name title (see the 2026-07-12 copy-log entry).
 - [x] Integrations clicked through: JotForm opens · Stripe loads (NEVER complete)
-      · EnquiryForm→n8n→email E2E · WhatsApp/tel/reviews links · GTM only after consent
+      · EnquiryForm→n8n→email E2E · WhatsApp/tel/reviews links · Consent Mode v2 defaults denied
+      before GTM loads
       *(2026-07-18 probe pass: JotForm 200 · Stripe 200 · Google reviews/maps links 200
       (browser UA — they 404 to bare curl, don't misread) · webhook live, spam gate proven
       (exec 126297: 11ms silent drop, no row/email) · consent-default precedes gtm.js in the
@@ -189,7 +190,7 @@ The runbook's remaining live sections are **post-flip monitoring** and **WordPre
 | Enquiry form | n8n `grooming-enquiry` (wf `TpQFGJy87KIKGflV`, table `mbWR9tHS4u95s605`) — emails **info@thefairytails.co.uk**; proven E2E on the LIVE domain 2026-08-08 (exec `396075`, row id 3, SMTP 250, owner confirmed the inbox) |
 | Reviews | Google place `ChIJV3P8-VAb30cRHoBgRmxCYIM` — 4.9★/63 (snapshot 2026-07-12) |
 | WhatsApp | wa.me/441424300668 — the salon line (owner ruling 2026-07-17; mobile 07842 116216 retired site-wide) |
-| Analytics | Dedicated grooming-only GTM `GTM-TZWLLT4H` and GA4 `G-TVNY7185K3`, Consent Mode v2 default-denied. Never use or share the separate `www.thefairytails.co.uk` container `GTM-W93L9XK5` or any of that site's third-party assets. |
+| Analytics | Dedicated grooming-only GTM `GTM-TZWLLT4H` and GA4 `G-TVNY7185K3`; Consent Mode v2 defaults denied before GTM loads. Grooming Version 2 is Live/Latest; Version 1 is the empty historical container and must never be restored. The authenticated 2026-08-30 read-back showed workspace 3 with zero changes. At the 2026-08-30 GA4 Admin read-back, stream status displayed `No stream data detected`; no `enquiry_submitted` receipt was independently observed, and that status is not negative proof of zero transport. Booking starts/completions and telephone/WhatsApp clicks have no implemented or independently verified event attribution in the grooming GTM/GA4 estate. Never use, share or mutate the separate `www.thefairytails.co.uk` container `GTM-W93L9XK5` or that site's third-party assets from this project. |
 | Email | ⚠️ **ZERO mailboxes exist on fairytailsdoggrooming.co.uk.** All five Hostinger mailboxes (`dogtraining@`, `info@`, `jadeheselden@`, `kamalsingh@`, `manager@`) are on **`thefairytails.co.uk`**, a different zone; the site publishes `info@thefairytails.co.uk`. This zone's MX×2/SPF/DKIM×3/DMARC/autodiscover/autoconfig are **VESTIGIAL — nothing consumes them** (owner ruling 2026-08-08: no mailbox is wanted here). ⚠️ The `@` TXT set holds TWO separate strings — the SPF record **and** the Google site-verification token — so never overwrite one with the other. |
 | Live hosting | GitHub Pages on the apex `fairytailsdoggrooming.co.uk` (repo `Fairytails123/groomingwebsite`; every push to `main` deploys to PRODUCTION). ⚠️ The Pages custom domain moves only via `gh api repos/Fairytails123/groomingwebsite/pages -X PUT -f cname=…` (or GitHub Settings → Pages) — pushing `public/CNAME` does **not** move it. Domain registered at **Bluehost**, nameservers at **Hostinger**. |
 
@@ -567,7 +568,7 @@ contact 2025-07) carry real signal.
 
 Copy/photo upgrades · FAQPage JSON-LD + LocalBusiness schema · gallery `<dialog>` lightbox ·
 subscription sign-up page (Stripe recurring product — separate project) · fresh blog posts ·
-duplicate-post canonical decision · GA4 property · Ahrefs-driven keyword pages · refresh
+duplicate-post canonical decision · completed-booking plus booking-start/telephone/WhatsApp-click attribution · Ahrefs-driven keyword pages · refresh
 reviews snapshot.
 
 **Carried in from the switchover (2026-08-08):**

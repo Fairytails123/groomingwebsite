@@ -77,13 +77,15 @@ Ahrefs programme-start snapshot is stored at `docs/seo-baseline/ahrefs-programme
 - Dedicated grooming GTM account/container: `Fairy Tails Dog Grooming` / `fairytailsdoggrooming.co.uk`, container `GTM-TZWLLT4H`.
 - Dedicated grooming GA4 account/property/stream: `Fairy Tails Dog Grooming` / `Fairy Tails Dog Grooming — Website`, measurement ID `G-TVNY7185K3`, stream ID `15528315552`.
 - The GA4 property is linked only to the verified `sc-domain:fairytailsdoggrooming.co.uk` Search Console property.
-- `enquiry_submitted` is sent through the grooming container and configured as a GA4 key event without an artificial monetary value.
-- An accidental main-site GTM Version 6 publish was detected during clean-up. Historical Version 5 was immediately restored as Live, and clean Version 7 (`Restored_5`) became Latest. The `www.thefairytails.co.uk` workspace was synchronised to Version 7 with zero pending changes; the session-created Meta tags and grooming-named triggers are absent. Public payload read-back confirms that the main-site container remains on its own pre-existing measurement estate.
-- Completed JotForm booking attribution is not yet evidenced. Do not report enquiries or outbound booking clicks as completed bookings.
+- Grooming GTM Version 2, `Grooming-only GA4 measurement`, is Live and Latest. Historical Version 1 is the empty container and must never be restored. The authenticated 2026-08-30 read-back showed workspace 3 with zero pending changes; workspace 2 was the recorded workspace during the publication session.
+- `enquiry_submitted` is configured in the grooming container and as a GA4 key event without an artificial monetary value. At the 2026-08-30 GA4 Admin read-back, the stream status displayed `No stream data detected`. No `enquiry_submitted` receipt was independently observed; the status message is a snapshot, not negative proof of zero transport. The site emits the event after a successful enquiry-webhook HTTP response, which does not prove downstream table/email delivery and is not a completed booking.
+- The 2026-08-30 read-only main-site public payload reported Version 8, its main-site GA4 destination and no grooming ID. Version 8's name, publisher, workspace provenance and differences from historical Versions 5–7 remain uninvestigated and belong to a separately scoped main-site review. The `www.thefairytails.co.uk` container is outside grooming mutation scope: never restore, clean, synchronise or publish it from this project.
+- Completed JotForm booking attribution and cross-domain continuity are not evidenced. Booking-start/outbound clicks and telephone/WhatsApp clicks have no implemented or independently verified event attribution in the grooming GTM/GA4 estate.
+- Published GTM configuration does not prove GA4 receipt; a configured key event does not prove occurrence; an enquiry or booking click does not prove a completed booking; GSC/Ahrefs visibility does not prove conversion. Consent-denied traffic also makes analytics totals incomplete.
 
 ## Phase 1 local foundation
 
-Local candidate work on branch `codex/seo-foundation-2026-08-09`:
+Released foundation work maintained on branch `codex/seo-foundation-2026-08-09`:
 
 - Clear local titles/descriptions and booking-led copy on the homepage, services and who-we-are pages.
 - New `/dog-groomers-st-leonards/` page describing collection to the single Hastings salon without presenting the business as mobile.
@@ -92,7 +94,7 @@ Local candidate work on branch `codex/seo-foundation-2026-08-09`:
 - Internal links to the St Leonards page from the homepage, services page and footer.
 - `npm run verify-seo` protects canonical URLs, titles, H1s, robots state, sitemap membership, structured data, service-area honesty and retired/misleading claims.
 
-This work remains a local release candidate until the 2026-08-30 approved commit/push/deployment completes and the production read-back passes. The older 2026-08-09 no-release instruction is superseded only for the currently defined SEO, link-integrity and grooming-analytics release scope.
+This foundation is live from commit `593bbc7`; its GitHub Pages workflow and production read-back passed on 2026-08-30. Historical 2026-08-09 local-candidate instructions no longer describe the current release state.
 
 ## Backlink ledger
 
@@ -107,19 +109,19 @@ A link counts only when the public source URL returns successfully and contains 
 | FreeIndex | `https://www.freeindex.co.uk/profile(the-fairy-tails-dog-grooming)_865530.htm` | **LIVE, indexable and independently verified 2026-08-30 — qualifying new backlink 2 of 2** | Direct followed homepage link under the public `Website` field; anchor `fairytailsdoggrooming.co.uk` | Kam approved and privately created/authenticated the account. The free profile returns HTTP 200, is self-canonical, now permits indexing, and contains the correct name, `15 Mount Pleasant Road, Hastings, East Sussex, TN34 3SB`, 01424 300668, truthful salon/service details and Mon–Fri 08:00–17:30 hours. Its website anchor points directly to `https://fairytailsdoggrooming.co.uk/` with no `rel` attribute. Submission date: 2026-08-10; qualifying live verification: 2026-08-30; approval owner: Kam. Recheck crawler discovery in Ahrefs and GSC. No Premium purchase, fabricated review or unsupported claim was made. |
 | MyPetGroomer | `https://www.mypetgroomer.co.uk/listing/the-fairy-tails.html` | Stale unclaimed profile; no link | Potential fallback | Shows old 100 Parker Road details. Claim flow requires authentication and may include checkout; correct only after terms/cost are clear. |
 
-The backlink gate is **complete at 2 of 2**: Waggy List and FreeIndex are both public, crawlable, topically relevant, truthful and independently verified with direct canonical-site links. Local Dog Groomers remains a legitimate editorial submission but does not need to be counted. MuddyPup remains a corrected pre-existing link. The Good Dog Guide remains excluded because its website-link tiers are paid and outbound links are nofollow. Passwords, email codes, activation links and CAPTCHA must be handled privately by the owner and never placed in the repo, prompts or memory.
+The **2026-08-30 SEO release** backlink gate is **complete at 2 of 2**: Waggy List and FreeIndex are both public, crawlable, topically relevant, truthful and independently verified with direct canonical-site links. Every future approved SEO work session starts a new 0-of-2 gate. Local Dog Groomers remains a legitimate editorial submission but does not need to be counted. MuddyPup remains a corrected pre-existing link. The Good Dog Guide remains excluded because its website-link tiers are paid and outbound links are nofollow. Passwords, email codes, activation links and CAPTCHA must be handled privately by the owner and never placed in the repo, prompts or memory.
 
 Latest Ahrefs prospect comparison: FreeIndex (DR 81; about 4,866 UK traffic/1,880 keywords), Dog Owners Guide (DR 37; about 2,465 UK traffic/888 keywords) and DogPack (DR 48; about 1,762 UK traffic/1,128 keywords) are materially stronger than generic fallbacks, but all require a real owner account and private authentication. Do not substitute zero-traffic directories merely to hit the quota. Ahrefs also exposes a Paw Pages data-quality problem: five live nofollow profile links—including competitor profiles such as The Groom Room Hastings and Pawfect Pooch—point to the Fairy Tails canonical domain. The genuine Fairy Tails Paw Pages profile also predates this session, so none is a new-link win; audit and correct the mislinked competitor profiles before using Paw Pages as a citation source.
 
 ## Session protocol
 
 1. Read `AGENTS.md`, `CLAUDE.md`, `HANDOVER.md` and this file.
-2. Run a background agent for backlink research/execution as required by the project backlink gate; never lower the quality standard to reach two.
+2. Start a new 0-of-2 backlink gate and run a background agent for backlink research/execution as required by the project gate; never carry a prior session's links forward or lower the quality standard to reach two.
 3. Record the starting date, target queries, Ahrefs/GSC/GBP evidence and conversion hypothesis before changing pages.
 4. Preserve one primary intent per page; avoid cannibalising the homepage with duplicate local pages.
 5. Verify both local/noindex and production/indexable builds. Never unset the repository `INDEXABLE` variable.
 6. Record each link's source URL, target, context/anchor, `rel`, HTTP status, NAP accuracy, submission/live dates, approval owner and read-back evidence.
-7. Recheck rankings and live links after crawling; compare completed online bookings, not vanity metrics alone.
+7. Recheck rankings and live links after crawling. Report enquiry signals separately and do not calculate completed-booking conversion until a real booking-completion signal and reconciliation exist.
 
 ## Required handoff evidence
 
@@ -146,9 +148,10 @@ Ahrefs counts never override public verification.
 - Local SEO foundation: **LIVE** from commit `593bbc7`; GitHub Pages workflow `33330239079`
   completed successfully with production indexability, SEO, internal/image link, URL and service
   gates before deployment.
-- Backlink gate: **2 of 2 complete**. Waggy List and FreeIndex are the two verified new qualifying links.
+- 2026-08-30 SEO release backlink gate: **2 of 2 complete**. Waggy List and FreeIndex are the two verified new qualifying links; this does not satisfy a future session's gate.
 - Live state: all canonical URLs are reachable and indexable; the St Leonards page is in the sitemap;
-  production loads only grooming GTM/GA4; public payload and live browser consent checks are green.
+  production loads only grooming GTM/GA4; public payload and live browser consent checks prove
+  configuration and separation, not GA4 event receipt or completed-booking attribution.
 - Search Console initially reported the new St Leonards URL as unknown to Google. The live
   eligibility test passed and the 2026-08-30 indexing request was accepted into Google's priority
   crawl queue. Monitor rather than resubmitting it.
@@ -156,7 +159,7 @@ Ahrefs counts never override public verification.
 ## Next priorities
 
 1. Monitor `/dog-groomers-st-leonards/` in the grooming Search Console property after the accepted 2026-08-30 indexing request, then compare query/page ownership after recrawl.
-2. Establish completed JotForm booking attribution without mixing the main-site analytics estate; until then, report `enquiry_submitted` separately from completed bookings.
+2. Establish completed JotForm booking attribution without mixing the main-site analytics estate. Definition of done: for an owner-authorised test booking or an owner-confirmed genuine booking, a real completion event is received by `G-TVNY7185K3` and absent from the main-site GA4 property; source/medium and cross-domain continuity survive an analytics-consented journey; duplicate completions are prevented; denied consent uses no disallowed storage or identifiers and any permitted cookieless behaviour is documented separately; and reconciliation quantifies GA4-measured completions against booking-system records, including consent-denied and otherwise unattributed bookings. Do not submit a production booking, incur payment or modify JotForm merely to test measurement without explicit action-level authority. Until completion attribution is verified, report `enquiry_submitted` separately and never label it a completed booking.
 3. Correct stale citations, beginning with Yell's old Barley Lane/retired mobile details and the MyPetGroomer Parker Road profile, using truthful NAP only.
 4. Monitor the approved 11-pair Hastings/Saint Leonards-on-sea Ahrefs Rank Tracker set on mobile and desktop weekly, with GSC as the performance source of truth.
 5. Align Google Business Profile services and description with the same salon-only, qualified, insured, immediate-booking and paid collection facts; use truthful review requests without incentives or gating.

@@ -431,9 +431,21 @@ below the fold, or an image cropped to nonsense. Take the screenshot AND look at
   may never show us that review again and the fragment could otherwise live forever.
   ⚠️ Accepted trade-off: an older review deleted on Google will linger, since the API only ever
   shows us the newest five.
-- **Grooming-only analytics:** GTM `GTM-TZWLLT4H`; GA4 `G-TVNY7185K3`. Consent Mode v2 is
-  defaulted denied before load; the self-hosted ConsentBanner writes `localStorage.ft-consent`.
+- **Grooming-only analytics:** GTM `GTM-TZWLLT4H`; GA4 `G-TVNY7185K3`. Consent Mode v2 defaults
+  denied before GTM loads; the self-hosted ConsentBanner writes `localStorage.ft-consent`.
   **Never mix this site with `www.thefairytails.co.uk` in any third-party account, property,
   container, stream, pixel, tag or other asset.** The main-site container `GTM-W93L9XK5` is
-  prohibited here. Create and use a dedicated grooming asset whenever another integration is added.
+  prohibited here and outside this project's mutation scope. Never restore, clean, synchronise or
+  publish it during grooming work; create and use a dedicated grooming asset whenever another
+  integration is added. Grooming GTM Version 2 is Live and Latest; Version 1 is the historical empty
+  container and must never be restored. The authenticated 2026-08-30 grooming read-back showed
+  workspace 3 with zero changes. At the 2026-08-30 GA4 Admin read-back, the stream status displayed
+  `No stream data detected`. No `enquiry_submitted` receipt was independently observed; the status
+  message is a snapshot, not negative proof of zero transport. Published configuration is not
+  receipt, and a configured key event is not occurrence. Booking starts/completions and
+  telephone/WhatsApp clicks have no implemented or independently verified event attribution in the
+  grooming GTM/GA4 estate; never infer them from enquiries, GSC/Ahrefs visibility or a successful
+  GTM read-back. Pre-separation `*.backup-*` files are recovery evidence only and may contain obsolete
+  main-site IDs; use `git grep` for current tracked source and never restore their tracking blocks
+  wholesale.
 - Public repo: no client data, no secrets, no harvest archive in git.
