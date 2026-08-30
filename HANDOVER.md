@@ -29,8 +29,8 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
 
 **Actual working project:** `C:\Users\FT Manager\OneDrive\Business\CODING\Dog Grooming website`.
 
-**Release state:** final local candidate passed; approved commit/push/deployment and production
-read-back are in progress. Do not mark live until the Pages workflow and public checks pass.
+**Release state:** **LIVE PRODUCTION** from commit `593bbc7` on 2026-08-30. GitHub Pages workflow
+`33330239079` completed successfully and the public read-back passed.
 
 ### Outcome and decisions
 
@@ -96,6 +96,24 @@ to those copies; after release use a normal reverting commit, never history rewr
 - Fresh local Lighthouse: Performance 98, Accessibility 100, Best Practices 100, SEO 100; FCP
   1.5 s, LCP 2.2 s, CLS 0, TBT 10 ms and Speed Index 1.5 s.
 - Completed cross-domain JotForm booking attribution remains untested and must not be claimed.
+
+### Production deployment and live read-back
+
+- Release commit: `593bbc74388d35eca36bbe51c321e5d0a8e4b78c`, pushed to `main`.
+- GitHub Pages workflow `33330239079`: success. Its build job passed the exact-`true`
+  `INDEXABLE` guard, Astro build, indexable SEO contracts, internal/image link gate, URL gate and
+  service/collection-fact gate before the deployment job ran.
+- All 15 canonical pages returned HTTP 200; the three compatibility stubs returned 200 and `/feed/`
+  returned its intentional 404. `robots.txt` allows crawling and names the canonical sitemap.
+- `/dog-groomers-st-leonards/` returned 200 with the canonical URL, Hastings-salon wording, booking
+  route and sitemap membership. Search Console initially reported `URL is unknown to Google`; its
+  live eligibility test passed and `Indexing requested` confirmed addition to the priority crawl
+  queue. Do not submit it repeatedly; monitor index coverage and query/page ownership after recrawl.
+- The live homepage loads `GTM-TZWLLT4H` and excludes `GTM-W93L9XK5`. The public grooming payload
+  contains only the dedicated `G-TVNY7185K3` destination and `enquiry_submitted`, excluding
+  `G-TPBSKV29CJ`. The public main-site payload contains its own GA4 destination and no grooming ID.
+- Live browser consent checks passed broken JSON, `null`, missing fields, invalid values, unexpected
+  fields, essential-only and accept-all states. Measurement requests targeted only `G-TVNY7185K3`.
 
 ## 2026-08-10 — FreeIndex profile completed (EXTERNAL; manual review pending)
 

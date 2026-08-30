@@ -143,15 +143,19 @@ Ahrefs counts never override public verification.
 
 ## Phase 1 release checkpoint — 2026-08-30
 
-- Local SEO candidate: implemented and previously regression-tested on branch
-  `codex/seo-foundation-2026-08-09`, based on `8602d2d`.
+- Local SEO foundation: **LIVE** from commit `593bbc7`; GitHub Pages workflow `33330239079`
+  completed successfully with production indexability, SEO, internal/image link, URL and service
+  gates before deployment.
 - Backlink gate: **2 of 2 complete**. Waggy List and FreeIndex are the two verified new qualifying links.
-- Release state: approved for the current commit/push/deployment scope, but it must not be recorded as live until the final gates, GitHub Pages workflow and public read-back pass.
-- The final release must include the dedicated grooming analytics migration, supported Google Maps review URL, deterministic generated-site link checking and the original Phase 1 local SEO candidate.
+- Live state: all canonical URLs are reachable and indexable; the St Leonards page is in the sitemap;
+  production loads only grooming GTM/GA4; public payload and live browser consent checks are green.
+- Search Console initially reported the new St Leonards URL as unknown to Google. The live
+  eligibility test passed and the 2026-08-30 indexing request was accepted into Google's priority
+  crawl queue. Monitor rather than resubmitting it.
 
 ## Next priorities
 
-1. After deployment, inspect and request indexing for `/dog-groomers-st-leonards/` in the grooming Search Console property, then compare query/page ownership after recrawl.
+1. Monitor `/dog-groomers-st-leonards/` in the grooming Search Console property after the accepted 2026-08-30 indexing request, then compare query/page ownership after recrawl.
 2. Establish completed JotForm booking attribution without mixing the main-site analytics estate; until then, report `enquiry_submitted` separately from completed bookings.
 3. Correct stale citations, beginning with Yell's old Barley Lane/retired mobile details and the MyPetGroomer Parker Road profile, using truthful NAP only.
 4. Monitor the approved 11-pair Hastings/Saint Leonards-on-sea Ahrefs Rank Tracker set on mobile and desktop weekly, with GSC as the performance source of truth.

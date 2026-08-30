@@ -161,6 +161,30 @@
     ],
     "status": "Dedicated grooming GTM, GA4 and Search Console assets are established and wired for page measurement and enquiry_submitted. Completed cross-domain JotForm booking attribution remains unverified and must not be claimed."
   },
+  "release": {
+    "commit": "593bbc74388d35eca36bbe51c321e5d0a8e4b78c",
+    "branch": "main",
+    "deployedAt": "2026-08-30T19:13:00Z",
+    "githubPagesWorkflowId": 33330239079,
+    "githubPagesWorkflowStatus": "success",
+    "productionReadback": {
+      "canonicalPagesHttp200": 15,
+      "robotsAllowsCrawling": true,
+      "sitemapIncludesStLeonards": true,
+      "liveGtmContainer": "GTM-TZWLLT4H",
+      "prohibitedMainSiteGtmPresent": false,
+      "liveGa4MeasurementId": "G-TVNY7185K3",
+      "prohibitedMainSiteGa4Present": false,
+      "brokenInternalOrImageReferences": 0
+    },
+    "googleSearchConsole": {
+      "property": "sc-domain:fairytailsdoggrooming.co.uk",
+      "url": "https://fairytailsdoggrooming.co.uk/dog-groomers-st-leonards/",
+      "statusBeforeRequest": "URL is unknown to Google",
+      "liveEligibilityTest": "passed",
+      "indexingRequest": "accepted into the priority crawl queue on 2026-08-30"
+    }
+  },
   "cadence": {
     "weekly": [
       "Ahrefs Rank Tracker by device and locality",
