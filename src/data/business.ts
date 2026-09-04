@@ -100,10 +100,18 @@ export const business = {
     // "the most recently created customer that has both that email and an active
     // subscription", so a duplicate record can hide a second live subscription.
     //
-    // Enabled in that config: invoice history, payment methods, billing details.
-    // Self-service CANCEL is switched OFF (owner ruling 2026-09-04) so the 2-month
-    // minimum term stays enforceable - cancelling is a phone call. That toggle lives
-    // in the Stripe Dashboard, not in this repo.
+    // Enabled in that config, re-read 2026-09-04 after the owner widened the
+    // subscription: invoice history, payment methods, billing details, and subscription
+    // QUANTITY updates over two eligible products - "Dog Grooming Subscription" (GBP25
+    // /mo) and "Teeth Cleaning Optional Sub" (GBP10/mo) - so a subscriber can add or
+    // drop teeth cleaning themselves. Proration is "no charges or credits". Plan
+    // SWITCHING remains off.
+    // Self-service CANCEL is switched OFF (owner ruling 2026-09-04, verified in the
+    // Dashboard) so the 2-month minimum term stays enforceable - cancelling is a phone
+    // call.
+    // ⚠️ These toggles live in the Stripe Dashboard, NOT in this repo: this comment is
+    // a DATED SNAPSHOT and went stale within hours the first time. Re-read the config
+    // before trusting it, and before writing any copy about what customers can do.
     //
     // NEVER append ?prefilled_email= to this URL from the site: Stripe supports it, but
     // it would put a customer's email address into a URL (and into analytics).

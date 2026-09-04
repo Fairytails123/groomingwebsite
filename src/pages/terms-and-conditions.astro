@@ -135,11 +135,17 @@ import pricing from '../data/pricing.json';
         appointment, that month's payment is not refundable.
       </p>
       <p>
-        You can update your card details and view or download your invoices at any time in your
+        Teeth cleaning can be added to your subscription for
+        £{pricing.subscription.optionalAddOn.price} {pricing.subscription.optionalAddOn.unit},
+        covering {pricing.subscription.optionalAddOn.summary}.
+        {' '}{pricing.subscription.optionalAddOn.terms}
+      </p>
+      <p>
+        You can update your card details, view or download your invoices, and add or remove teeth
+        cleaning at any time in your
         <a href={business.subscription.portalUrl}>billing portal</a> — enter the email address you
-        subscribed with and Stripe sends you a secure link. To change or cancel your subscription,
-        please contact us on
-        <a href={business.phones.main.tel}>{business.phones.main.display}</a>.
+        subscribed with and Stripe sends you a secure link. To cancel your subscription, please
+        contact us on <a href={business.phones.main.tel}>{business.phones.main.display}</a>.
       </p>
 
       <h2>Neglected/matted coats</h2>

@@ -118,6 +118,30 @@ const pricing = {
       "One appointment per month: a 'Bath, Brush & Tidy' every other month, a 'Full Groom' every other month",
       'Free nail clipping whenever required',
     ],
+
+    // OWNER RULING 2026-09-04: teeth cleaning became a SEPARATE monthly subscription
+    // item ("Teeth Cleaning Optional Sub", GBP10/mo, in Stripe). It is offered at
+    // sign-up on the payment link AND can be added or removed by the customer in the
+    // Stripe billing portal, because portal quantity updates were switched on the
+    // same day.
+    //
+    // Deliberately NOT in `includes` above: that list is what the GBP25 buys. This is
+    // a paid extra on top.
+    //
+    // It is deliberately NOT covered by minTermMonths - the 2-month minimum applies
+    // to the core grooming subscription only, so this can go on and off month to month.
+    //
+    // NOT the same object as the `addOns` "Teeth cleaning" entry below, which is the
+    // pay-per-visit form of the same treatment (also GBP10, charged when booked with a
+    // groom). Same service, two ways to pay - never merge the two entries.
+    optionalAddOn: {
+      name: 'Teeth cleaning',
+      price: 10,
+      unit: 'a month',
+      summary: 'one ultrasonic emmi®-pet clean at each monthly groom',
+      bandNote: 'Add or remove it whenever you like.',
+      terms: 'It can be added or removed at any time and is not covered by the 2-month minimum term.',
+    },
   },
 
   // Verbatim from /services/ "Additional services" (canonical per owner ruling).

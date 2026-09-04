@@ -29,6 +29,52 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
 6. Continue with the measured priorities in `SEO.md`: St Leonards indexing/performance, completed
    booking attribution in the grooming-only estate, citation correction and weekly Ahrefs/GSC review.
 
+## 2026-09-04 (later) — subscription widened: optional £10/month teeth cleaning
+
+Kam changed the Stripe subscription hours after the portal link shipped: teeth cleaning is now a
+separate monthly subscription item, and portal QUANTITY updates were switched on so subscribers can
+add or drop it themselves.
+
+**That made two things shipped earlier the same day factually wrong**: the T&Cs told customers to
+phone to change anything, and `business.ts` recorded quantity change as OFF. Both corrected here.
+The lesson now lives in the `business.ts` comment itself — a comment describing external Dashboard
+config is a DATED SNAPSHOT, and this one went stale within hours of being written.
+
+### Stripe portal config, re-read live 2026-09-04
+- Customers can change quantity of their plan: **ON** (was OFF)
+- Eligible products: "Dog Grooming Subscription" £25/mo and **"Teeth Cleaning Optional Sub" £10/mo**
+- Proration: **No charges or credits**
+- Customers can switch plans: still OFF. Cancel subscriptions: still OFF (verified).
+
+### Owner rulings 2026-09-04
+- The £10/month add-on covers ONE ultrasonic emmi®-pet clean at each monthly groom.
+- It is **not** covered by the 2-month minimum term — it can be added and dropped month to month.
+- It is offered at sign-up on the payment link as well as in the billing portal.
+- It is advertised on the site: subscription bands and T&Cs.
+
+### Changed
+- `scripts/extract-prices.mjs` — `subscription.optionalAddOn` added to the hardcoded subscription
+  block, then `npm run extract-prices` regenerated `pricing.json`. ⚠️ `pricing.json` is GENERATED:
+  the regenerated diff was checked to be the addition only, with no harvest churn.
+- The three subscription bands — an "Optional: add teeth cleaning …" line beneath the sign-up small
+  print, i.e. on the sign-up side of the hairline, not the existing-subscriber side.
+- `terms-and-conditions.astro` — a paragraph covering the add-on, and the change/cancel sentence
+  corrected: adding or removing teeth cleaning is self-service; only CANCELLING needs a call.
+- `business.ts` — portal config snapshot refreshed, now carrying an explicit staleness warning.
+- `SEO.md` — the add-on added to the confirmed facts and to the anti-regression contract.
+
+### Flagged to the owner, not actioned
+The pay-per-visit teeth cleaning in the price list is also £10. For a subscriber having one groom a
+month, the monthly add-on therefore costs exactly the same as paying per visit. Raised in case a
+subscriber discount was intended; no change made.
+
+### Verification
+Indexable build; `verify-urls` 19/19, `stage3`, `links`, `analytics`, `consent`,
+`verify-seo -- --indexable`, `mobile-check` all green. No horizontal overflow at
+390/1024/1280/1440. Subscription band and T&C section reviewed by eye at 390. UTF-8 verified at
+byte level on the ® character (`0xC2 0xAE`, zero mojibake) — this repo has been bitten by
+double-encoded UTF-8 before.
+
 ## 2026-09-04 — Stripe customer portal entry point (LOCAL CANDIDATE, not pushed)
 
 Owner request: let subscription customers manage their own billing. Scope was narrowed by Kam
