@@ -18,6 +18,8 @@ Last updated: 2026-08-30. This is the durable source of truth for Fairy Tails Do
 - Collection/return: £2 per journey, £4 round trip; available for full grooms, hand stripping and bath and brush appointments.
 - Booking: online appointments are confirmed immediately by the booking system.
 - Trust: City & Guilds dog grooming qualifications, fully insured grooming team, air-conditioned salon, more than seven years in business.
+- Grooming subscription: £25 per month, per dog; 2-month minimum term; one appointment a month, a Full Groom alternating with a Bath, Brush & Tidy. Unused subscription time is not refundable, so an appointment must be booked each month.
+- Subscription billing self-service is the Stripe-hosted customer portal (login link, config `bpc_1UBwdLKxaWtXebCj4qyueId5`). Customers reach it by email link; the site has no account or login of its own. Cancelling is by contacting the salon, not self-service.
 - Competitors to monitor: Parkside Parlour, Gillsmans, The Pawfect Pooch and Tails of St Leonards.
 
 ## Anti-regression contract
@@ -33,6 +35,7 @@ changes a fact, every page, schema object, directory submission and future campa
 - immediate booking-system confirmation, without promising appointment availability beyond what the booking system shows;
 - City & Guilds dog grooming qualifications, full insurance, an air-conditioned salon and more than seven years in business;
 - canonical HTTPS domain `https://fairytailsdoggrooming.co.uk/`, indexable real pages, trailing-slash page URLs and no self-serving first-party `AggregateRating` markup.
+- the subscription's £25 per month per dog price, its 2-month minimum term and its non-refundable unused time; never describe the Stripe billing portal as an account, login or member area on this site, and never state or imply that a subscription can be cancelled from the website;
 - absolute third-party separation from `www.thefairytails.co.uk`: the two sites must never share analytics accounts, properties, containers, streams, pixels, tags or other integration assets. Grooming uses GTM `GTM-TZWLLT4H` and GA4 `G-TVNY7185K3`; the main-site GTM container `GTM-W93L9XK5` is prohibited here.
 
 Prohibited regressions include the retired Fairlight Place/Barley Lane and 100 Parker Road addresses,

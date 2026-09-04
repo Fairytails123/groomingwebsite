@@ -70,8 +70,10 @@ const year = new Date().getFullYear();
     </div>
     <div>
       <p class="eyebrow text-honey-400">Explore</p>
-      <!-- Two sub-columns, filled top-to-bottom. grid-rows-7 fits up to 14 links. -->
-      <ul class="mt-4 grid grid-flow-col grid-rows-7 gap-x-6 gap-y-2.5 text-sm">
+      <!-- Two sub-columns, filled top-to-bottom. grid-rows-8 fits up to 16 links.
+           This number is load-bearing: at grid-rows-7 a 15th link silently spills into
+           a THIRD sub-column and breaks the footer. Count the list items before adding one. -->
+      <ul class="mt-4 grid grid-flow-col grid-rows-8 gap-x-6 gap-y-2.5 text-sm">
         <li>
           <a href="/who-we-are/" class="transition-colors hover:text-honey-300">About us</a>
         </li>
@@ -112,6 +114,14 @@ const year = new Date().getFullYear();
         </li>
         <li>
           <a href="/terms-and-conditions/" class="transition-colors hover:text-honey-300">Terms and conditions</a>
+        </li>
+        {/* Existing subscribers only - the Stripe-hosted billing portal. Styled exactly
+            like its 14 siblings on purpose: a min-h-11 tap target here would make one
+            grid row taller than the rest and visibly break the two-column rhythm. */}
+        <li>
+          <a href={business.subscription.portalUrl} class="transition-colors hover:text-honey-300">
+            Manage my subscription
+          </a>
         </li>
         <li>
           <a href={business.sisterSite} class="transition-colors hover:text-honey-300">

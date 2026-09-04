@@ -87,6 +87,27 @@ export const business = {
   // customer actually fills in says "bus". Same service.
   subscription: {
     stripeUrl: 'https://buy.stripe.com/8x27sM5K57BR1IL94W9MY00',
+    // Stripe-hosted Billing Customer Portal - the no-code login link. Read from the
+    // live Dashboard 2026-09-04: config bpc_1UBwdLKxaWtXebCj4qyueId5, "Portal link:
+    // Active", on the SAME account (acct_1MiHBhKxaWtXebCj) that owns stripeUrl above.
+    // A link from a different account shows every subscriber "no subscriptions found".
+    //
+    // HOW IT GATES ACCESS: there is no login on this site and none is wanted. The
+    // customer types the email they subscribed with and STRIPE emails them a one-time
+    // link into their own portal. A non-customer never receives one, so Stripe is the
+    // eligibility check - do not build one here.
+    // Caveat worth knowing: where several customer records share one email, Stripe opens
+    // "the most recently created customer that has both that email and an active
+    // subscription", so a duplicate record can hide a second live subscription.
+    //
+    // Enabled in that config: invoice history, payment methods, billing details.
+    // Self-service CANCEL is switched OFF (owner ruling 2026-09-04) so the 2-month
+    // minimum term stays enforceable - cancelling is a phone call. That toggle lives
+    // in the Stripe Dashboard, not in this repo.
+    //
+    // NEVER append ?prefilled_email= to this URL from the site: Stripe supports it, but
+    // it would put a customer's email address into a URL (and into analytics).
+    portalUrl: 'https://billing.stripe.com/p/login/8x27sM5K57BR1IL94W9MY00',
     price: 25,
     unit: 'per month, per dog',
     minTermMonths: 2,

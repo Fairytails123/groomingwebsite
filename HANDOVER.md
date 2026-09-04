@@ -29,6 +29,68 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
 6. Continue with the measured priorities in `SEO.md`: St Leonards indexing/performance, completed
    booking attribution in the grooming-only estate, citation correction and weekly Ahrefs/GSC review.
 
+## 2026-09-04 — Stripe customer portal entry point (LOCAL CANDIDATE, not pushed)
+
+Owner request: let subscription customers manage their own billing. Scope was narrowed by Kam
+mid-session to **integrating the link** — Stripe hosts the portal itself, so nothing here builds
+portal UI, accounts or authentication.
+
+**Status: local working-tree candidate on `codex/seo-foundation-2026-08-09`. Not committed, not
+pushed, not deployed.** A push to `main` is a live deploy in front of 17 paying subscribers, and
+this is money-adjacent, so the merge is Kam's call.
+
+### What changed (6 files)
+- `src/data/business.ts` — new `subscription.portalUrl`
+  (`https://billing.stripe.com/p/login/8x27sM5K57BR1IL94W9MY00`) with the operating notes beside it.
+- The three subscription bands (`index.astro`, `services/index.astro`,
+  `services/full-groom-price-list.astro`) — an existing-subscriber row beneath a hairline divider:
+  a `btn btn-ghost-light` "Manage my subscription" plus one line explaining the email-link step.
+  It is a SEPARATE row on purpose: putting the button inside the CTA row pushed the
+  "£25 / 2-month minimum term" small print away from the sign-up CTA it describes. Caught by
+  actually looking at the 1440px screenshot, not by any gate.
+- `src/components/Footer.astro` — a 15th Explore link, and `grid-rows-7` → `grid-rows-8`.
+  The row bump is load-bearing: at 7 rows a 15th link silently spills into a THIRD sub-column.
+- `src/pages/terms-and-conditions.astro` — a new "Dog grooming subscription" section (owner
+  instruction 2026-09-04): one appointment a month, £25, 2-month minimum term, and **unused
+  subscription time cannot be refunded — book an appointment each month**.
+
+### Why the T&C section was needed, not optional
+That page has eighteen `<h2>` sections and not one covered the subscription. The only cancellation
+wording a subscriber could read was the appointment clause "We do not charge any cancellation
+fees" — appointment-scoped, but read cold it argued against the 2-month minimum term.
+
+### Stripe portal configuration, read live 2026-09-04
+Config `bpc_1UBwdLKxaWtXebCj4qyueId5` (Default), portal link **Active**, next-generation portal ON.
+Enabled: invoice history; payment methods; customer information (name, email, billing address,
+phone). Plan switching and quantity change OFF. Cancellation was ON (end of billing period) —
+**owner ruled 2026-09-04 to switch it OFF** so the 2-month minimum stays enforceable. Redirect link
+EMPTY, Terms/Privacy links unset, branding still Stripe blue `#2965ff` / accent `#0074d4`.
+Those four Dashboard changes were approved but are **still outstanding** — the dashboard UI proved
+too unstable to drive safely (a stray click surfaced a "Disable next generation portal experience,
+applies to all portal configurations" modal, which was cancelled; config verified byte-identical
+afterwards). They are hand-off steps for Kam.
+
+### Open data issue in Stripe — owner action before publicising the link
+`conroy870@hotmail.com` has FOUR customer records, two carrying an active £25 subscription:
+- `cus_VAnVQ8cgicxCE4` "Sarah Griffiths" — Active, £25 due 30 Sept (created 31 Aug 10:54)
+- `cus_VAnS05LusF703v` "Sarah Griffiths" — Active, £25 due 30 Sept (created 31 Aug 10:50)
+- `cus_VAnLxWftaILDHr`, `cus_VAnDZHsEKsfUYe` "S L Griffiths" — no subscriptions
+Stripe's login link opens only "the most recently created customer that has both that email and an
+active subscription". She would reach the 10:54 record; the 10:50 one stays invisible while still
+billing her. £50/month may be entirely correct (the plan is per dog), but the portal can only ever
+show one of the two. Consolidate onto a single customer record first.
+
+### Verification (local, this machine, indexable build)
+`verify-urls` 19/19 · `verify-stage3` 0 failures · `verify-links` PASS · `verify-analytics` PASS ·
+`verify-consent` PASS · `verify-seo -- --indexable` PASS · `mobile-check` PASS (11 pre-existing
+low-res warnings only) · no horizontal overflow at 390/1024/1280/1440 — the 1024–1300 band matters
+here because it is a known gate blind spot and the footer grid change lives exactly in it ·
+subscription band, footer and T&C section reviewed by eye at 390 and 1440.
+
+⚠️ `verify-consent` needs `BASE=http://localhost:4321` on this machine: `astro preview` binds IPv6
+`::1` only, and the script defaults to `127.0.0.1`, which refuses the connection. Pre-existing and
+unrelated to this change, but it will fail for the next session too.
+
 ## 2026-08-30 — Hastings SEO foundation, link integrity and grooming-only analytics
 
 **Working branch:** `codex/seo-foundation-2026-08-09`, based on `8602d2d`.

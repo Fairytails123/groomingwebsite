@@ -114,6 +114,34 @@ import pricing from '../data/pricing.json';
         no-further-appointments policy for no shows.
       </p>
 
+      {/* Subscription terms - ADDED 2026-09-04 on the owner's instruction. NOT from the
+          2026-07-12 harvest, so the verbatim rule at the top of this file does not cover
+          it. It exists because the page had no subscription section at all: the only
+          cancellation wording a subscriber could read was the appointment clause above
+          ("We do not charge any cancellation fees"), which is about grooming appointments,
+          not the monthly plan - read cold it argued against the minimum term.
+          Price and term come from pricing.json; never retype them here. */}
+      <h2>Dog grooming subscription</h2>
+      <p>
+        The dog grooming subscription is £{pricing.subscription.price}
+        {' '}{pricing.subscription.unit}, with a {pricing.subscription.minTermMonths}-month minimum
+        term. It covers one appointment a month — a Full Groom one month and a Bath, Brush &amp;
+        Tidy the next — and continues each month until you ask us to stop.
+      </p>
+      <p>
+        Payment is taken every month whether or not your dog comes in, and
+        <strong>unused subscription time cannot be refunded</strong>. Please do book your dog's
+        appointment each month so you get the groom you have paid for: if a month passes without an
+        appointment, that month's payment is not refundable.
+      </p>
+      <p>
+        You can update your card details and view or download your invoices at any time in your
+        <a href={business.subscription.portalUrl}>billing portal</a> — enter the email address you
+        subscribed with and Stripe sends you a secure link. To change or cancel your subscription,
+        please contact us on
+        <a href={business.phones.main.tel}>{business.phones.main.display}</a>.
+      </p>
+
       <h2>Neglected/matted coats</h2>
       <p>
         We practice humanity before vanity. Should a dog be presented with a matted or neglected
