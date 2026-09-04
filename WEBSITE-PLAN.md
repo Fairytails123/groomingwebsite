@@ -567,9 +567,18 @@ contact 2025-07) carry real signal.
 ## Polish backlog (post-switchover, indefinite) — **ACTIVE since 2026-08-08**
 
 Copy/photo upgrades · FAQPage JSON-LD + LocalBusiness schema · gallery `<dialog>` lightbox ·
-subscription sign-up page (Stripe recurring product — separate project) · fresh blog posts ·
+fresh blog posts ·
 duplicate-post canonical decision · completed-booking plus booking-start/telephone/WhatsApp-click attribution · Ahrefs-driven keyword pages · refresh
 reviews snapshot.
+
+⚠️ **"Subscription sign-up page" was REMOVED from this backlog on 2026-09-04 — superseded, not
+built.** Sign-up and billing self-service both live on the THREE EXISTING subscription bands
+(`/`, `/services/`, `/services/full-groom-price-list/`) plus one footer link: a Stripe payment
+link for new customers, and the Stripe-hosted billing portal for existing ones. Owner decision:
+no new page. **Do not create `/subscription/`, `/account/`, `/manage-subscription/` or similar**
+without re-checking the intent-to-page map in `SEO.md` first — a new page would cannibalise the
+three bands that already carry this intent. Detail: `CLAUDE.md` § "Stripe subscriptions & the
+billing portal", and the two 2026-09-04 `HANDOVER.md` entries.
 
 **Carried in from the switchover (2026-08-08):**
 

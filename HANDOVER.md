@@ -28,6 +28,13 @@ Read this first each session. Master plan: `WEBSITE-PLAN.md`. Engineering brief:
    completed booking.
 6. Continue with the measured priorities in `SEO.md`: St Leonards indexing/performance, completed
    booking attribution in the grooming-only estate, citation correction and weekly Ahrefs/GSC review.
+7. **Subscriptions and the Stripe billing portal are LIVE (2026-09-04).** Before touching any
+   subscription copy, `src/data/business.ts`, `src/data/pricing.json`, `src/components/Footer.astro`
+   or `src/pages/terms-and-conditions.astro`, read `CLAUDE.md` § "Stripe subscriptions & the billing
+   portal". `npm run verify-stage3` now machine-asserts these facts — a failure on a subscription
+   line is the gate working, not a bug to route around. ⚠️ The Stripe **Dashboard** config lives
+   outside this repo and NO gate can see it: re-read it before writing any copy about what
+   customers can do. It went stale within hours once already.
 
 ## 2026-09-04 (later) — subscription widened: optional £10/month teeth cleaning
 
@@ -75,15 +82,21 @@ Indexable build; `verify-urls` 19/19, `stage3`, `links`, `analytics`, `consent`,
 byte level on the ® character (`0xC2 0xAE`, zero mojibake) — this repo has been bitten by
 double-encoded UTF-8 before.
 
-## 2026-09-04 — Stripe customer portal entry point (LOCAL CANDIDATE, not pushed)
+## 2026-09-04 — Stripe customer portal entry point (SHIPPED — commit `83606f7`)
 
 Owner request: let subscription customers manage their own billing. Scope was narrowed by Kam
 mid-session to **integrating the link** — Stripe hosts the portal itself, so nothing here builds
 portal UI, accounts or authentication.
 
-**Status: local working-tree candidate on `codex/seo-foundation-2026-08-09`. Not committed, not
-pushed, not deployed.** A push to `main` is a live deploy in front of 17 paying subscribers, and
-this is money-adjacent, so the merge is Kam's call.
+**Status: SHIPPED and LIVE.** Kam approved the push explicitly. Commit `83606f7` → `main`, deploy
+run `33883401109` green, verified against production the same day: `npm run verify-urls -- --live`
+19/19, robots.txt allows and names the sitemap, the homepage carries no `noindex`, and the portal
+link is present on all 15 real pages.
+
+⚠️ **This entry's "Stripe portal configuration" section below is SUPERSEDED** — read the
+"subscription widened" entry ABOVE it for the current config. Since this entry was written,
+self-service cancel was switched OFF (Kam applied it; re-verified in the Dashboard as
+`Cancel subscriptions = false`) and quantity updates were switched ON across two products.
 
 ### What changed (6 files)
 - `src/data/business.ts` — new `subscription.portalUrl`
@@ -105,13 +118,15 @@ That page has eighteen `<h2>` sections and not one covered the subscription. The
 wording a subscriber could read was the appointment clause "We do not charge any cancellation
 fees" — appointment-scoped, but read cold it argued against the 2-month minimum term.
 
-### Stripe portal configuration, read live 2026-09-04
+### Stripe portal configuration, read live 2026-09-04 — ⚠️ SUPERSEDED (see the entry above)
 Config `bpc_1UBwdLKxaWtXebCj4qyueId5` (Default), portal link **Active**, next-generation portal ON.
 Enabled: invoice history; payment methods; customer information (name, email, billing address,
 phone). Plan switching and quantity change OFF. Cancellation was ON (end of billing period) —
 **owner ruled 2026-09-04 to switch it OFF** so the 2-month minimum stays enforceable. Redirect link
 EMPTY, Terms/Privacy links unset, branding still Stripe blue `#2965ff` / accent `#0074d4`.
-Those four Dashboard changes were approved but are **still outstanding** — the dashboard UI proved
+Of those four approved Dashboard changes, **the cancel toggle is DONE** (Kam applied it later the
+same day; re-verified as `Cancel subscriptions = false`). **Three remain outstanding**: the redirect
+link, the brand colours and the Terms link. The dashboard UI proved
 too unstable to drive safely (a stray click surfaced a "Disable next generation portal experience,
 applies to all portal configurations" modal, which was cancelled; config verified byte-identical
 afterwards). They are hand-off steps for Kam.

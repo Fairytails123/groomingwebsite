@@ -30,6 +30,15 @@ from GitHub Pages, HTTPS enforced. It is no longer WordPress, and it is **indexe
 - **Never run `npm run harvest`** without reading its header first: it is disarmed on purpose,
   because its target domain now serves the *new* site and running it would overwrite the
   irreplaceable archive of the old one.
+- **Never delete the "Dog grooming subscription" section from
+  `src/pages/terms-and-conditions.astro`, and never delete `subscription.optionalAddOn` from
+  `scripts/extract-prices.mjs`.** That page's own header says its legal copy is verbatim from the
+  2026-07-12 harvest — true for everything else on it, but these two were written on the owner's
+  instruction (2026-09-04) and are deliberately NOT in the harvest, so a fact-check against
+  `grooming-image-archive/` will flag them as foreign. They are the only place the site states
+  that unused subscription time is non-refundable and that cancelling is a phone call.
+  `npm run verify-stage3` asserts both: a failure on a subscription line is the gate working, not
+  an obstacle to route around.
 - **Do not cancel the Hostinger "Business Web Hosting" plan.** It still holds the old WordPress
   site (the rollback, keep until T+30 = 2026-09-07), and the Main Website `thefairytails.co.uk`
   is an addon on the same order — cancelling it takes that site down too.

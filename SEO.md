@@ -44,6 +44,15 @@ TN35 5DT, the retired mobile, “free” collection, service outside Hastings/St
 salon, mobile grooming, in-home grooming, or invented qualification levels, licences, memberships,
 awards or review claims.
 
+⚠️ **Verification limit — the subscription copy is only as true as the Stripe Dashboard.**
+`npm run verify-stage3` machine-asserts the subscription facts *on the site* (both Stripe URLs by
+full href, the £25 / £10 / 2-month literals, and the T&C clause including phone-only cancellation).
+It cannot see the Stripe Dashboard, where self-service cancellation and quantity updates are
+toggles that live outside this repo. If those are changed, the published copy silently becomes
+false **and the gate will carry on enforcing it**. So: re-read the portal configuration before
+writing or approving subscription copy, and treat every dated config note in the repo as a
+snapshot rather than a fact — one went stale within hours of being written on 2026-09-04.
+
 If a real business fact changes, stop and obtain an explicit owner ruling. Then update
 `src/data/business.ts` or `src/data/pricing.json` as the canonical source, every affected consumer,
 structured data, the applicable automated checks, this file and the newest `HANDOVER.md` entry in
